@@ -1,0 +1,14 @@
+<p style="color: green"><%= notice %></p>
+
+<h1>Readinglists</h1>
+
+<div id="readinglists">
+  <% @readinglists.each do |readinglist| %>
+    <%= render readinglist %>
+    <p>
+      <%= link_to "Show this readinglist", readinglist %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New readinglist", new_readinglist_path %>

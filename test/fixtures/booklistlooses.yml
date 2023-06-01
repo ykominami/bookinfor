@@ -1,0 +1,23 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  totalID: 1
+  xid: 1
+  purchase_date: 2023-05-16
+  bookstore: MyString
+  title: MyString
+  asin: MyString
+  read_status: 1
+  shape: 1
+  category: MyString
+
+two:
+  totalID: 1
+  xid: 1
+  purchase_date: 2023-05-16
+  bookstore: MyString
+  title: MyString
+  asin: MyString
+  read_status: 1
+  shape: 1
+  category: MyString

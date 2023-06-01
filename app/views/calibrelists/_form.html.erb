@@ -1,0 +1,117 @@
+<%= form_with(model: calibrelist) do |form| %>
+  <% if calibrelist.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(calibrelist.errors.count, "error") %> prohibited this calibrelist from being saved:</h2>
+
+      <ul>
+        <% calibrelist.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :xid, style: "display: block" %>
+    <%= form.number_field :xid %>
+  </div>
+
+  <div>
+    <%= form.label :xxid, style: "display: block" %>
+    <%= form.number_field :xxid %>
+  </div>
+
+  <div>
+    <%= form.label :isbn, style: "display: block" %>
+    <%= form.text_field :isbn %>
+  </div>
+
+  <div>
+    <%= form.label :zid, style: "display: block" %>
+    <%= form.number_field :zid %>
+  </div>
+
+  <div>
+    <%= form.label :uuid, style: "display: block" %>
+    <%= form.text_field :uuid %>
+  </div>
+
+  <div>
+    <%= form.label :comments, style: "display: block" %>
+    <%= form.text_field :comments %>
+  </div>
+
+  <div>
+    <%= form.label :size, style: "display: block" %>
+    <%= form.number_field :size %>
+  </div>
+
+  <div>
+    <%= form.label :series, style: "display: block" %>
+    <%= form.text_field :series %>
+  </div>
+
+  <div>
+    <%= form.label :series_index, style: "display: block" %>
+    <%= form.number_field :series_index %>
+  </div>
+
+  <div>
+    <%= form.label :title, style: "display: block" %>
+    <%= form.text_field :title %>
+  </div>
+
+  <div>
+    <%= form.label :title_sort, style: "display: block" %>
+    <%= form.text_field :title_sort %>
+  </div>
+
+  <div>
+    <%= form.label :tags, style: "display: block" %>
+    <%= form.text_field :tags %>
+  </div>
+
+  <div>
+    <%= form.label :library_name, style: "display: block" %>
+    <%= form.text_field :library_name %>
+  </div>
+
+  <div>
+    <%= form.label :formats, style: "display: block" %>
+    <%= form.text_field :formats %>
+  </div>
+
+  <div>
+    <%= form.label :timestamp, style: "display: block" %>
+    <%= form.datetime_field :timestamp %>
+  </div>
+
+  <div>
+    <%= form.label :pubdate, style: "display: block" %>
+    <%= form.datetime_field :pubdate %>
+  </div>
+
+  <div>
+    <%= form.label :publisher, style: "display: block" %>
+    <%= form.text_field :publisher %>
+  </div>
+
+  <div>
+    <%= form.label :authors, style: "display: block" %>
+    <%= form.text_field :authors %>
+  </div>
+
+  <div>
+    <%= form.label :author_sort, style: "display: block" %>
+    <%= form.text_field :author_sort %>
+  </div>
+
+  <div>
+    <%= form.label :languages, style: "display: block" %>
+    <%= form.text_field :languages %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>

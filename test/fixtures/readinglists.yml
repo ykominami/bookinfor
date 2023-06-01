@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  register_date: 2023-05-14
+  date: 2023-05-14
+  title: MyString
+  status: MyString
+  shape: MyString
+  isbn: MyString
+
+two:
+  register_date: 2023-05-14
+  date: 2023-05-14
+  title: MyString
+  status: MyString
+  shape: MyString
+  isbn: MyString

@@ -1,0 +1,14 @@
+<p style="color: green"><%= notice %></p>
+
+<h1>Calibrelists</h1>
+
+<div id="calibrelists">
+  <% @calibrelists.each do |calibrelist| %>
+    <%= render calibrelist %>
+    <p>
+      <%= link_to "Show this calibrelist", calibrelist %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New calibrelist", new_calibrelist_path %>

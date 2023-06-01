@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @calibrelist %>
+
+<div>
+  <%= link_to "Edit this calibrelist", edit_calibrelist_path(@calibrelist) %> |
+  <%= link_to "Back to calibrelists", calibrelists_path %>
+
+  <%= button_to "Destroy this calibrelist", @calibrelist, method: :delete %>
+</div>

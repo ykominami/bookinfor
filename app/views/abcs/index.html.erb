@@ -1,0 +1,18 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render(ExampleComponent.new(title: "my ABC")) do %>
+  Hello, World!
+<% end %>
+
+<h1>Abcs</h1>
+
+<div id="abcs">
+  <% @abcs.each do |abc| %>
+    <%= render abc %>
+    <p>
+      <%= link_to "Show this abc", abc %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New abc", new_abc_path %>

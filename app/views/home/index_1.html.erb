@@ -1,0 +1,6 @@
+<%= render(ExampleComponent.new(title: "my title").with_content('XyZ')) do %>
+  <%= render(ComaComponent.new(name: "Comp A")) %>
+  <%= render(CombComponent.new(name: "Comp B")) %>
+<% end %>
+
+

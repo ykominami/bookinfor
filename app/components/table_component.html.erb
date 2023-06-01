@@ -1,0 +1,22 @@
+<div>
+    <table>
+        <thead>
+            <tr>
+                <% @header.each do |row| %>
+                <th scope="col"><%= row %></th>
+                <% end %>
+            </tr>
+        </thead>
+        <tbody>
+            <% @total_score.get_sorted_choices.each do |name, score| %>
+            <tr>
+                <% @total_score.data[name].each do |item| %>
+                <td>
+                    <%= item %>
+                </td>
+                <% end %>
+            </tr>
+            <% end %>
+        </tbody>
+    </table>
+</div>

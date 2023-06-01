@@ -1,0 +1,48 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  xid: 1
+  xxid: 1
+  isbn: MyString
+  zid: 1
+  uuid: MyString
+  comments: MyString
+  size: 1
+  series: MyString
+  series_index: 1
+  title: MyString
+  title_sort: MyString
+  tags: MyString
+  library_name: MyString
+  formats: MyString
+  timestamp: 2023-05-14 19:11:36
+  pubdate: 2023-05-14 19:11:36
+  publisher: MyString
+  authors: MyString
+  author_sort: MyString
+  languages: MyString
+  rating: rate
+  identifiers: idx
+two:
+  xid: 2
+  xxid: 2
+  isbn: MyString
+  zid: 2
+  uuid: MyString2
+  comments: MyString
+  size: 1
+  series: MyString
+  series_index: 1
+  title: MyString
+  title_sort: MyString
+  tags: MyString
+  library_name: MyString
+  formats: MyString
+  timestamp: 2023-05-14 19:11:36
+  pubdate: 2023-05-14 19:11:36
+  publisher: MyString
+  authors: MyString
+  author_sort: MyString
+  languages: MyString
+  rating: rate 
+  identifiers: idx2

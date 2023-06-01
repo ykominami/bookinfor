@@ -1,0 +1,2 @@
+class Booklisttaight < ApplicationRecord
+end

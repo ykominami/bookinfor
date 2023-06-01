@@ -1,0 +1,100 @@
+<h1>Booklists</h1>
+
+<!-- 見出し -->
+<h4 class="fw-bold">
+  <span class="me-1">🐱</span>
+  <span>Booklist</span>
+</h4>
+
+<!-- 検索フォーム -->
+<div class="card shadow mt-3">
+  <div class="card-header">
+    <%= icon_with_text("search", "検索条件") %>
+  </div>
+
+  <div class="card-body">
+    <%= search_form_for(
+         @search,
+        html: {
+          data: {
+            turbo_frame: "booklists-list",
+            controller: "form",
+            action: "input->form#submit"
+          }
+       } ) do |f| %>
+      <div class="row g3 mb-3">
+        <div class="col-4 col-xl-2">
+          <%= f.label :title_cont, "Title", class: "form-label" %>
+          <%= f.search_field :title_cont, class: "form-control" %>
+        </div>
+        <div class="col-4 col-xl-2">
+          <%= f.label :category_eq, "Category", class: "form-label" %>
+          <%= f.search_field :category_eq, class: "form-control" %>
+        </div>
+        <div class="col-4 col-xl-2">
+          <%= f.label :read_status_eq, "Read-status", class: "form-label" %>
+          <%= f.search_field :read_status_eq, class: "form-control" %>
+        </div>
+        <div class="col-4 col-xl-2">
+          <%= f.label :shape_eq, "shape", class: "form-label" %>
+          <%= f.search_field :shape_eq, class: "form-control" %>
+        </div>
+        <div class="col-4 d-flex align-items-end">
+          <%= button_tag(icon_with_text("search", "検索"), class: "btn btn-primary me-1") %>
+          <%= link_to "リセット", booklists_path, class: "btn btn-outline-secondary" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<!-- 一覧 -->
+<div class="card shadow mt-3">
+  <div class="card-header">
+    <%= icon_with_text("table", "一覧") %>
+  </div>
+
+  <div class="card-body mx-3">
+    <%= turbo_frame_tag "booklists-list" do %>
+      <div class="row py-2">
+        <div class="col-4 mt-auto">
+          <%= sort_link(@search, :title) %>
+        </div>
+        <div class="col-4 mt-auto">
+          <%= sort_link(@search, :purchase_date) %>
+        </div>
+        <div class="col-4 mt-auto">
+          <%= sort_link(@search, :category) %>
+        </div>
+        <div class="col-4 mt-auto">
+          <%= sort_link(@search, :read_status) %>
+        </div>
+        <div class="col-4 mt-auto">
+          <%= sort_link(@search, :shape) %>
+        </div>
+        <div class="col-4 d-flex justify-content-end">
+          <%= link_to icon_with_text("plus-circle", "登録"),
+                      new_booklist_path,
+                      class: "btn btn-outline-primary",
+                      data: { turbo_frame: dom_id(Booklist.new) }
+          %>
+        </div>
+      </div>
+
+      <%= turbo_frame_tag Booklist.new %>
+
+      <div class="d-flex justify-content-end mt-3">
+        <%= paginate @booklists %>
+      </div>
+
+      <div id="booklists">
+        <table>
+          <tbody>
+            <%= render @booklists %>
+          </tbody>
+        </table>
+      </div>
+
+    <% end %>
+  </div>
+</div>

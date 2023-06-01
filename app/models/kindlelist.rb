@@ -1,0 +1,2 @@
+class Kindlelist < ApplicationRecord
+end
