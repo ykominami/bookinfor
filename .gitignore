@@ -34,4 +34,6 @@ vendor
 .ruby-version
 
 /tmp/
+/_tmp/
+x.rb
 
