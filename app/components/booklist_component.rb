@@ -41,7 +41,7 @@ class BooklistComponent < ApplicationComponent
         # @booklists = bklists_7
         # @booklists = Booklistloose.where("read_status != ?", 4).where("read_status != ?", 2).where("bookstore = ?", value).order(shape: :DESC).order("read_status").order("category").order("purchase_date").order("title")
         @search = @klass.ransack(@params[:q])
-        @search.sorts = 'xid desc' if @search.sorts.empty?
+        @search.sorts = 'totalID desc' if @search.sorts.empty?
         @booklists = @search.result.page(@params[:page])
     
         # @booklist = Booklistx.new("Booklist", @booklists)
