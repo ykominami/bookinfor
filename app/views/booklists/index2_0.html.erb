@@ -1,0 +1,14 @@
+    abc
+    <turbo-frame id="b3" >
+    2 turbo-frame id="b3"
+    </turbo-frame>
+    ind=<%= @ind%><p>
+    ind_next=<%= @ind_next%><p>
+    
+    defx
+        <%= link_to icon_with_text("plus-circle", "Up"),
+                    "index3/#{@ind_next}",
+                    class: "btn btn-outline-primary",
+                    data: { turbo_frame: "b3" }
+        %>
+GHI

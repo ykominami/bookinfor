@@ -1,10 +1,11 @@
 <p style="color: green"><%= notice %></p>
 
-<%= render @booklist %>
-
+<%= render BooklistitemComponent.new(@booklist).proxy %>
 <div>
   <%= link_to "編集", edit_booklist_path(@booklist) %> |
   <%= link_to "戻る", booklists_path %>
 
   <%= button_to "削除", @booklist, method: :delete %>
 </div>
+
+show.html.erb
