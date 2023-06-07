@@ -6,28 +6,26 @@ class AbcsController < ApplicationController
     @abcs = Abc.all
     name = "Table 1"
     header = ["話題", "スコア"]
-    choice_names = ["a", "b", "c", "d"]
+    choice_names = {4 => "ch_a", 5 => "ch_b", 6 => "ch_c", 7 => "ch_d"}
     points = [3, 2, 1, 0]
-    names = ["a", "b", "c", "d"]
 
-    AbcsHelper::Choicex.init(points, names)
-    votea_result = [0,1,2,3]
-    votea = AbcsHelper::Votex.new("a", votea_result)
-
-    voteb_result = [2,3,1, 0]
-    voteb = AbcsHelper::Votex.new("b", voteb_result)
+    AbcsHelper::Choicex.init(points, choice_names)
+    # p AbcsHelper::Choicex.get_name_values
 
     ts = AbcsHelper::TotalScorex.new(header)
-    ts.add_or_change(votea)
-#    ts.add_or_change(voteb)
-#    p ts.data
-#    p ts.get_sorted_choices
 
-    votec_result = [3,1, 0, 2]
+    votea_result = [4, 5, 6, 7]
+    votea = AbcsHelper::Votex.new("a", votea_result)
+
+    voteb_result = [6, 7, 5, 4]
+    voteb = AbcsHelper::Votex.new("b", voteb_result)
+
+    votec_result = [7, 5, 4, 6]
     votec = AbcsHelper::Votex.new("c", votec_result)
-#    ts.add_or_change(votec)
-#    p ts.data
-#    p ts.get_sorted_choices
+
+    ts.add_or_change(votea)
+    ts.add_or_change(voteb)
+    ts.add_or_change(votec)
     
     render(TableComponent.new(name: name, total_score: ts))
   end
