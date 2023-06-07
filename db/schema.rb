@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_30_143551) do
+ActiveRecord::Schema[7.0].define(version: 2023_06_07_061353) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -34,7 +34,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_30_143551) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["totalID"], name: "index_booklistlooses_on_totalID"
-    t.index ["xid"], name: "index_booklistlooses_on_xid"
   end
 
   create_table "booklists", force: :cascade do |t|
@@ -50,7 +49,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_30_143551) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["totalID"], name: "index_booklists_on_totalID", unique: true
-    t.index ["xid"], name: "index_booklists_on_xid", unique: true
   end
 
   create_table "booklisttaights", force: :cascade do |t|
@@ -104,14 +102,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_30_143551) do
     t.string "authors", null: false
     t.string "author_sort", null: false
     t.string "languages", null: false
-    t.string "rating", null: false
-    t.string "identifiers", null: false
+    t.string "rating"
+    t.string "identifiers"
     t.integer "read_status"
     t.string "category"
-    t.index ["uuid"], name: "index_calibrelists_on_uuid", unique: true
-    t.index ["xid"], name: "index_calibrelists_on_xid", unique: true
-    t.index ["xxid"], name: "index_calibrelists_on_xxid", unique: true
-    t.index ["zid"], name: "index_calibrelists_on_zid", unique: true
   end
 
   create_table "kindlelists", force: :cascade do |t|
