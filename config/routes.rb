@@ -1,6 +1,9 @@
 Rails.application.routes.draw do
+  get "booklists/displayx(/:ind)" => "booklists#displayx"
   get "home/index" => "home#show"
-  root to: "home#index"
+  get "booklists/index2(/:ind)" => "booklists#index2"
+  get "booklists/index3(/:ind)" => "booklists#index3"
+  # root to: "home#index"
 
   resources :abcs
   resources :calibrelists
@@ -11,4 +14,5 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "articles#index"
+  root to: "booklists#index"
 end
