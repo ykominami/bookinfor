@@ -1,0 +1,16 @@
+<%# 全体を`turbo_frame_tag`で囲う %>
+<%= turbo_frame_tag booklist  do %>
+    <div class="container" >
+        <div class="row py-2 border-top" >
+            <div class="col"><%= booklist.purchase_date %></div>
+            <div class="col-sm"><%= booklist.totalID %></div>
+            <div class="col-sm-4"><%= booklist.title %></div>
+            <div class="col-sm"><%= booklist.asin %></div>
+            <div class="col"><%= booklist.shape %></div>
+            <div class="col"><%= booklist.read_status %></div>
+            <div class="col-sm"><%= booklist.category %></div>
+            <div class="col"><%= link_to "0 編集", edit_booklist_path(booklist), class: "btn btn-sm btn-outline-primary me-2" %></div>
+            <div class="col"><%= button_to "削除", booklist, method: :delete, class: "btn btn-sm btn-outline-danger" %></div>
+        </div>
+    </div>
+<% end %>
