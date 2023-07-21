@@ -252,13 +252,18 @@ class Dl
   end
 
   def xf_begin(year)
-    p @ks
     p @name
-    k = @ks[@name].find{ |value| 
+    k = @ks[@name].find { |value|
       year == value.split("|")[5].to_i
     }
-
-    path = @vx[k][0]
+    p year
+    p @ks
+    p @name
+    p @ks[@name]
+    p k
+    key = @ks[k][0]
+    # path = @vx[k][0]
+    path = @vx[key]
     puts "k=#{k}"
     puts "path=#{path}"
     @json = JSON.parse(File.read(path))
@@ -309,7 +314,6 @@ class Dlbook < Dl
     @ar_klass = Booklist
     @ignore_field_list = []
     @ignore_field_value_hash = { "bookstore" => ["アマゾン(Kindle"] }
-
   end
 
   def xf_supplement(x, base_number = nil)
@@ -344,11 +348,11 @@ class Dlbook < Dl
   end
 
   def detect(target, reg_hash)
-    ret = reg_hash.find{ |key, reg_array|
-      retb = reg_array.find{ |reg|
+    ret = reg_hash.find { |key, reg_array|
+      retb = reg_array.find { |reg|
         word = target[key]
-        reta = reg.match( word )
-        reta != nil 
+        reta = reg.match(word)
+        reta != nil
       }
       retb != nil
     }
@@ -366,7 +370,7 @@ class Dlbook < Dl
     @json.select { |x|
       found = detect_ignore_items(x, reg_hash)
       if found
-        next 
+        next
       end
       @delkeys.map { |k| x.delete(k) }
       x.delete("")
@@ -423,6 +427,7 @@ class Dlbookloose < Dlbook
     @ar_klass = Booklistloose
   end
 end
+
 class Dlbooktight < Dlbook
   def initialize(vx, keys, ks)
     super(vx, keys, ks)
@@ -526,7 +531,7 @@ class Dlcalibre < Dl
     @name = "calibre"
     @ar_klass = Calibrelist
     @ignore_field_list = %W(isbn series series_index library_name languages rating identifiers zid
-                      comments formats publisher authors author_sort size pubdate tags)
+                            comments formats publisher authors author_sort size pubdate tags)
   end
 
   def xf_supplement(x, base_number = nil)
@@ -540,15 +545,36 @@ class Dlcalibre < Dl
     show_duplicated_field("title")
   end
 
+  def blank_field_init()
+    super()
+    @blank_keys["cover"] = 0
+  end
+
   def xf_calibre(i, mode = :register)
+    k = @ks[@name][i]
+    path = @vx[k][0]
+    # p k
+    # p path
+    json = JSON.parse(File.read(path))
+
+    blank_field_init()
+    duplicated_field_init()
     json.map { |x|
+      @delkeys.map { |k| x.delete(k) }
+      x.delete("")
+
       detect_blank(x)
+      xf_supplement(x)
 
       begin
         @ar_klass.create(x) if mode == :register
       rescue => exp
         puts exp
+        puts exp.backtrace.join("\n")
+        pp x
       end
+
+      # exit(10)
     }
     show_blank_fields
     show_duplicated_fields
@@ -558,20 +584,18 @@ end
 
 def dlreadingx(dltop)
   dlreading = dltop.make("reading")
-  dlreading.xf(0, :register)
+  dlreading.xf_reading(0, :register)
 end
 
 def dlkindlex(dltop)
-  dlkindle =  dltop.make("kindle")
-  dlkindle.xf_kindle(1, :none)
+  dlkindle = dltop.make("kindle")
+  # dlkindle.xf_kindle(1, :none)
   dlkindle.xf_kindle(1, :register)
 end
 
 def dlcalibrex(dltop)
-  dlcalibre =  dltop.make("calibre")
-  # dlcalibre.xf_calibre(0, :none)
-  #dlcalibre.xf(0, :none)
-  dlcalibre.xf(0, :register)
+  dlcalibre = dltop.make("calibre")
+  dlcalibre.xf_calibre(0, :register)
 end
 
 def dlbookx(dltop)
@@ -593,32 +617,33 @@ def dlbookx(dltop)
   #index = 10
   i = index
   #last = index
-   last = 10
+  last = 10
   #last = 5
   while i <= last
-    dlbook.xf(i, :register)
-    dlbookloose.xf(i,  :register) 
-    dlbooktight.xf(i, :register)
+    dlbook.xf_booklist(i, :register)
+    dlbookloose.xf_booklist(i, :register)
+    dlbooktight.xf_booklist(i, :register)
     i += 1
   end
 end
 
-fname = "/home/ykominami/repo/ykominami/GAS/MyBot-X/_tmp1/output.json"
+# fname = "/home/ykominami/repo/ykominami/GAS/MyBot-X/_tmp1/output.json"
+fname = "/home/ykominami/repo/ykominami/GAS/MyBot-X/datas/out.json"
 dltop = Dltop.new(fname)
 
 k = "json|book|ss2|book|book|2013|c"
 
 # dlreadingx(dltop)
-dlkindlex(dltop)
+# dlkindlex(dltop)
 # dlcalibrex(dltop)
-# dlbookx(dltop)
+dlbookx(dltop)
 
 def dlbookx_0(dltop)
   dlbook = dltop.make("book")
   dlbookloose = dltop.make("bookloose")
   dlbooktight = dltop.make("booktight")
 
-   value = 2014
+  value = 2014
   # value = 2015
   # value = 2016
   # value = 2017
@@ -629,12 +654,12 @@ def dlbookx_0(dltop)
   # value = 2022
   # value = 2023
   year = value
-#  last = value
+  #  last = value
   last = 2023
   while year <= last
     p year
     dlbook.xf(year, :register)
-    dlbookloose.xf(year, :register) 
+    dlbookloose.xf(year, :register)
     dlbooktight.xf(year, :register)
     year += 1
   end
