@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @efg %>
+
+<div>
+  <%= link_to "Edit this efg", edit_efg_path(@efg) %> |
+  <%= link_to "Back to efgs", efgs_path %>
+
+  <%= button_to "Destroy this efg", @efg, method: :delete %>
+</div>

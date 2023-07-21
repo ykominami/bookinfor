@@ -81,11 +81,50 @@
                     class: "btn btn-outline-primary",
                     data: { turbo_frame: "new_booklist" } %>
       </div>
-HEAD
+
     <div id="booklists-booklist_component.html.erb">
       <%= render @booklists %>
     </div>
-END
+
+    <div class="d-flex justify-content-end mt-3">
+      <%= paginate @booklists %>
+    </div>
+
   </div>
 </div>
 
+<!-- 一覧 -->
+<div class="card shadow mt-3">
+  <div class="card-header">
+    <%= icon_with_text("table", "一覧") %>
+  </div>
+
+  <div class="card-body mx-3">
+    <turbo-frame "booklist" >
+      <div class="row py-2">
+        <div class="col-4 mt-auto">
+          <%= sort_link(@search, :name) %>
+        </div>
+        <div class="col-4 mt-auto">
+          <%= sort_link(@search, :age) %>
+        </div>
+        <div class="col-4 d-flex justify-content-end">
+          <%= link_to icon_with_text("plus-circle", "登録"),
+                      new_cat_path,
+                      class: "btn btn-outline-primary",
+                      data: { turbo_frame: dom_id(Cat.new) } %>
+        </div>
+      </div>
+
+      <turbo-frame dom_id(Cat.new) ></turbo-frame>
+
+      <div id="booklists">
+        <%= render @booklists %>
+      </div>
+
+      <div class="d-flex justify-content-end mt-3">
+        <%= paginate @booklists %>
+      </div>
+    </turbo-frame>
+  </div>
+</div>
