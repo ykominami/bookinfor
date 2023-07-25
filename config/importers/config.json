@@ -1,0 +1,152 @@
+{
+  "keys": [
+    "calibre",
+    "api",
+    "book",
+    "reading",
+    "kindle"
+  ],
+  "xkeys": {
+    "calibre": {
+      "valid": [
+
+      ],
+      "remove": [
+        "cover",
+        "id"
+      ],
+      "not_duplicated": [
+
+      ],
+      "not_blank": [
+
+      ]
+    },
+    "kindle": {
+      "valid": [
+
+      ],
+      "remove": [
+        "amazon_link"
+      ],
+      "not_duplicated": [
+
+      ],
+      "not_blank": [
+
+      ]
+    },
+    "reading": {
+      "valid": [
+        "register_date,",
+        "date,",
+        "title,",
+        "status,",
+        "shape,",
+        "isbn"
+      ],
+      "remove": [
+
+      ],
+      "not_duplicated": [
+
+      ],
+      "not_blank": [
+
+      ]
+    },
+    "book": {
+      "valid": [
+        "totalID",
+        "xid",
+        "purchase_date",
+        "bookstore",
+        "title",
+        "asin",
+        "read_status",
+        "shape",
+        "category"
+      ],
+      "remove": [
+        "empty1",
+        "empty2",
+        "empty3",
+        "any1",
+        "any2",
+        "missing",
+        "any3",
+        "category_uniq",
+        "categry_sort",
+        "category_value"
+      ],
+      "not_duplicated": [
+
+      ],
+      "not_blank": [
+
+      ]
+    },
+    "bookloose": {
+      "valid": [
+        "totalID",
+        "xid",
+        "purchase_date",
+        "bookstore",
+        "title",
+        "asin",
+        "read_status",
+        "shape",
+        "category"
+      ],
+      "remove": [
+        "empty1",
+        "empty2",
+        "empty3",
+        "any1",
+        "any2",
+        "missing",
+        "any3",
+        "category_uniq",
+        "categry_sort",
+        "category_value"
+      ],
+      "not_duplicated": [
+
+      ],
+      "not_blank": [
+
+      ]
+    },
+    "booktight": {
+      "valid": [
+        "totalID",
+        "xid",
+        "purchase_date",
+        "bookstore",
+        "title",
+        "asin",
+        "read_status",
+        "shape",
+        "category"
+      ],
+      "remove": [
+        "empty1",
+        "empty2",
+        "empty3",
+        "any1",
+        "any2",
+        "missing",
+        "any3",
+        "category_uniq",
+        "categry_sort",
+        "category_value"
+      ],
+      "not_duplicated": [
+
+      ],
+      "not_blank": [
+
+      ]
+    }
+  }
+}
