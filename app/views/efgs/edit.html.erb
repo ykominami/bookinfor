@@ -1,10 +1,3 @@
-<h1>Editing efg</h1>
-
-<%= render "form", efg: @efg %>
-
-<br>
-
-<div>
-  <%= link_to "Show this efg", @efg %> |
-  <%= link_to "Back to efgs", efgs_path %>
-</div>
+<%= turbo_frame_tag @efg do %>
+  <%= render "form", efg: @efg %>
+<% end %>
