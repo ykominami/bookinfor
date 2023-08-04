@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   # get "kindlelists/show(/:id)" => "kindlelists#show"
 
   resources :abcs
+  resources :efgs
   resources :calibrelists
   resources :readinglists
   resources :kindlelists, only: [:show, :index, :new, :edit]
