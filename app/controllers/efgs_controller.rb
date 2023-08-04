@@ -30,10 +30,13 @@ class EfgsController < ApplicationController
 
     respond_to do |format|
       if @efg.save
+        # format.html { redirect_to efg_url(@efg), notice: "Efg was successfully created." }
         format.html { redirect_to efg_url(@efg), notice: "Efg was successfully created." }
+        format.turbo_stream { render :create, status: :created, location: @efg }
         format.json { render :show, status: :created, location: @efg }
       else
         format.html { render :new, status: :unprocessable_entity }
+        format.turbo_stream { render :new, status: :unprocessable_entity }
         format.json { render json: @efg.errors, status: :unprocessable_entity }
       end
     end
@@ -57,7 +60,8 @@ class EfgsController < ApplicationController
     @efg.destroy
 
     respond_to do |format|
-      format.html { redirect_to efgs_url, notice: "Efg was successfully destroyed." }
+      format.html { render }
+      format.turbo_stream { render :destroy }
       format.json { head :no_content }
     end
   end

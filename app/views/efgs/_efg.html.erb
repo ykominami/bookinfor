@@ -1,4 +1,4 @@
-<div id="<%= dom_id efg %>">
+<%= turbo_frame_tag efg do %>
   <div class="row py-2 border-top">
   <div class="col-4 my-auto">
     <%= efg.zid %>
@@ -8,9 +8,9 @@
   </div>
   <div class="col-4">
     <div class="d-flex justify-content-end">
-      <%= link_to "編集", edit_efg_path(efg), class: "btn btn-sm btn-outline-primary me-2" %>
-      <%= button_to "削除", efg, method: :delete, class: "btn btn-sm btn-outline-danger" %>
+      <%= link_to "編集", edit_efg_path(efg), class: "btn btn-sm btn-outline-primary me-2", data: { turbo_frame: dom_id(efg) } %>
+      <%= button_to "削除", efg, method: :delete, class: "btn btn-sm btn-outline-danger", form: { data: { turbo_confirm: "本当に削除しますか？" } }  %>
     </div>
   </div>
   </div>
-</div>
+<% end %>
