@@ -3,6 +3,12 @@ class AbcsController < ApplicationController
 
   # GET /abcs or /abcs.json
   def index
+    @search = Abc.ransack(params[:q])
+    @search.sorts = 'id desc' if @search.sorts.empty?
+    @abcs = @search.result.page(params[:page])
+  end
+
+  def index0
     @abcs = Abc.all
     name = "Table 1"
     header = ["話題", "スコア"]
