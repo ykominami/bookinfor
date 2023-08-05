@@ -1,8 +1,5 @@
 <p id="booklistitem_coponent.html.erb_p" style="color: green"><%= helpers.notice %></p>
-<%= helpers.turbo_frame_tag @proxy  do %>
+<turbo-frameg dom_id(@proxy) >
     <div class="col-sm"><%= @proxy.id %></div>
     <div class="col-sm"><%= @proxy.totalID %></div>
-<% end %>
-</div>
-</div>
-</div>
+</turbo-frame>
