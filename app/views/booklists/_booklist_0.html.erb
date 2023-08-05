@@ -1,5 +1,5 @@
-<%# 全体を`turbo_frame_tag`で囲う %>
-<%= turbo_frame_tag booklist  do %>
+<% # 全体を`turbo_frame_tag`で囲う %>
+<turbo-frame booklist>
     <div class="container" >
         <div class="row py-2 border-top" >
             <div class="col"><%= booklist.purchase_date %></div>
@@ -13,4 +13,4 @@
             <div class="col"><%= button_to "削除", booklist, method: :delete, class: "btn btn-sm btn-outline-danger" %></div>
         </div>
     </div>
-<% end %>
+</turbo-frame>
