@@ -1,0 +1,79 @@
+<!-- 見出し -->
+<h4 class="fw-bold">
+  <span class="me-1">🐱</span>
+  <span>ねこ</span>
+</h4>
+
+<!-- 検索フォーム -->
+<div class="card shadow mt-3">
+  <div class="card-header">
+    <%= icon_with_text("search", "検索条件") %>
+  </div>
+
+  <div class="card-body">
+    <%= search_form_for(
+          @search,
+          html: {
+            data: {
+              turbo_frame: "cats-list",
+              controller: "form",
+              action: "input->form#submit",
+            },
+          },
+        ) do |f| %>
+      <div class="row g3 mb-3">
+        <div class="col-4 col-xl-2">
+          <%= f.label :zid_eq, "zid", class: "form-label" %>
+          <%= f.search_field :zid_eq, class: "form-control" %>
+        </div>
+        <div class="col-4 col-xl-2">
+          <%= f.label :s_cont, "s", class: "form-label" %>
+          <%= f.search_field :s_cont, class: "form-control" %>
+        </div>
+        <div class="col-4 d-flex align-items-end">
+          <%= f.submit "検索" %>
+        </div>
+        <div class="col-4 d-flex align-items-end">
+          <%= link_to "リセット", efgs_path, class: "btn btn-outline-secondary" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<!-- 一覧 -->
+<div class="card shadow mt-3">
+  <div class="card-header">
+    <%= icon_with_text("table", "一覧") %>
+  </div>
+
+  <div class="card-body mx-3">
+    <%= turbo_frame_tag "cats-list" do %>
+      <div class="row py-2">
+        <div class="col-4 mt-auto">
+          <%= sort_link(@search, :zid) %>
+        </div>
+        <div class="col-4 mt-auto">
+          <%= sort_link(@search, :s) %>
+        </div>
+        <div class="col-4 d-flex justify-content-end">
+          <%= link_to icon_with_text("plus-circle", "登録"),
+                      new_efg_path,
+                      class: "btn btn-outline-primary",
+                      data: { turbo_frame: dom_id(Efg.new) } %>
+        </div>
+      </div>
+
+      <turbo-frame id="<%= dom_id Efg.new %>">
+      </turbo-frame>
+
+      <div id="cats">
+        <%= render @efgs %>
+      </div>
+
+      <div class="d-flex justify-content-end mt-3">
+        <%= paginate @efgs %>
+      </div>
+    <% end %>
+  </div>
+</div>
