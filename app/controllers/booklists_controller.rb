@@ -1,6 +1,6 @@
 class BooklistsController < ApplicationController
   before_action :set_booklist, only: %i[ show edit update destroy index index2 index3 ]
-#  before_action :set_booklist, only: %i[ show edit update destroy]
+  #  before_action :set_booklist, only: %i[ show edit update destroy]
 
   def index3
     ind = params[:ind]
@@ -10,13 +10,13 @@ class BooklistsController < ApplicationController
       ind = 1
       ind_next = 1
     end
-    
+
     respond_to do |format|
       # format.html { render BooklistComponent.new("Booklist" , Booklistloose, params) }
-      format.html { render BlComponent.new("Bl component html" , Booklist, params, ind, ind_next, 30) }
-      format.turbo_stream { render BlComponent.new("Bl component ts" , Booklist, params, ind, ind_next, 456) }
+      format.html { render BlComponent.new("Bl component html", Booklist, params, ind, ind_next, 30) }
+      format.turbo_stream { render BlComponent.new("Bl component ts", Booklist, params, ind, ind_next, 456) }
       format.json { render :show, status: :created, location: @booklist }
-    end    
+    end
   end
 
   def index2
@@ -30,13 +30,13 @@ class BooklistsController < ApplicationController
     @ind = ind
     @ind_next = ind_next
     respond_to do |format|
-      format.turbo_stream { render "index2" , ind_next: ind_next }
+      format.turbo_stream { render "index2", ind_next: ind_next }
       #
       format.json { render :show, status: :created, location: @booklist }
       #
       format.html { render "index2" }
       #
-    end    
+    end
   end
 
   def displayx
@@ -55,15 +55,20 @@ class BooklistsController < ApplicationController
       format.turbo_stream { render "displayx" }
     end
   end
+
   # GET /booklists or /booklists.json
   def index
     # booklist_params
+    # @booklists = Booklist.all
+    @booklists = Booklistloose.all
 
     respond_to do |format|
-      # format.html { render BooklistComponent.new("Booklist" , Booklistloose, params) }
-      format.html { render BooklistComponent.new("Booklist component Y" , Booklist, params) }
+      format.html { render "booklists/index" }
+      # format.html { render "booklists/edit" }
+      # format.html { render BooklistComponent.new("Booklist", Booklistloose, params) }
+      # format.html { render BooklistComponent.new("Booklist component Y" , Booklist, params) }
       format.json { render :show, status: :created, location: @booklist }
-    end    
+    end
   end
 
   # GET /booklists/1 or /booklists/1.json
@@ -88,16 +93,16 @@ class BooklistsController < ApplicationController
   def create
     @booklist = Booklist.new(booklist_params)
     year = @booklist.purchase_date.year
-#    @booklist.xid = BooklistsHelper::get_next_xid(year)
+    #    @booklist.xid = BooklistsHelper::get_next_xid(year)
     @booklist.xid = get_next_xid(year)
-    @booklist.totalID = "#{year}#{ sprintf("%03d", @booklist.xid.to_i )}"
+    @booklist.totalID = "#{year}#{sprintf("%03d", @booklist.xid.to_i)}"
 
     if @booklist.save
-      flash.now.notice = "Booklistに登録しました。" 
+      flash.now.notice = "Booklistに登録しました。"
 
       respond_to do |format|
         # format.html { redirect_to booklist_url(@booklist), notice: "Booklistに登録しました。" }
-        format.html { render BooklistComponent.new("Booklist component X" , Booklist, params) }
+        format.html { render BooklistComponent.new("Booklist component X", Booklist, params) }
         format.json { render :update, status: :created, location: @booklist }
       end
     else
@@ -115,7 +120,7 @@ class BooklistsController < ApplicationController
       if @booklist.update(booklist_params)
         flash.now.notice = "booklistを更新しました。"
         # format.html { redirect_to booklist_url(@booklist), notice: "Booklistを更新しました。" }
-        format.html { render BooklistComponent.new("Booklist component X" , Booklist, params) }
+        format.html { render BooklistComponent.new("Booklist component X", Booklist, params) }
         # format.turbo_stream { render :update, status: :ok, location: @booklist }
         format.json { render :show, status: :ok, location: @booklist }
       else
@@ -136,27 +141,28 @@ class BooklistsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_booklist
-      if params[:id]
-        @booklist = Booklist.find(params[:id])
-      else
-        @booklist = Booklist.new
-      end
-    end
 
-    # Only allow a list of trusted parameters through.
-    def booklist_params
-      params.require(:booklist).permit(:purchase_date, :bookstore, :title, :asin, :read_status, :shape, :category)
+  # Use callbacks to share common setup or constraints between actions.
+  def set_booklist
+    if params[:id]
+      @booklist = Booklist.find(params[:id])
+    else
+      @booklist = Booklist.new
     end
+  end
 
-    def get_next_xid(year)
-      start_date = "#{year}-01-01"
-      end_date = "#{year}-12-31"
-      list = Booklist.where(purchase_date: start_date..end_date).pluck(:xid)
-      max_number = 0
-      max_number = list.max if list
-      max_number = 0 unless max_number
-      max_number + 1
-    end
+  # Only allow a list of trusted parameters through.
+  def booklist_params
+    params.require(:booklist).permit(:purchase_date, :bookstore, :title, :asin, :read_status, :shape, :category)
+  end
+
+  def get_next_xid(year)
+    start_date = "#{year}-01-01"
+    end_date = "#{year}-12-31"
+    list = Booklist.where(purchase_date: start_date..end_date).pluck(:xid)
+    max_number = 0
+    max_number = list.max if list
+    max_number = 0 unless max_number
+    max_number + 1
+  end
 end
