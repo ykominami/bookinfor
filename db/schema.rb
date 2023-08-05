@@ -108,6 +108,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_22_080425) do
     t.string "category"
   end
 
+  create_table "defs", force: :cascade do |t|
+    t.integer "zid"
+    t.string "s"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "efgs", force: :cascade do |t|
     t.integer "zid"
     t.string "s"

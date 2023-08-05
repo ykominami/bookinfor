@@ -1,12 +1,1 @@
-<div id="<%= dom_id abc %>">
-  <p>
-    <strong>Zid:</strong>
-    <%= abc.zid %>
-  </p>
-
-  <p>
-    <strong>S:</strong>
-    <%= abc.s %>
-  </p>
-
-</div>
+<%= render( ComcComponent.new( target: abc, zid: abc.zid, s: abc.s ) ) %>
