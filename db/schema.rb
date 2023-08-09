@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_22_080425) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_09_105208) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -133,6 +133,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_22_080425) do
     t.datetime "updated_at", null: false
     t.integer "read_status"
     t.string "category"
+    t.index ["asin"], name: "index_kindlelists_on_asin", unique: true
   end
 
   create_table "readinglists", force: :cascade do |t|

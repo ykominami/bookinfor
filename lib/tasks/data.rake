@@ -15,22 +15,30 @@ namespace :data do
     case cmd_downcase
     when "all"
       cmd = :ALL
-    when "data"
-      cmd = :DATA
-    when "data2"
-      cmd = :DATA2
-    when "datax"
-      cmd = :DATAX
+    when "data_json"
+      cmd = :DATA_JSON
+    when "data_json_show"
+      cmd = :DATA_JSON_SHOW
+    when "data_json_show_selected"
+      cmd = :DATA_JSON_SHOW_SELECTED
+    when "data_json_x"
+      cmd = :DATA_JSON_X
     when "html"
       cmd = :HTML
+    when "fromhtml"
+      cmd = :FROM_HTML
+    when "fromhtmltojson"
+      cmd = :FROM_HTML_TO_JSON
     when "htmlx"
       cmd = :HTMLX
+    when "clean_all_files"
+      cmd = :CLEAN_ALL_FILES
     else
       cmd = :NOTHING
     end
 
     if cmd == :NOTHING
-      puts "Invalid command is specified!"
+      puts "Invalid command(#{cmd_downcase}) is specified!"
       exit(10)
     end
 
@@ -49,13 +57,11 @@ namespace :data do
   end
 
   desc "import data"
-  task :import, ["kind", "search_file","datalist_file"] do |_, args|
-    puts "kind=#{args.kind}"
-
+  task :import, ["search_file", "datalist_file"] do |_, args|
     puts "datalist_file=#{args.datalist_file}"
     puts "search_file=#{args.search_file}"
 
-    importer_config_dir_pn = Rails.root + "config" + "importers"
+    importer_config_dir_pn = ConfigUtils.config_dir_pn
 
     if args.search_file != nil && args.search_file != ""
       search_file_pn = importer_config_dir_pn + args.search_file
@@ -72,7 +78,7 @@ namespace :data do
         exit(11)
       end
     end
-    
+
     # importertop = RootImporter::Top.new(datalist_file_pn, search_file_pn)
     importertop = TopImporter.new(datalist_file_pn, search_file_pn)
     importertop.execute()

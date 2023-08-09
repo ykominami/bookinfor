@@ -8,33 +8,30 @@
   ],
   "xkeys": {
     "calibre": {
-      "valid": [
-
-      ],
+      "valid": [],
       "remove": [
         "cover",
         "id"
       ],
-      "not_duplicated": [
-
-      ],
-      "not_blank": [
-
-      ]
+      "not_duplicated": [],
+      "not_blank": []
     },
     "kindle": {
-      "valid": [
-
-      ],
+      "valid": [],
       "remove": [
         "amazon_link"
       ],
-      "not_duplicated": [
-
-      ],
-      "not_blank": [
-
-      ]
+      "not_duplicated": [],
+      "not_blank": [],
+      "key_replace": {
+        "ASIN": "asin",
+        "書籍名": "title",
+        "出版社": "publisher",
+        "著者": "author",
+        "出版日": "publish_date",
+        "購入日": "purchase_date",
+        "Amazonリンク": "amazon_link"
+      }
     },
     "reading": {
       "valid": [
@@ -45,15 +42,9 @@
         "shape,",
         "isbn"
       ],
-      "remove": [
-
-      ],
-      "not_duplicated": [
-
-      ],
-      "not_blank": [
-
-      ]
+      "remove": [],
+      "not_duplicated": [],
+      "not_blank": []
     },
     "book": {
       "valid": [
@@ -79,12 +70,8 @@
         "categry_sort",
         "category_value"
       ],
-      "not_duplicated": [
-
-      ],
-      "not_blank": [
-
-      ]
+      "not_duplicated": [],
+      "not_blank": []
     },
     "bookloose": {
       "valid": [
@@ -110,12 +97,8 @@
         "categry_sort",
         "category_value"
       ],
-      "not_duplicated": [
-
-      ],
-      "not_blank": [
-
-      ]
+      "not_duplicated": [],
+      "not_blank": []
     },
     "booktight": {
       "valid": [
@@ -141,12 +124,8 @@
         "categry_sort",
         "category_value"
       ],
-      "not_duplicated": [
-
-      ],
-      "not_blank": [
-
-      ]
+      "not_duplicated": [],
+      "not_blank": []
     }
   }
 }

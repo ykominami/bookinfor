@@ -1,7 +1,7 @@
 class BaseImporter
   def initialize(vx, keys, ks)
     @vx = vx
-    p "BaseImporter keys=#{keys}"
+    # p "BaseImporter keys=#{keys}"
     @keys = keys
     @delkeys = @keys["remove"]
     @ks = ks
@@ -12,24 +12,24 @@ class BaseImporter
   def show(key, index)
     path = @vx[key][index]
     json = JSON.parse(File.read(path))
-    p json
+    # p json
   end
 
   def xf_begin(year)
-    p @name
+    # p @name
     k = @ks[@name].find { |value|
       year == value.split("|")[5].to_i
     }
-    p year
-    p @ks
-    p @name
-    p @ks[@name]
-    p k
+    # p year
+    # p @ks
+    # p @name
+    # p @ks[@name]
+    # p k
     key = @ks[k][0]
     # path = @vx[k][0]
     path = @vx[key]
-    puts "k=#{k}"
-    puts "path=#{path}"
+    # puts "k=#{k}"
+    # puts "path=#{path}"
     @json = JSON.parse(File.read(path))
     # pp @json
 
