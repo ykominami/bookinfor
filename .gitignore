@@ -36,4 +36,6 @@ vendor
 /tmp/
 /_tmp/
 x.rb
+?.rb
+/data*/
 
