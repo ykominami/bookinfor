@@ -14,27 +14,42 @@ class KindleImporter < BaseImporter
     x
   end
 
-  def xf_kindle( key, mode = :register)
+  def xf_kindle(key, mode = :register)
     @detector = DetectorImporter.new()
     data_array = []
 
+    # p "xk_kindle"
+    # p @vx[:category]["kindle"][2023]
+    # exit
     if @vx[:category] == nil ||
-      @vx[:category][@name] == nil
-     return
+       @vx[:category][@name] == nil
+      return
     end
 
-    item = @vx[:key][ key ]
+    item = @vx[:key][key]
     path = item.full_path
-
+    # p "path=#{path}"
+    # exit
     # @detector.blank_field_init()
 
     # json = JSON.parse(File.read(path))
     json = JsonUtils.parse(path)
+    # p @vx[:category][@name]
+    replace_keys = @keys["key_replace"]
 
+    new_json = json.map { |x|
+      new_x = {}
+      replace_keys.each do |key, new_key|
+        new_x[new_key] = x[key]
+      end
+      new_x
+    }
+    # p new_json
+    # exit
     @detector.register_ignore_blank_field("publisher")
     @detector.register_ignore_blank_field("publish_date")
-    
-    json.map { |x|
+
+    new_json.map { |x|
       @delkeys.map { |k| x.delete(k) }
 
       x.map { |k, v|
