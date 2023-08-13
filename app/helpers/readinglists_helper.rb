@@ -8,7 +8,8 @@ module ReadinglistsHelper
       @name = name
       @readinglists = readinglists
       # @keys = %i(register_date date title status shape isbn)
-      @keys = %i[shape category date title status read_status isbn]
+      # @keys = %i(shape category date title status read_status isbn)
+      @keys = %i(shape category date title read_status isbn)
       key_header = { read_status: "re" }
       @header = @keys.map { |key| key_header[key].nil? ? key.to_s : key_header[key] }
 
@@ -24,7 +25,9 @@ module ReadinglistsHelper
             array << { str: item.category.name, attr: 100 }
           when 2
             array << { str: item[key], attr: 100 }
-          when 5
+          when 3
+            array << { str: item[key], attr: 50 }
+          when 4
             array << { str: item.readstatus.name, attr: 50 }
           else
             array << { str: item[key], attr: "" }
