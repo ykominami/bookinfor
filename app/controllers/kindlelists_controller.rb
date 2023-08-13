@@ -12,6 +12,7 @@ class KindlelistsController < ApplicationController
       format.html {}
       format.json { render :show, status: :created, location: @kindlelist }
     end
+=end
   end
 
   # GET /kindlelists/1 or /kindlelists/1.json
