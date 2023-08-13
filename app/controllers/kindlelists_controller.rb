@@ -4,14 +4,20 @@ class KindlelistsController < ApplicationController
   # GET /kindlelists or /kindlelists.json
   def index
     # kindlelists = Kindlelist.where("read_status != ?", 4)
-    kindlelists = Kindlelist.all
+    kindlelists = Kindlelist.limit(2)
+    # kindlelists = Kindlelist.all
     @kindlelists = kindlelists
 
-    kindlelist = KindlelistsHelper::Kindlelistx.new("Kindlelist", @kindlelists)
     respond_to do |format|
-      format.html { render TblComponent.new(name: kindlelist.name, header: kindlelist.header, body: kindlelist.body) }
+      format.html {
+        kindlelist = KindlelistsHelper::Kindlelistx.new("Kindlelist", @kindlelists, view_context)
+        # render(LinkButtonComponent.new(label: "Click me!", url: @url))
+        # str = LinkButtonComponent.new(label: "finish", url: "/abc", view_context: view_context).render_in(view_context)
+        str = "str"
+        render TblComponent.new(name: kindlelist.name, header: kindlelist.header, body: kindlelist.body, view_context: view_context)
+      }
       format.json { render :show, status: :created, location: @kindlelist }
-    end    
+    end
   end
 
   # GET /kindlelists/1 or /kindlelists/1.json
@@ -66,13 +72,14 @@ class KindlelistsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_kindlelist
-      @kindlelist = Kindlelist.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def kindlelist_params
-      params.require(:kindlelist).permit(:asin, :title, :publisher, :author, :publish_date, :purchase_date)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_kindlelist
+    @kindlelist = Kindlelist.find(params[:id])
+  end
+
+  # Only allow a list of trusted parameters through.
+  def kindlelist_params
+    params.require(:kindlelist).permit(:asin, :title, :publisher, :author, :publish_date, :purchase_date)
+  end
 end
