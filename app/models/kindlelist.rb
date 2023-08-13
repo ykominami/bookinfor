@@ -13,5 +13,7 @@ class Kindlelist < ApplicationRecord
 
   def self.ransackable_associations(auth_object = nil)
     ["category_id", "readstatus_id", "shape_id"]
+  def self.ransackable_associations(auth_object = nil)
+    ["category", "readstatus", "shape"]
   end
 end
