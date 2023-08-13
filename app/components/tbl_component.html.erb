@@ -11,9 +11,23 @@
             <% @body.each do |row| %>
             <tr>
                 <% row.each do |col| %>
-                <td>
-                    <%= col %>
-                </td>
+                  <% if col[:attr] == "" %>
+                    <td>
+                  <% else %>
+                    <td width="<%= col[:attr] %>" >
+                  <% end %>
+                    <% if col[:str].instance_of?(String) %>
+                        <%= col[:str] %>
+                    <% elsif col[:str].instance_of?(Date) %>
+                        <%= col[:str] %>
+                    <% elsif col[:str].instance_of?(Integer) %>
+                        <%= col[:str].class %>
+                    <% elsif col[:str] == nil %>
+
+                    <% else %>
+                        <%= col[:str] %>
+                    <% end %>
+                    </td>
                 <% end %>
             </tr>
             <% end %>

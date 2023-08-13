@@ -14,7 +14,12 @@
         "id"
       ],
       "not_duplicated": [],
-      "not_blank": []
+      "not_blank": [],
+      "key_complement": {
+        "readstatus_id": 1,
+        "category_id": 1
+      },
+      "key_replace": {}
     },
     "kindle": {
       "valid": [],
@@ -31,6 +36,10 @@
         "出版日": "publish_date",
         "購入日": "purchase_date",
         "Amazonリンク": "amazon_link"
+      },
+      "key_complement": {
+        "readstatus_id": 1,
+        "category_id": 1
       }
     },
     "reading": {
@@ -42,9 +51,23 @@
         "shape,",
         "isbn"
       ],
-      "remove": [],
+      "remove": [
+        ""
+      ],
       "not_duplicated": [],
-      "not_blank": []
+      "not_blank": [],
+      "key_replace": {
+        "登録日": "register_date",
+        "日付": "date",
+        "書名": "title",
+        "状態": "status",
+        "形態": "shape",
+        "ISBN": "isbn"
+      },
+      "key_complement": {
+        "readstatus_id": 1,
+        "category_id": 1
+      }
     },
     "book": {
       "valid": [
@@ -55,8 +78,10 @@
         "title",
         "asin",
         "read_status",
+        "read_status_id",
         "shape",
-        "category"
+        "category",
+        "category_id"
       ],
       "remove": [
         "empty1",
@@ -70,6 +95,11 @@
         "categry_sort",
         "category_value"
       ],
+      "key_complement": {
+        "readstatus_id": 1,
+        "category_id": 1
+      },
+      "key_replace": {},
       "not_duplicated": [],
       "not_blank": []
     },
@@ -97,6 +127,11 @@
         "categry_sort",
         "category_value"
       ],
+      "key_complement": {
+        "readstatus_id": 1,
+        "category_id": 1
+      },
+      "key_replace": {},
       "not_duplicated": [],
       "not_blank": []
     },
@@ -124,6 +159,11 @@
         "categry_sort",
         "category_value"
       ],
+      "key_complement": {
+        "readstatus_id": 1,
+        "category_id": 1
+      },
+      "key_replace": {},
       "not_duplicated": [],
       "not_blank": []
     }
