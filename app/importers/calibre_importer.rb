@@ -1,12 +1,11 @@
 class CalibreImporter < BaseImporter
   class CalibreDetectorImporter < DetectorImporter
-
     def show_detected()
       count = super()
       count += show_duplicated_field("title")
       count
     end
-  
+
     def blank_field_init()
       super()
       @blank_keys["cover"] = 0
@@ -17,7 +16,7 @@ class CalibreImporter < BaseImporter
     super(vx, keys, ks)
     @name = "calibre"
     @ar_klass = Calibrelist
-    @field_list = %W(isbn series comments publisher size tags identifiers rating formats) 
+    @field_list = %W(isbn series comments publisher size tags identifiers rating formats)
 
     @ignore_field_list = @field_list + %W(series_index library_name languages zid authors author_sort pubdate)
   end
@@ -33,21 +32,25 @@ class CalibreImporter < BaseImporter
     data_array = []
 
     if @vx[:category] == nil ||
-      @vx[:category][@name] == nil
-     return
+       @vx[:category][@name] == nil
+      return
     end
 
-    item = @vx[:key][ key ]
+    item = @vx[:key][key]
     path = item.full_path
-    p path
 
     @detector.blank_field_init()
     @detector.duplicated_field_init()
-    @field_list.map{ |field| @detector.register_ignore_blank_field(field) }
+    @field_list.map { |field| @detector.register_ignore_blank_field(field) }
 
     json = JsonUtils.parse(path)
+    #p json[0]
+    #p json[1]
 
-    json.map { |x|
+    new_json = @detector.detect_replace_key(json, @keys["key_replace"])
+    new_json_2 = @detector.cmoplement_key(new_json, @keys["key_complement"])
+
+    new_json_2.map { |x|
       @delkeys.map { |k| x.delete(k) }
       x.delete("")
 
@@ -55,6 +58,9 @@ class CalibreImporter < BaseImporter
       xf_supplement(x, x)
       data_array << x
     }
+    p data_array[0]
+    p data_array[1]
+
     @ar_klass.insert_all(data_array) if mode == :register
 
     @detector.show_detected()
