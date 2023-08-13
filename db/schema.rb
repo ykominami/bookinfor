@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_09_105208) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_13_141527) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -33,6 +33,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_09_105208) do
     t.string "category"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "category_id", null: false
+    t.integer "readstatus_id", null: false
+    t.index ["category_id"], name: "index_booklistlooses_on_category_id"
+    t.index ["readstatus_id"], name: "index_booklistlooses_on_readstatus_id"
     t.index ["totalID"], name: "index_booklistlooses_on_totalID"
   end
 
@@ -48,6 +52,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_09_105208) do
     t.string "category", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "category_id", null: false
+    t.integer "readstatus_id", null: false
+    t.index ["category_id"], name: "index_booklists_on_category_id"
+    t.index ["readstatus_id"], name: "index_booklists_on_readstatus_id"
     t.index ["totalID"], name: "index_booklists_on_totalID", unique: true
   end
 
@@ -79,6 +87,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_09_105208) do
     t.string "category"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "category_id", null: false
+    t.integer "readstatus_id", null: false
+    t.index ["category_id"], name: "index_booklisttights_on_category_id"
+    t.index ["readstatus_id"], name: "index_booklisttights_on_readstatus_id"
   end
 
   create_table "calibrelists", force: :cascade do |t|
@@ -106,6 +118,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_09_105208) do
     t.string "identifiers"
     t.integer "read_status"
     t.string "category"
+    t.integer "category_id", null: false
+    t.integer "readstatus_id", null: false
+    t.index ["category_id"], name: "index_calibrelists_on_category_id"
+    t.index ["readstatus_id"], name: "index_calibrelists_on_readstatus_id"
+  end
+
+  create_table "categories", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "defs", force: :cascade do |t|
@@ -133,7 +155,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_09_105208) do
     t.datetime "updated_at", null: false
     t.integer "read_status"
     t.string "category"
+    t.integer "readstatus_id", null: false
+    t.integer "category_id", null: false
     t.index ["asin"], name: "index_kindlelists_on_asin", unique: true
+    t.index ["category_id"], name: "index_kindlelists_on_category_id"
+    t.index ["readstatus_id"], name: "index_kindlelists_on_readstatus_id"
   end
 
   create_table "readinglists", force: :cascade do |t|
@@ -145,6 +171,28 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_09_105208) do
     t.string "isbn"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "category_id", null: false
+    t.integer "readstatus_id", null: false
+    t.index ["category_id"], name: "index_readinglists_on_category_id"
+    t.index ["readstatus_id"], name: "index_readinglists_on_readstatus_id"
   end
 
+  create_table "readstatuses", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_foreign_key "booklistlooses", "categories"
+  add_foreign_key "booklistlooses", "readstatuses"
+  add_foreign_key "booklists", "categories"
+  add_foreign_key "booklists", "readstatuses"
+  add_foreign_key "booklisttights", "categories"
+  add_foreign_key "booklisttights", "readstatuses"
+  add_foreign_key "calibrelists", "categories"
+  add_foreign_key "calibrelists", "readstatuses"
+  add_foreign_key "kindlelists", "categories"
+  add_foreign_key "kindlelists", "readstatuses"
+  add_foreign_key "readinglists", "categories"
+  add_foreign_key "readinglists", "readstatuses"
 end
