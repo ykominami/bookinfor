@@ -83,22 +83,4 @@ namespace :data do
     importertop = TopImporter.new(datalist_file_pn, search_file_pn)
     importertop.execute()
   end
-
-  desc "data import bookmark"
-  task "import:bookmark", [:word] do |_, args|
-    puts "data import bookmark"
-
-    # require Rails.root + "config/environment.rb"
-
-    cfg = LogxUtilxes::Logx.config(Rails.root)
-    cfg["prefix"] = "ib_"
-    logger = LogxUtilxes::Logx.create(cfg)
-    fname = args.word
-    fname = ENV["YAML_BOOKMARK"] unless fname
-    fname = "../datax/bookmarkr/link.yaml" unless fname
-    bm = BookmarksImporters::BookmarksImporter.new(fname, logger)
-    array = bm.listupx()
-    logger.debug array.size
-    bm.save_link_by_insert(array) if array.size > 0
-  end
 end

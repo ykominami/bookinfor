@@ -1,0 +1,28 @@
+<div>
+    <table>
+        <thead>
+            <tr>
+                <% @header.each do |col| %>
+                <th scope="col"><%= col %></th>
+                <% end %>
+            </tr>
+        </thead>
+        <tbody>
+            <% @body.each do |row| %>
+            <tr>
+                <% row.each do |col| %>
+                <% if col[:attr] == "" %>
+                <td>
+                <% else %>
+                <td width="200" >
+                <% end %>
+                    <%= col[:str] %>
+                </td>
+                <% end %>
+            </tr>
+            <% end %>
+        </tbody>
+        <tfoot>
+        </tfoot>
+    </table>
+</div>
