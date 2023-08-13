@@ -1,7 +1,7 @@
 class DetectorImporter
   def initialize()
     @_errors = {}
-    @_errors[:target] ||= {} 
+    @_errors[:target] ||= {}
 
     duplicated_field_init()
     blank_field_init()
@@ -11,13 +11,13 @@ class DetectorImporter
     @values ||= {}
     @dup_fields ||= {}
     @dup_keys ||= {}
-    @_errors[:duplicated] ||= [] 
+    @_errors[:duplicated] ||= []
   end
 
   def blank_field_init()
     @blank_keys ||= {}
     @ignore_blank_keys ||= []
-    @_errors[:blank] ||= [] 
+    @_errors[:blank] ||= []
   end
 
   def register_ignore_blank_field(name)
@@ -120,4 +120,26 @@ class DetectorImporter
     count
   end
 
+  def detect_replace_key(json, replace_keys)
+    new_json = json.map { |x|
+      new_x = {}
+      x.keys.each do |key|
+        if (new_key = replace_keys[key])
+          new_x[new_key] = x[key]
+        else
+          new_x[key] = x[key]
+        end
+      end
+      new_x
+    }
+  end
+
+  def cmoplement_key(json, complement_key_value)
+    new_json = json.map { |x|
+      complement_key_value.each do |key, default_value|
+        x[key] = default_value unless x[key]
+      end
+      x
+    }
+  end
 end

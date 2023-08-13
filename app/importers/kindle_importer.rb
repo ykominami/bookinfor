@@ -35,21 +35,15 @@ class KindleImporter < BaseImporter
     # json = JSON.parse(File.read(path))
     json = JsonUtils.parse(path)
     # p @vx[:category][@name]
-    replace_keys = @keys["key_replace"]
-
-    new_json = json.map { |x|
-      new_x = {}
-      replace_keys.each do |key, new_key|
-        new_x[new_key] = x[key]
-      end
-      new_x
-    }
     # p new_json
     # exit
     @detector.register_ignore_blank_field("publisher")
     @detector.register_ignore_blank_field("publish_date")
 
-    new_json.map { |x|
+    new_json = @detector.detect_replace_key(json, @keys["key_replace"])
+    new_json_2 = @detector.cmoplement_key(new_json, @keys["key_complement"])
+
+    new_json_2.map { |x|
       @delkeys.map { |k| x.delete(k) }
 
       x.map { |k, v|
