@@ -4,7 +4,7 @@ class BookImporter < BaseImporter
       #show_blank_fields
       #show_duplicated_fields
       puts "# show_detected (ImporterBook) S"
-  
+
       count = super()
       count += show_duplicated_field("title")
       puts "# show_detected (ImporterBook) E"
@@ -22,12 +22,11 @@ class BookImporter < BaseImporter
       }
       ret
     end
-  
+
     def detect_ignore_items(target, reg_hash)
       detect(target, reg_hash) != nil
     end
-  
-  end  
+  end
 
   def initialize(vx, keys, ks)
     super(vx, keys, ks)
@@ -95,7 +94,7 @@ class BookImporter < BaseImporter
     @detector.blank_field_init()
     @detector.duplicated_field_init()
 
-    # pp @vx[:category][@name] 
+    # pp @vx[:category][@name]
 
     if key != nil
       if year != nil
@@ -115,9 +114,9 @@ class BookImporter < BaseImporter
     end
 
     if @vx[:category] == nil ||
-       @vx[:category][@name] == nil || 
+       @vx[:category][@name] == nil ||
        @vx[:category][@name][year] == nil
-       puts "book return 1"
+      puts "book return 1"
       return
     end
 
@@ -138,7 +137,10 @@ class BookImporter < BaseImporter
 
     json = JsonUtils.parse(path)
 
-    json.map { |x|
+    new_json = @detector.detect_replace_key(json, @keys["key_replace"])
+    new_json_2 = @detector.cmoplement_key(new_json, @keys["key_complement"])
+
+    new_json_2.map { |x|
       #x = json[0]
       @delkeys.map { |k| x.delete(k) }
       if x["totalid"]
@@ -161,7 +163,7 @@ class BookImporter < BaseImporter
     puts "mode=#{mode}"
     pp data_array.size
     if mode == :register && count == 0
-      @ar_klass.insert_all(data_array) 
+      @ar_klass.insert_all(data_array)
       puts @ar_klass
       puts "END=="
     end
