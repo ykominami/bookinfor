@@ -1,14 +1,14 @@
 <p style="color: green"><%= notice %></p>
 
 <h1>Kindlelists</h1>
+<%= turbo_frame_tag "kindle_form" do %>
+  <%= render "form_comp", kl: paginatex[0] %>
+<% end %>
 
 <div id="kindlelists">
-  <% @kindlelists.each do |kindlelist| %>
-    <%= render kindlelist %>
-    <p>
-      <%= link_to "Show this kindlelist", kindlelist %>
-    </p>
-  <% end %>
+  <%= render TblComponent.new(name: listx.name, header: listx.header, body: listx.body) %>
+
+  <%= paginate paginatex %>
 </div>
 
-<%= link_to "New kindlelist", new_kindlelist_path %>
+<%= link_to "New readinglist", new_readinglist_path %>

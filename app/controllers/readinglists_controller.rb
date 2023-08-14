@@ -5,7 +5,7 @@ class ReadinglistsController < ApplicationController
   def index
     # @readinglists = Readinglist.all
     @search = Readinglist.ransack(params[:q])
-    @search.sorts = "id desc" if @search.sorts.empty?
+    @search.sorts = "date desc" if @search.sorts.empty?
     @readinglists = @search.result.page(params[:page])
 
     readinglist = ReadinglistsHelper::Reainglistx.new("Readinglist", @readinglists)
