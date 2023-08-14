@@ -39,5 +39,6 @@ x.rb
 ?.rb
 /data*/
 #
-app/views/readinglists/index-1.html.erb
+/app/views/*/*-1.html.erb
+# /app/views/kindlelists/_kindlelist-1.html.erb
 
