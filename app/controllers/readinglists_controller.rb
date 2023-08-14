@@ -3,13 +3,17 @@ class ReadinglistsController < ApplicationController
 
   # GET /readinglists or /readinglists.json
   def index
-    @readinglists = Readinglist.all
+    # @readinglists = Readinglist.all
+    @search = Readinglist.ransack(params[:q])
+    @search.sorts = "id desc" if @search.sorts.empty?
+    @readinglists = @search.result.page(params[:page])
 
     readinglist = ReadinglistsHelper::Reainglistx.new("Readinglist", @readinglists)
     respond_to do |format|
-      format.html { render TblComponent.new(name: readinglist.name, header: readinglist.header, body: readinglist.body) }
+      # format.html { render TblComponent.new(name: readinglist.name, header: readinglist.header, body: readinglist.body) }
+      format.html { render locals: { rl: readinglist, paginatex: @readinglists } }
       format.json { render :show, status: :created, location: @kindlelist }
-    end    
+    end
   end
 
   # GET /readinglists/1 or /readinglists/1.json
@@ -64,13 +68,22 @@ class ReadinglistsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_readinglist
-      @readinglist = Readinglist.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def readinglist_params
-      params.require(:readinglist).permit(:register_date, :date, :title, :status, :shape, :isbn)
-    end
+=begin
+  def set_q
+    @q = Readinglist.ransack(params[:q])
+    @q.sorts = "id desc" if @q.sorts.empty?
+    @result = @q.result(distince: true)
+    # @result = params[:q]&.values&.reject(&blank?)
+  end
+=end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_readinglist
+    @readinglist = Readinglist.find(params[:id])
+  end
+
+  # Only allow a list of trusted parameters through.
+  def readinglist_params
+    params.require(:readinglist).permit(:register_date, :date, :title, :status, :shape, :isbn)
+  end
 end

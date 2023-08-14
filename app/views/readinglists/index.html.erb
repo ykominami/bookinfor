@@ -3,12 +3,9 @@
 <h1>Readinglists</h1>
 
 <div id="readinglists">
-  <% @readinglists.each do |readinglist| %>
-    <%= render readinglist %>
-    <p>
-      <%= link_to "Show this readinglist", readinglist %>
-    </p>
-  <% end %>
+  <%= render TblComponent.new(name: rl.name, header: rl.header, body: rl.body) %>
+
+  <%= paginate paginatex %>
 </div>
 
 <%= link_to "New readinglist", new_readinglist_path %>
