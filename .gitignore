@@ -38,4 +38,6 @@ vendor
 x.rb
 ?.rb
 /data*/
+#
+app/views/readinglists/index-1.html.erb
 
