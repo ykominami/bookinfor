@@ -8,7 +8,7 @@ module KindlelistsHelper
       @view_context = view_context
       # @keys = %i(asin title publisher author publish_date purchase_date read_status category)
       # @keys = %i(read_status category title publisher author publish_date asin)
-      @keys = %i(read_status category title)
+      @keys = %i(read_status category title author purchase_date asin)
       key_header = { read_status: "re" }
       @header = @keys.map { |key|
         value = key_header[key]
@@ -37,9 +37,9 @@ module KindlelistsHelper
           when 2
             array << { str: item[key], attr: 400 }
           when 3
-            array << { str: item[key], attr: 100 }
-          when 4
             array << { str: item[key], attr: 200 }
+          when 4
+            array << { str: item[key], attr: 100 }
           else
             array << { str: item[key], attr: "" }
           end
