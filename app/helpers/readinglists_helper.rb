@@ -26,9 +26,29 @@ module ReadinglistsHelper
           when 2
             array << { str: item[key], attr: 100 }
           when 3
+<<<<<<< HEAD
+            array << { str: item[key], attr: 400 }
+            # array << { str: item[key], attr: 50 }
+||||||| parent of 6302700 (use kaminari and tbl component)
             array << { str: item[key], attr: 50 }
+=======
+            array << { str: item[key], attr: 400 }
+>>>>>>> 6302700 (use kaminari and tbl component)
           when 4
+<<<<<<< HEAD
+            # array << { str: item.readstatus.name, attr: 100 }
+            array << { str: item[key], attr: 50 }
+            # array << { str: item.readstatus.name, attr: 50 }
+          when 5
+            # array << { str: item.readstatus.name, attr: 100 }
+            # array << { str: item.readstatus.name, attr: 50 }
+            array << { str: item[key], attr: 50 }
+            # array << { str: item.readstatus.name, attr: 50 }
+||||||| parent of 6302700 (use kaminari and tbl component)
             array << { str: item.readstatus.name, attr: 50 }
+=======
+            array << { str: item.readstatus.name, attr: 100 }
+>>>>>>> 6302700 (use kaminari and tbl component)
           else
             array << { str: item[key], attr: "" }
           end
