@@ -20,6 +20,7 @@ class KindlelistsController < ApplicationController
       format.html { }
       format.json { render :show, status: :created, location: @kindlelist }
     end
+=end
   end
 
   # GET /kindlelists/1 or /kindlelists/1.json
@@ -69,8 +70,7 @@ class KindlelistsController < ApplicationController
   def update
     respond_to do |format|
       if @kindlelist.update(kindlelist_params)
-        format.html { }
-        format.turbo_stream { render action: "show" }
+        format.html { redirect_to kindlelist_url(@kindlelist), notice: "Kindlelist was successfully updated." }
         format.json { render :show, status: :ok, location: @kindlelist }
       else
         format.html { render :edit, status: :unprocessable_entity }

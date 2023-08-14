@@ -2,10 +2,10 @@
   <div class="row py-2 border-top">
   <% if kindlelist.errors.any? %>
     <div style="color: red">
-      <h2><%= pluralize(kindlelist.errors.count, "error") %> prohibited this kindlelist from being saved:</h2>
+      <h2><%= pluralize(kl.errors.count, "error") %> prohibited this kindlelist from being saved:</h2>
 
       <ul>
-        <% kindlelist.errors.each do |error| %>
+        <% kl.errors.each do |error| %>
           <li><%= error.full_message %></li>
         <% end %>
       </ul>
@@ -32,7 +32,7 @@
     <%= form.text_field :author %>
   </div>
 
-  <div class="col-1"   %>
+  <div class="col-1"     %>
     <%= form.select :readstatus_id, readstatus_list %>
 
   </div>
