@@ -24,9 +24,9 @@ module ReadinglistsHelper
           when 2
             array << { str: item[key], attr: 100 }
           when 3
-            array << { str: item[key], attr: 50 }
+            array << { str: item[key], attr: 400 }
           when 4
-            array << { str: item.readstatus.name, attr: 50 }
+            array << { str: item.readstatus.name, attr: 100 }
           else
             array << { str: item[key], attr: "" }
           end
