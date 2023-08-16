@@ -1,10 +1,3 @@
-<p style="color: green"><%= notice %></p>
-
-<%= render @kindlelist %>
-
-<div>
-  <%= link_to "Edit this kindlelist", edit_kindlelist_path(@kindlelist) %> |
-  <%= link_to "Back to kindlelists", kindlelists_path %>
-
-  <%= button_to "Destroy this kindlelist", @kindlelist, method: :delete %>
-</div>
+<%= turbo_frame_tag @kindlelist do %>
+  <%= render partial: "kindlelist", locals: {kindlelist: @kindlelist} %>
+<% end %>
