@@ -3,19 +3,18 @@ class KindlelistsController < ApplicationController
 
   # GET /kindlelists or /kindlelists.json
   def index
+    @search = Kindlelist.ransack(params[:q])
+    @search.sorts = "purchase_date desc" if @search.sorts.empty?
+    @kindlelists = @search.result.page(params[:page])
+    # p @kindlelists
+
     # kindlelists = Kindlelist.where("read_status != ?", 4)
-    kindlelists = Kindlelist.limit(2)
+    # kindlelists = Kindlelist.limit(2)
     # kindlelists = Kindlelist.all
-    @kindlelists = kindlelists
+    # @kindlelists = kindlelists
 
     respond_to do |format|
-      format.html {
-        kindlelist = KindlelistsHelper::Kindlelistx.new("Kindlelist", @kindlelists, view_context)
-        # render(LinkButtonComponent.new(label: "Click me!", url: @url))
-        # str = LinkButtonComponent.new(label: "finish", url: "/abc", view_context: view_context).render_in(view_context)
-        str = "str"
-        render TblComponent.new(name: kindlelist.name, header: kindlelist.header, body: kindlelist.body, view_context: view_context)
-      }
+      format.html {}
       format.json { render :show, status: :created, location: @kindlelist }
     end
   end
@@ -31,6 +30,8 @@ class KindlelistsController < ApplicationController
 
   # GET /kindlelists/1/edit
   def edit
+    @readstatus_list = ReadstatusesHelper::get_list()
+    @category_list = CategoriesHelper::get_list()
   end
 
   # POST /kindlelists or /kindlelists.json
@@ -52,10 +53,12 @@ class KindlelistsController < ApplicationController
   def update
     respond_to do |format|
       if @kindlelist.update(kindlelist_params)
-        format.html { redirect_to kindlelist_url(@kindlelist), notice: "Kindlelist was successfully updated." }
+        format.html {}
+        format.turbo_stream {  render action: "show" }
         format.json { render :show, status: :ok, location: @kindlelist }
       else
         format.html { render :edit, status: :unprocessable_entity }
+        format.turbo_stream { render :edit, status: :unprocessable_entity }
         format.json { render json: @kindlelist.errors, status: :unprocessable_entity }
       end
     end
@@ -80,6 +83,6 @@ class KindlelistsController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def kindlelist_params
-    params.require(:kindlelist).permit(:asin, :title, :publisher, :author, :publish_date, :purchase_date)
+    params.require(:kindlelist).permit(:asin, :title, :publisher, :author, :publish_date, :purchase_date, :readstatus_id, :category_id)
   end
 end
