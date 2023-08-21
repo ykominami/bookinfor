@@ -1,10 +1,56 @@
 <p style="color: green"><%= notice %></p>
 
 <h1>Kindlelists</h1>
+  <div class="card shadow mt-3" >
+    <div class="card-header">
+    </div>
+    <div class="card-body">
+      <%= search_form_for @search, html: { data: { turbo_frame: "kindlelist-list" } } do |f| %>
+        <%= f.label :title_cont, "title" %>
+        <%= f.search_field :title_cont %>
 
-<div id="readinglists">
-  <%= render partial: "kindlelist" , collection: @kindlelists %>
-  <%= paginate @kindlelists %>
-</div>
+        <%= f.select :category_id_eq, options_from_collection_for_select(Category.all, :id, :name, 1), include_blank: false %>
 
+        <%= f.submit "find" %>
+        <%= link_to "クリア", kindlelists_path %>
+      <% end %>
+    </div>
+  </div>
 
+  <div class="card-body mx-3">
+    <%= turbo_frame_tag "kindlelist-list" do %>
+      <div class="row py-2">
+        <div class="col-4 mt-auto">
+          <%= sort_link(@search, :purchase_date) %>
+        </div>
+        <div class="col-4 mt-auto">
+          <%= sort_link(@search, :category_id) %>
+        </div>
+        <div class="col-4 mt-auto">
+          <%= sort_link(@search, :readstatus_id) %>
+        </div>
+        <div class="col-4 mt-auto">
+          <%= sort_link(@search, :title) %>
+        </div>
+        <div class="col-4 mt-auto">
+          <%= sort_link(@search, :author) %>
+        </div>
+        <div class="col-4 d-flex justify-content-end">
+          <%= link_to icon_with_text("plus-circle", "登録"),
+                      new_kindlelist_path,
+                      class: "btn btn-outline-primary",
+                      data: { turbo_frame: dom_id(Kindlelist.new) } %>
+        </div>
+      </div>
+
+      <%= turbo_frame_tag Kindlelist.new %>
+
+      <div id="kindlelists">
+        <%= render @kindlelists %>
+      </div>
+
+      <div class="d-flex justify-content-end mt-3">
+        <%= paginate @kindlelists %>
+      </div>
+    <% end %>
+  </div>
