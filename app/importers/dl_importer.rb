@@ -194,10 +194,11 @@ class DlImporter
     dir_pn.children.each do |it|
       # puts it.to_s
       if it.directory?
-        clean_json_files_under_dir(it)
+        clean_files_under_dir(it, re)
       else
         if re.match(it.extname)
           puts "#{it} unlink"
+          FileUtils.rm_f(it)
         end
       end
     end

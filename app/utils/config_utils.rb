@@ -7,6 +7,8 @@ class ConfigUtils
   @config_dir_pn = Rails.root + "config" + "importers"
   @config_pn = @config_dir_pn + "config.json"
   @datalist_json_filename = "datalist.json"
+  @state_pn = @config_dir_pn + "state.json"
+  @use_import_date = false
 
   def self.dl_src_url
     @src_url
@@ -28,8 +30,20 @@ class ConfigUtils
     @config_pn
   end
 
+  def self.state_pn
+    @state_pn
+  end
+
   def self.datalist_json_filename
     @datalist_json_filename
+  end
+
+  def self.use_import_date
+    @use_import_date
+  end
+
+  def self.use_import_date=(value)
+    @use_import_date = value
   end
 
   def initialize()
