@@ -57,11 +57,18 @@ namespace :data do
   end
 
   desc "import data"
-  task :import, ["search_file", "datalist_file"] do |_, args|
-    puts "datalist_file=#{args.datalist_file}"
-    puts "search_file=#{args.search_file}"
+  task :import, ["search_file", "datalist_file", "local_file"] do |_, args|
+    # puts "search_file=#{args.search_file}"
+    # puts "datalist_file=#{args.datalist_file}"
+    # puts "local_file=#{args.local_file}"
+
+    ConfigUtils.use_import_date = false
 
     importer_config_dir_pn = ConfigUtils.config_dir_pn
+    output_dir = ConfigUtils.output_dir
+    output_dir_pn = Pathname.new(output_dir)
+    datalist_json_filename = ConfigUtils.datalist_json_filename
+    datalist_file_pn = output_dir_pn + datalist_json_filename
 
     if args.search_file != nil && args.search_file != ""
       search_file_pn = importer_config_dir_pn + args.search_file
@@ -72,15 +79,74 @@ namespace :data do
     end
 
     if args.datalist_file != nil && args.datalist_file != ""
-      datalist_file_pn = Pathname.new(args.datalist_file)
+      datalist_file_pn = output_dir_pn + args.datalist_file
       unless datalist_file_pn.exist?
         puts "Can't find #{datalist_file_pn}"
         exit(11)
       end
     end
 
-    # importertop = RootImporter::Top.new(datalist_file_pn, search_file_pn)
-    importertop = TopImporter.new(datalist_file_pn, search_file_pn)
+    if args.local_file != nil && args.local_file != ""
+      local_file_pn = importer_config_dir_pn + args.local_file
+      unless local_file_pn.exist?
+        puts "Can't find #{local_file_pn}"
+        exit(10)
+      end
+    end
+    importertop = TopImporter.new(datalist_file_pn, search_file_pn, local_file_pn)
     importertop.execute()
+  end
+
+  desc "import data from file"
+  task :importfile, ["search_file", "datalist_file"] do |_, args|
+    importer_config_dir_pn = ConfigUtils.config_dir_pn
+
+    if args.search_file != nil && args.search_file != ""
+      search_file_pn = importer_config_dir_pn + args.search_file
+      unless search_file_pn.exist?
+        puts "Can't find search_file=#{search_file_pn}"
+        exit(12)
+      end
+    end
+
+    if args.datalist_file != nil && args.datalist_file != ""
+      datalist_file_pn = Pathname.new(args.datalist_file)
+      unless datalist_file_pn.exist?
+        puts "Can't find datalist_file=#{datalist_file_pn}"
+        exit(11)
+      end
+    end
+
+    importer = KindlefileImporter.new(datalist_file_pn, search_file_pn)
+    importer.execute()
+  end
+
+  desc "data:file test"
+  task :file_test do
+    sh "rake data:import[search_bf.json,,local_bf.json]"
+    sh "rake data:import[search_cf.json,,local_cf.json]"
+    sh "rake data:import[search_kf.json,,local_kf.json]"
+    sh "rake data:import[search_rf.json,,local_rf.json]"
+  end
+
+  desc "data:file test cakubre"
+  task :file_test_c do
+    sh "rake data:import[search_cf.json,,local_cf.json]"
+  end
+
+  desc "data:file test kf"
+  task :file_test_kr do
+    sh "rake data:import[search_kf.json,,local_kf.json]"
+    sh "rake data:import[search_rf.json,,local_rf.json]"
+  end
+
+  desc "data:file test kf"
+  task :file_test_k do
+    sh "rake data:import[search_kf.json,,local_kf.json]"
+  end
+
+  desc "data:file test f"
+  task :file_test_r do
+    sh "rake data:import[search_rf.json,,local_rf.json]"
   end
 end

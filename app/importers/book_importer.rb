@@ -3,11 +3,11 @@ class BookImporter < BaseImporter
     def show_detected
       #show_blank_fields
       #show_duplicated_fields
-      puts "# show_detected (ImporterBook) S"
+      # puts "# show_detected (ImporterBook) S"
 
       count = super()
       count += show_duplicated_field("title")
-      puts "# show_detected (ImporterBook) E"
+      # puts "# show_detected (ImporterBook) E"
       count
     end
 
@@ -28,11 +28,17 @@ class BookImporter < BaseImporter
     end
   end
 
-  def initialize(vx, keys, ks)
+  def initialize(vx, keys, ks, import_date)
     super(vx, keys, ks)
     @detector = BookDetectorImporter.new()
     @name = "book"
     @ar_klass = Booklist
+    @import_date = import_date
+    @ignore_fields = %W(isbn series comments rating identifiers)
+  end
+
+  def select_valid_data_x(x, data_array)
+    select_valid_data(x, "purchase_date", "asin", Booklist, data_array)
   end
 
   def xf_supplement(target, x, base_number = nil)
@@ -58,47 +64,11 @@ class BookImporter < BaseImporter
     end
     reg_hash
   end
-=begin
-  def xf(year, mode = :none)
-    data_array = []
 
-    xf_begin(year)
-    base_number = year * 1000
-    reg_hash = make_reg_list(@ignore_field_value_hash)
-    @json.select { |x|
-      found = @detector.detect_ignore_items(x, reg_hash)
-      if found
-        next
-      end
-      @delkeys.map { |k| x.delete(k) }
-      x.delete("")
-
-      x = xf_supplement(x, x, base_number)
-
-      @detector.detect_blank(x, x)
-      data_array << x
-    }
-    count = @detector.show_detected
-
-    @ar_klass.insert_all(data_array) if mode == :register && count == 0
-  end
-=end
-  def xf_booklist(year: nil, key: nil, mode: :register)
-    puts "book 0"
-    @detector = DetectorImporter.new()
-    @ignore_field_list = []
-    @ignore_field_value_hash = { "bookstore" => ["アマゾン(Kindle"] }
-
-    data_array = []
-
-    @detector.blank_field_init()
-    @detector.duplicated_field_init()
-
-    # pp @vx[:category][@name]
-
+  def get_year_and_item(key: nil, year: nil)
     if key != nil
       if year != nil
-        puts "book return 2"
+        # puts "book return 2"
         return
       else
         item = @vx[:key][key]
@@ -108,7 +78,7 @@ class BookImporter < BaseImporter
       if year != nil
         item = @vx[:category][@name][year]
       else
-        puts "book return 3"
+        # puts "book return 3"
         return
       end
     end
@@ -116,32 +86,47 @@ class BookImporter < BaseImporter
     if @vx[:category] == nil ||
        @vx[:category][@name] == nil ||
        @vx[:category][@name][year] == nil
-      puts "book return 1"
+      # puts "book return 1"
       return
     end
 
-    # year = key.split("|")[5].to_i
+    [year, item]
+  end
+
+  def load_data(item:, year: nil)
+    path = item.full_path
+    # puts "path=#{path}"
+    JsonUtils.parse(path)
+  end
+
+  def set_readstatus(x)
+    status = Readstatus.find_by(name: x["read_status"])
+    x[:readstatus_id] = status != nil ? status.id : 1
+  end
+
+  def xf_booklist(year: nil, key: nil, mode: :register)
+    @detector = DetectorImporter.new()
+    data_array = []
+
+    if @vx[:category] == nil ||
+       @vx[:category][@name] == nil
+      return
+    end
+
+    @ignore_fields.map { |field| @detector.register_ignore_blank_field(field) }
+
+    array = get_year_and_item(key: key, year: year)
+    return unless array
+    year, item = array
+
     base_number = year * 1000
 
-    # path = @vx[:key][key].relative_file
-    # full_path = @vx[:key][key].full_file
-    # path = item.relative_file
-    path = item.full_path
-    puts "path=#{path}"
-    # exit(100)
-    @detector.register_ignore_blank_field("isbn")
-    @detector.register_ignore_blank_field("series")
-    @detector.register_ignore_blank_field("comments")
-    @detector.register_ignore_blank_field("rating")
-    @detector.register_ignore_blank_field("identifiers")
-
-    json = JsonUtils.parse(path)
+    json = load_data(item: item, year: year)
 
     new_json = @detector.detect_replace_key(json, @keys["key_replace"])
     new_json_2 = @detector.cmoplement_key(new_json, @keys["key_complement"])
 
     new_json_2.map { |x|
-      #x = json[0]
       @delkeys.map { |k| x.delete(k) }
       if x["totalid"]
         x["totalID"] = x["totalid"]
@@ -156,16 +141,14 @@ class BookImporter < BaseImporter
       end
       @detector.detect_blank(x, x)
 
-      data_array << x
+      set_readstatus(x)
+
+      select_valid_data(x, "purchase_date", "asin", Booklist, data_array)
     }
     count = @detector.show_detected
-    puts "count=#{count}"
-    puts "mode=#{mode}"
-    pp data_array.size
-    if mode == :register && count == 0
+    if mode == :register && count == 0 && data_array.size > 0
       @ar_klass.insert_all(data_array)
-      puts @ar_klass
-      puts "END=="
     end
+    @detector.show_detected()
   end
 end

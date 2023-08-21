@@ -1,0 +1,40 @@
+require "roo"
+
+class KindlefileImporter < KindleImporter
+  def initialize(vx, keys, ks, import_date, path_array)
+    super(vx, keys, ks, import_date)
+    @path_array = path_array
+  end
+
+  def load_data
+    # p "######### load_data @path=#{@path}"
+    # XLSXファイルを開く
+    xlsx = Roo::Spreadsheet.open(@path_array.first)
+
+    # シートを選択（デフォルトは最初のシート）
+    xlsx.default_sheet = xlsx.sheets.first
+
+    # base_day = Date.new(2023, 7, 17)
+    base_day = Date.new(2000, 1, 1)
+    # シートの内容を読み取る
+    row_header = nil
+    array = []
+    xlsx.each_row_streaming do |row|
+      # p row
+      row_cells = row.map(&:value)
+      if row_header == nil
+        row_header = row_cells
+        row_cells = nil
+      end
+      if row_cells
+        hash = {}
+        row_cells.each_with_index do |item, index|
+          hash[row_header[index]] = item
+        end
+        array << hash
+      end
+    end
+    # p array
+    array
+  end
+end
