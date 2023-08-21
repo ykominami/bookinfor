@@ -1,0 +1,3 @@
+<%= turbo_frame_tag Kindlelist.new do %>
+  <%= render partial: "form", locals: { kindlelist: @kindlelist, readstatus_list: @readstatus_list, category_list: @category_list } %>
+<% end %>

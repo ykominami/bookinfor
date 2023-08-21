@@ -6,7 +6,10 @@ class KindlelistsController < ApplicationController
     @search = Kindlelist.ransack(params[:q])
     @search.sorts = "purchase_date desc" if @search.sorts.empty?
     @kindlelists = @search.result.page(params[:page])
+    @new_kindlelist = Kindlelist.new
     # p @kindlelists
+    @readstatus_list = ReadstatusesHelper::get_list()
+    @category_list = CategoriesHelper::get_list()
 
     # kindlelists = Kindlelist.where("read_status != ?", 4)
     # kindlelists = Kindlelist.limit(2)
@@ -14,7 +17,7 @@ class KindlelistsController < ApplicationController
     # @kindlelists = kindlelists
 
     respond_to do |format|
-      format.html {}
+      format.html { }
       format.json { render :show, status: :created, location: @kindlelist }
     end
   end
@@ -26,6 +29,8 @@ class KindlelistsController < ApplicationController
   # GET /kindlelists/new
   def new
     @kindlelist = Kindlelist.new
+    @readstatus_list = ReadstatusesHelper::get_list()
+    @category_list = CategoriesHelper::get_list()
   end
 
   # GET /kindlelists/1/edit
@@ -39,11 +44,22 @@ class KindlelistsController < ApplicationController
     @kindlelist = Kindlelist.new(kindlelist_params)
 
     respond_to do |format|
-      if @kindlelist.save
-        format.html { redirect_to kindlelist_url(@kindlelist), notice: "Kindlelist was successfully created." }
+      ret = false
+      begin
+        ret = @kindlelist.save
+      rescue => exception
+        p exception.message
+      end
+      if ret
+        format.html { render }
+        format.turbo_stream { render }
         format.json { render :show, status: :created, location: @kindlelist }
       else
+        @readstatus_list = ReadstatusesHelper::get_list()
+        @category_list = CategoriesHelper::get_list()
+        p "create ret=#{ret} 2"
         format.html { render :new, status: :unprocessable_entity }
+        format.turbo_stream { render :new, status: :unprocessable_entity }
         format.json { render json: @kindlelist.errors, status: :unprocessable_entity }
       end
     end
@@ -53,8 +69,8 @@ class KindlelistsController < ApplicationController
   def update
     respond_to do |format|
       if @kindlelist.update(kindlelist_params)
-        format.html {}
-        format.turbo_stream {  render action: "show" }
+        format.html { }
+        format.turbo_stream { render action: "show" }
         format.json { render :show, status: :ok, location: @kindlelist }
       else
         format.html { render :edit, status: :unprocessable_entity }
