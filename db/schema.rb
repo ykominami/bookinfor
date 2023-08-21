@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_13_141527) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_19_084552) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -126,6 +126,17 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_13_141527) do
 
   create_table "categories", force: :cascade do |t|
     t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "sort_a_key"
+    t.integer "sort_b_key"
+    t.integer "sort_c_key"
+  end
+
+  create_table "configs", force: :cascade do |t|
+    t.date "import_date_kindle"
+    t.date "import_date_book"
+    t.date "import_date_calibreate"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

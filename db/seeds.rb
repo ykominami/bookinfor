@@ -76,5 +76,6 @@ Category.create(
     { name: "宗教" },
     { name: "不明" },
     { name: "本以外" },
+    { name: "AI" },
   ]
 )
