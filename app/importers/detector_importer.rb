@@ -1,4 +1,6 @@
 class DetectorImporter
+  attr_reader :ignore_blank_keys
+
   def initialize()
     @_errors = {}
     @_errors[:target] ||= {}
@@ -21,21 +23,28 @@ class DetectorImporter
   end
 
   def register_ignore_blank_field(name)
+    # p "detector register_ignore_blank_field name=#{name}"
     @ignore_blank_keys << name
   end
 
   def detect_blank(target, x)
+    # raise
     # puts "# show_blank S"
     ret = find_blank(x)
     if ret.size > 0
+      # p "###"
+      # p x
       ret.keys.map { |key|
+        # puts "key=#{key}"
+        # p "@ignore_blank_keys=#{@ignore_blank_keys}"
         next if @ignore_blank_keys.index(key)
-        puts "blank key=#{key}"
+        # puts "blank key=#{key}"
         @_errors[:target][target] ||= []
         @_errors[:target][target] << [:blank, key]
         @_errors[:blank] << [target, "key=#{key}"]
         count_up(target, @blank_keys, key)
       }
+      # puts "#==="
     end
     # puts "# show_blank E"
   end
@@ -86,37 +95,50 @@ class DetectorImporter
   end
 
   def show_blank_fields
-    pp "==== blank"
-    pp @blank_keys.size
-    pp @blank_keys[0]
-    pp @_errors[:blank][0]
-    pp "===="
+    num = @blank_keys.size
+    if num > 0
+      pp "==== blank"
+      pp @blank_keys.size
+      pp @blank_keys[0]
+      pp @_errors[:blank][0]
+      pp "===="
 
-    @blank_keys.size
+      pp num
+    end
+
+    num
   end
 
   def show_duplicated_fields
-    pp "==== duplicated"
-    pp @dup_keys.size
-    pp @dup_keys[0]
-    pp @_errors[:duplicated][0]
-    pp "===="
+    num = @dup_keys.size
+    if num > 0
+      pp "==== duplicated"
+      pp @dup_keys.size
+      pp @dup_keys[0]
+      pp @_errors[:duplicated][0]
+      pp "===="
 
-    @dup_keys.size
+      pp num
+    end
+    num
   end
 
   def show_duplicated_field(key)
-    pp "=== duplicated key=#{key}"
-    pp @dup_fields[key]
+    num = @dup_fields.size
+    if num > 0
+      pp "=== duplicated key=#{key}"
+      pp @dup_fields[key]
 
-    @dup_fields.size
+      pp num
+    end
+    num
   end
 
   def show_detected
-    puts "# show_detected (Importer) S"
+    # puts "# show_detected (Importer) S"
     count = show_blank_fields
     count += show_duplicated_fields
-    puts "# show_detected (Importer) E"
+    # puts "# show_detected (Importer) E"
     count
   end
 

@@ -169,6 +169,7 @@ class DatalistUtils
     new_hash = {}
     if search_item
       search_item.keys.map { |kind|
+        # p "datax kind=#{kind}"
         new_hash[kind] ||= {}
         search_item[kind].map { |kindx|
           kind_index, kindx_index = Keylable.reorder_kind(kind, kindx)
@@ -202,6 +203,9 @@ class DatalistUtils
     num, keyx = arg1
     num2, keyx2 = arg2
     num3, keyx3 = arg3
+    keyx, ext = keyx.split("_")
+    # p "keyx=#{keyx}"
+    # p "keyx2=#{keyx2}"
     keyx2 = get_number(keyx2)
     keyx3 = get_number(keyx3)
 
@@ -214,6 +218,7 @@ class DatalistUtils
       #p item.category
       #p item.label
       #p item.year
+      #p item
       if keyx2 == ":all" || keyx2 == ":latest" || keyx2 == ""
         item.category == keyx
       else

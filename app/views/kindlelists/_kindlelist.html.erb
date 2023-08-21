@@ -1,32 +1,28 @@
-<div id="<%= dom_id kindlelist %>">
-  <p>
-    <strong>Asin:</strong>
-    <%= kindlelist.asin %>
-  </p>
-
-  <p>
-    <strong>Title:</strong>
-    <%= kindlelist.title %>
-  </p>
-
-  <p>
-    <strong>Publisher:</strong>
-    <%= kindlelist.publisher %>
-  </p>
-
-  <p>
-    <strong>Author:</strong>
-    <%= kindlelist.author %>
-  </p>
-
-  <p>
-    <strong>Publish date:</strong>
-    <%= kindlelist.publish_date %>
-  </p>
-
-  <p>
-    <strong>Purchase date:</strong>
-    <%= kindlelist.purchase_date %>
-  </p>
-
-</div>
+<%= turbo_frame_tag kindlelist do %>
+  <div class="row py-2 border-top">
+    <div class="col-1 my-auto">
+      <%= kindlelist.readstatus.name %>
+    </div>
+    <div class="col-1 my-auto">
+      <%= kindlelist.category.name %>
+    </div>
+    <div class="col-3 my-auto">
+      <%= kindlelist.title %>
+    </div>
+    <div class="col-1 my-auto">
+      <%= kindlelist.publisher %>
+    </div>
+    <div class="col-2 my-auto">
+      <%= kindlelist.author %>
+    </div>
+    <div class="col-2 my-auto">
+      <%= kindlelist.purchase_date %>
+    </div>
+    <div class="col-2 my-auto">
+      <div class="d-flex justify-content-end">
+        <%= link_to "編集", edit_kindlelist_path(kindlelist), class: "btn btn-sm btn-outline-primary me-2" %>
+        <%= link_to "削除", kindlelist, class: "btn btn-sm btn-outline-danger", data: { turbo_method: :delete, turbo_confirm: "本当に削除しますか？" } %>
+      </div>
+    </div>
+  </div>
+<% end %>

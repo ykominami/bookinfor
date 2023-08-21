@@ -35,7 +35,21 @@ vendor
 
 /tmp/
 /_tmp/
+_tmp/
 x.rb
 ?.rb
 /data*/
+*.xlsx
+book_*.json
+calibre_*.json
+r.json
+_from_error.html.erb
+_form_error.turbo_stream.erb
+_kindlelist_error.html.erb
+_new_error.html.erb
+_new0.html.erb
+index-3.html.erb
+new_error.html.erb
+new_error.turbo_stream.erb
+_form_error.html.erb
 

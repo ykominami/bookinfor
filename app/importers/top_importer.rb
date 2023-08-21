@@ -1,8 +1,9 @@
 require "json"
 
 class TopImporter
-  def initialize(datalist_file_pn, search_file_pn = nil)
+  def initialize(datalist_file_pn, search_file_pn = nil, local_file_pn = nil)
     config_pn = ConfigUtils.config_pn
+    state_pn = ConfigUtils.state_pn
 
     @datadir = DatadirUtils.new()
 
@@ -10,6 +11,7 @@ class TopImporter
     @datalist = DatalistUtils.new(dir_pn: @datadir.output_pn, file_pn: @datalist_file_pn)
 
     @search_file_pn = search_file_pn if search_file_pn && search_file_pn.exist?
+    @local_file_pn = local_file_pn if local_file_pn && local_file_pn.exist?
 
     @vx = @datalist.parse
     @ks = {}
@@ -17,73 +19,90 @@ class TopImporter
     @keys = obj["keys"]
     @xkeys = obj["xkeys"]
     make_map
+
+    # p "@local_file_pn=#{@local_file_pn}"
+    @local_files = JsonUtils.parse(@local_file_pn) if local_file_pn
+
+    @state = JsonUtils.parse(state_pn)
+  end
+
+  def get_import_date(key)
+    date_str = @state["import_date"][key]
+    Date.parse(date_str)
   end
 
   def execute()
     search_item = JsonUtils.parse(@search_file_pn)
+    # exit
     list = @datalist.datax(@vx, search_item)
 
-    list.map { |key, value|
+    list.map { |importer_kind, value|
+      importer_kind_x, ext = importer_kind.split("_")
+
       value.map { |key2, value2|
-        importer = make(key)
-        case key
+        # puts "importer_kind_x=#{importer_kind_x}"
+        if ext
+          importerkind = "#{importer_kind_x}#{ext}"
+          path = @local_files[importer_kind]
+          date = get_import_date(importer_kind_x)
+          importer = make(importerkind, importer_kind_x, date, path)
+        else
+          date = get_import_date(importer_kind)
+          importer = make(importer_kind, importer_kind, date)
+        end
+
+        case importer_kind_x
         when "reading"
-          value2.map { |key|
-            importer.xf_reading(key, :register)
-            # p "Readinglist.all.size=#{Readinglist.all.size}"
+          value2.map { |data_key|
+            # importer.xf_reading(data_key, :register)
+            importer.xf(data_key, :register)
           }
         when "kindle"
-          value2.map { |key|
-            importer.xf_kindle(key, :register)
-            # p "Kindlelist.all.size=#{Kindlelist.all.size}"
+          value2.map { |data_key|
+            # importer.xf_kindle(data_key, :register)
+            importer.xf(data_key, :register)
           }
         when "calibre"
-          value2.map { |key|
-            importer.xf_calibre(key, :register)
-            # p "Calibrelist.all.size=#{Calibrelist.all.size}"
+          value2.map { |data_key|
+            # importer.xf_calibre(data_key, :register)
+            importer.xf(data_key, :register)
           }
         when "book"
-          # p "book key2=#{key2}"
-          # p "value2=#{value2}"
-          value2.map { |key|
-            # p "book key=#{key}"
-            importer.xf_booklist(key: key, mode: :register)
-            # p "Booklist.all.size=#{Booklist.all.size}"
+          value2.map { |data_key|
+            importer.xf_booklist(key: data_key, mode: :register)
           }
         when "api"
           puts "Not implemented Importer for api"
         else
           puts "Invalid category #{key}"
+          raise
         end
       }
     }
   end
 
-  def book_x()
-    years = %W(2013 2014 2015 2016 2017 2018 2019 2020 2021 2022 2023)
-    # year = 2020
-    #year = 2021
-    years.each do |year|
-      p "# year=#{year}"
-      importer.xf_booklist(year: year, mode: :register)
-    end
-  end
-
-  def make(name)
-    # p "ImporterTop.make name=#{name}"
-    case name
+  def make(kind, name, import_date, path = nil)
+    case kind
     when "book"
-      return BookImporter.new(@vx, @xkeys[name], @ks)
+      return BookImporter.new(@vx, @xkeys[name], @ks, import_date)
+    when "bookfile"
+      return BookfileImporter.new(@vx, @xkeys[name], @ks, import_date, path)
     when "bookloose"
-      return BooklooseImporter.new(@vx, @xkeys[name], @ks)
+      return BooklooseImporter.new(@vx, @xkeys[name], @ks, import_date)
     when "booktight"
-      return BooktightImporter.new(@vx, @xkeys[name], @ks)
+      return BooktightImporter.new(@vx, @xkeys[name], @ks, import_date)
     when "reading"
-      return ReadingImporter.new(@vx, @xkeys[name], @ks)
+      return ReadingImporter.new(@vx, @xkeys[name], @ks, import_date)
+    when "readingfile"
+      return ReadingfileImporter.new(@vx, @xkeys[name], @ks, import_date, path)
     when "kindle"
-      return KindleImporter.new(@vx, @xkeys[name], @ks)
+      return KindleImporter.new(@vx, @xkeys[name], @ks, import_date)
+    when "kindlefile"
+      return KindlefileImporter.new(@vx, @xkeys[name], @ks, import_date, path)
     when "calibre"
-      return CalibreImporter.new(@vx, @xkeys[name], @ks)
+      return CalibreImporter.new(@vx, @xkeys[name], @ks, import_date)
+    when "calibrefile"
+      return CalibrefileImporter.new(@vx, @xkeys[name], @ks, import_date, path)
     else
       return nil
     end
@@ -98,11 +117,9 @@ class TopImporter
 
   def key_check_x(str, key, index)
     str.split("|")[index] == key
-    # true
   end
 
   def k_check_x(key, hs, index)
-    # p hs.keys
     hs[:key].keys.select { |k|
       key_check_x(k, key, index)
     }
