@@ -42,7 +42,7 @@ namespace :data do
       exit(10)
     end
 
-    importer_config_dir_pn = Rails.root + "config" + "importers"
+    importer_config_dir_pn = ConfigUtils.importer_config_dir_pn
 
     if args.searchfile
       search_file_pn = importer_config_dir_pn + args.searchfile
@@ -61,12 +61,10 @@ namespace :data do
     # puts "search_file=#{args.search_file}"
     # puts "datalist_file=#{args.datalist_file}"
     # puts "local_file=#{args.local_file}"
-
     ConfigUtils.use_import_date = false
 
-    importer_config_dir_pn = ConfigUtils.config_dir_pn
-    output_dir = ConfigUtils.output_dir
-    output_dir_pn = Pathname.new(output_dir)
+    importer_config_dir_pn = ConfigUtils.importer_config_dir_pn
+    output_dir_pn = ConfigUtils.output_dir_pn
     datalist_json_filename = ConfigUtils.datalist_json_filename
     datalist_file_pn = output_dir_pn + datalist_json_filename
 
@@ -99,7 +97,7 @@ namespace :data do
 
   desc "import data from file"
   task :importfile, ["search_file", "datalist_file"] do |_, args|
-    importer_config_dir_pn = ConfigUtils.config_dir_pn
+    importer_config_dir_pn = ConfigUtils.importer_config_dir_pn
 
     if args.search_file != nil && args.search_file != ""
       search_file_pn = importer_config_dir_pn + args.search_file
@@ -145,8 +143,18 @@ namespace :data do
     sh "rake data:import[search_kf.json,,local_kf.json]"
   end
 
-  desc "data:file test f"
+  desc "data:file test rf"
   task :file_test_r do
     sh "rake data:import[search_rf.json,,local_rf.json]"
+  end
+
+  desc "export"
+  task :export do
+    AllExporter.new(:export)
+  end
+
+  desc "export:import"
+  task :export_import do
+    AllExporter.new(:import)
   end
 end

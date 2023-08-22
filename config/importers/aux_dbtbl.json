@@ -1,0 +1,14 @@
+{
+  "keys": [
+    "category",
+    "readstatus"
+  ],
+  "xkeys": {
+    "category": {
+      "ac_klass": "Category"
+    },
+    "readstatus": {
+      "ac_klass": "Readstatus"
+    }
+  }
+}
