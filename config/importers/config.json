@@ -1,13 +1,13 @@
 {
   "keys": [
     "calibre",
-    "api",
     "book",
     "reading",
     "kindle"
   ],
   "xkeys": {
     "calibre": {
+      "ac_klass": "Calibrelist",
       "valid": [],
       "remove": [
         "cover",
@@ -22,6 +22,7 @@
       "key_replace": {}
     },
     "kindle": {
+      "ac_klass": "Kindlelist",
       "valid": [],
       "remove": [
         "amazon_link"
@@ -43,6 +44,7 @@
       }
     },
     "reading": {
+      "ac_klass": "Readinglist",
       "valid": [
         "register_date,",
         "date,",
@@ -70,6 +72,7 @@
       }
     },
     "book": {
+      "ac_klass": "Booklist",
       "valid": [
         "totalID",
         "xid",
@@ -104,6 +107,7 @@
       "not_blank": []
     },
     "bookloose": {
+      "ac_klass": "Booklistloose",
       "valid": [
         "totalID",
         "xid",
@@ -136,6 +140,7 @@
       "not_blank": []
     },
     "booktight": {
+      "ac_klass": "Booklisttight",
       "valid": [
         "totalID",
         "xid",
