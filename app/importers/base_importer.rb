@@ -76,6 +76,7 @@ class BaseImporter
   def load_data
     item = @vx[:key][@key]
     path = item.full_path
+    # puts "load_data path=#{path}"
     JsonUtils.parse(path)
   end
 
