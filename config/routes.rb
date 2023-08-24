@@ -7,7 +7,6 @@ Rails.application.routes.draw do
   # root to: "home#index"
 
   resources :abcs
-  resources :efgs
   resources :calibrelists
   resources :readinglists
   resources :kindlelists

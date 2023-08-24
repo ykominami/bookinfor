@@ -1,32 +1,25 @@
-<div id="<%= dom_id readinglist %>">
-  <p>
-    <strong>Register date:</strong>
-    <%= readinglist.register_date %>
-  </p>
-
-  <p>
-    <strong>Date:</strong>
-    <%= readinglist.date %>
-  </p>
-
-  <p>
-    <strong>Title:</strong>
-    <%= readinglist.title %>
-  </p>
-
-  <p>
-    <strong>Status:</strong>
-    <%= readinglist.status %>
-  </p>
-
-  <p>
-    <strong>Shape:</strong>
-    <%= readinglist.shape %>
-  </p>
-
-  <p>
-    <strong>Isbn:</strong>
-    <%= readinglist.isbn %>
-  </p>
-
-</div>
+<%= turbo_frame_tag readinglist do %>
+  <div class="row py-2 border-top">
+    <div class="col-2 my-auto">
+      <%= readinglist.readstatus.name %>
+    </div>
+    <div class="col-2 my-auto">
+      <%= readinglist.date %>
+    </div>
+    <div class="col-3 my-auto">
+      <%= readinglist.title %>
+    </div>
+    <div class="col-2 my-auto">
+      <%= readinglist.shape.name %>
+    </div>
+    <div class="col-1 my-auto">
+      <%= readinglist.isbn %>
+    </div>
+    <div class="col-2 my-auto">
+      <div class="d-flex justify-content-end">
+        <%= link_to "編集", edit_readinglist_path(readinglist), class: "btn btn-sm btn-outline-primary me-2" %>
+        <%= link_to "削除", readinglist, class: "btn btn-sm btn-outline-danger", data: { turbo_method: :delete, turbo_confirm: "本当に削除しますか？" } %>
+      </div>
+    </div>
+  </div>
+<% end %>

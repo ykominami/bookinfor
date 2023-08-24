@@ -1,0 +1,53 @@
+<%= turbo_frame_tag @readinglist do %>
+
+<%= bootstrap_form_for(
+      Readinglist.new,
+    ) do |form| %>
+  <div class="row py-2 border-top">
+  <% if readinglist.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(readinglist.errors.count, "error") %> prohibited this readinglist from being saved:</h2>
+
+      <ul>
+        <% readinglist.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="row py-2 border-top">
+    <div class="col-2 my-auto">
+      <%= form.label :date, style: "display: block" %>
+      <%= form.date_field :date %>
+    </div>
+
+    <div class="col-2 my-auto"" >
+      <%= form.label :readstatus, style: "display: block" %>
+      <%= form.select :readstatus_id, readstatus_list %>
+    </div>
+
+    <div class="col-2 my-auto"" >
+      <%= form.label :shape, style: "display: block" %>
+      <%= form.select :shape_id, shape_list %>
+    </div>
+
+    <div class="col-1 my-auto">
+      <%= form.label :title, style: "display: block" %>
+      <%= form.text_field :title %>
+    </div>
+
+    <div class="col-1 my-auto">  
+      <%= form.label :isbn, style: "display: block" %>
+      <%= form.text_field :isbn %>
+    </div>
+
+    <div class="col-2 my-auto">  
+      <div class="d-flex justify-content-end">
+        <%= form.submit "登録", { class: "btn btn-sm btn-outline-primary me-2" } %>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<% end %>

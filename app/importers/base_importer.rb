@@ -9,8 +9,12 @@ class BaseImporter
   end
 
   def set_readstatus(x)
-    status = Readstatus.find_by(name: x["status"])
-    x["readstatus_id"] ||= (status != nil ? status.first.id : 1)
+    status = x["status"]
+    p "set_readstatus status=#{status}"
+    if status
+      status = Readstatus.find_by(name: status)
+      x["readstatus_id"] ||= (status != nil ? status.first.id : 1)
+    end
   end
 
   def xf_supplement(target, x, base_number = nil)
