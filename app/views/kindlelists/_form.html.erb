@@ -32,12 +32,13 @@
     <%= form.text_field :author %>
   </div>
 
-  <div class="col-1"   %>
+  <div class="col-1 my-auto"" >
+    <%= form.label :readstatus, style: "display: block" %>
     <%= form.select :readstatus_id, readstatus_list %>
-
   </div>
 
   <div class="col-1 my-auto">
+    <%= form.label :category, style: "display: block" %>
     <%= form.select :category_id, category_list %>
   </div>
 
