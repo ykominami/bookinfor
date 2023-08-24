@@ -1,0 +1,3 @@
+<%= turbo_frame_tag Readinglist.new do %>
+  <%= render partial: "form", locals: { readinglist: @readinglist, readstatus_list: @readstatus_list, shape_list: @shape_list } %>
+<% end %>

@@ -27,8 +27,15 @@ class TopImporter
   end
 
   def get_import_date(key)
-    date_str = @state["import_date"][key]
-    Date.parse(date_str)
+    ret = ConfigUtils.default_import_date
+    begin
+      date_str = @state["import_date"][key]
+      ret = Date.parse(date_str)
+    rescue => exception
+      # p exception.message
+    end
+
+    ret
   end
 
   def execute()

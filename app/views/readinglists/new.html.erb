@@ -1,9 +1,4 @@
-<h1>New readinglist</h1>
-
-<%= render "form", readinglist: @readinglist %>
-
-<br>
-
-<div>
-  <%= link_to "Back to readinglists", readinglists_path %>
-</div>
+ <%= render partial: "form", locals: { readinglist: @readinglist,
+                                      readstatus_list: @readstatus_list,
+                                      shape_list: @shape_list,
+                                      button_name: "登録" } %>
