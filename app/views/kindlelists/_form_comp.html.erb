@@ -1,6 +1,6 @@
 <%= bootstrap_form_with(model: inst) do |form| %>
   <div class="row py-2 border-top">
-    <div class="col-1" %>
+    <div class="col-1" >
       <%= form.select :readstatus_id, readstatus_list %>
 
     </div>
@@ -24,7 +24,7 @@
 
   <div class="col-2 my-auto">
     <div class="d-flex justify-content-end">
-      <%= form.primary "更新" , {class: "btn btn-sm btn-outline-primary me-2"} %>
+      <%= form.primary "更新", { class: "btn btn-sm btn-outline-primary me-2" } %>
       <%= link_to "取消", kindlelist_path(inst), class: "btn btn-sm btn-outline-secondary me-2" %>
     </div>
   </div>
