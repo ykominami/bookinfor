@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_19_084552) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_23_114659) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -178,17 +178,22 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_19_084552) do
     t.date "date", null: false
     t.string "title", null: false
     t.string "status", null: false
-    t.string "shape", null: false
     t.string "isbn"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "category_id", null: false
     t.integer "readstatus_id", null: false
-    t.index ["category_id"], name: "index_readinglists_on_category_id"
+    t.bigint "shape_id"
     t.index ["readstatus_id"], name: "index_readinglists_on_readstatus_id"
+    t.index ["shape_id"], name: "index_readinglists_on_shape_id"
   end
 
   create_table "readstatuses", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "shapes", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -204,6 +209,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_19_084552) do
   add_foreign_key "calibrelists", "readstatuses"
   add_foreign_key "kindlelists", "categories"
   add_foreign_key "kindlelists", "readstatuses"
-  add_foreign_key "readinglists", "categories"
   add_foreign_key "readinglists", "readstatuses"
+  add_foreign_key "readinglists", "shapes"
 end
