@@ -41,6 +41,12 @@ class ConfigUtils
   @output_export_dir_pn = @output_dir_pn + @export_from_db_dir
   @import_from_exported_data = ""
 
+  @default_import_date = Date.new(2000, 1, 1)
+
+  def self.default_import_date
+    @default_import_date
+  end
+
   def self.output_export_dir_pn
     @output_export_dir_pn
   end

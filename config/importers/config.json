@@ -54,7 +54,7 @@
         "isbn"
       ],
       "remove": [
-        ""
+        "category_id"
       ],
       "not_duplicated": [],
       "not_blank": [],
