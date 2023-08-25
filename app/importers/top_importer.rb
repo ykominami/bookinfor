@@ -52,11 +52,15 @@ class TopImporter
           importerkind = "#{importer_kind_x}#{ext}"
           path = @local_files[importer_kind]
           date = get_import_date(importer_kind_x)
+          # p "path=#{path}"
+          # p "date=#{date}"
           importer = make(importerkind, importer_kind_x, date, path)
         else
           date = get_import_date(importer_kind)
           importer = make(importer_kind, importer_kind, date)
         end
+
+        # raise
 
         case importer_kind_x
         when "reading"
@@ -75,6 +79,7 @@ class TopImporter
             importer.xf(data_key, :register)
           }
         when "book"
+          # raise
           value2.map { |data_key|
             importer.xf_booklist(key: data_key, mode: :register)
           }

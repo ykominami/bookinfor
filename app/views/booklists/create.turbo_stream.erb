@@ -1,21 +1,5 @@
-<p style="color: green"><%= notice %></p>
+<% turbo_stream.prepend "booklists", @booklist %>
 
-<%= render BooklistitemComponent.new(@booklist).proxy %>
-<div>
-  <%= link_to "編集", edit_booklist_path(@booklist) %> |
-  <%= link_to "戻る", booklists_path %>
+<%= turbo_stream.update Booklist.new, "" %>
 
-  <%= button_to "削除", @booklist, method: :delete %>
-</div>
-
-show.html.erb
-
-<>
-<% @booklists.each do |booklist| %>
-<%= render "booklist", booklist: booklist %>
-<% end %>
-
-<%= helpers.turbo_stream.update id="" do %>
-    X turbo_stream.update id="b3"
-
-<% end %>
+<%= turbo_stream_flash %>
