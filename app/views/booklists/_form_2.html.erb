@@ -1,0 +1,102 @@
+<% # 全体を`turbo_frame_tag`で囲う %>
+<% # 編集リンクをクリックすると、_cat.html.erbの<turbo-frame>部分がこの部分に置換される %>
+<%= turbo_frame_tag Booklist.new do %>
+
+<% # bootstrap_formを使ったフォームでは、form_withの代わりにbootstrap_form_withを使う %>
+<% # バリデーションエラーの表示はbootstrap_formが用意してくれるので、自前で用意する必要がなくなる %>
+<%= bootstrap_form_with(model: booklist) do |form| %>
+
+<% # ラベルはbootstrap_formが用意してくれるので、自前で用意する必要がなくなる %>
+<% # Bootstrapのclass属性もbootstrap_formが設定してくれるので、自前で用意する必要はない %>
+<div class="row">
+ 
+<div class="col-sm">
+<%= form.date_field :purchase_date,
+                     skip_label: true,
+                     label_as_placeholder: true,
+                     wrapper: false,
+                     control_class: "form-control form-control-sm" %>
+</div>
+<div class="col-2 my-auto" >
+    <%= f.label :shape_id, style: "display: block" %>
+    <%= f.select :shape_id_eq, options_from_collection_for_select(Shape.all, :id, :name, 1), include_blank: false,
+                    {
+                      label: "",
+                      wrapper: { class: "has-warning", data: { foo: "bar" } },
+                      class: "selectpicker",
+                    }
+     %>
+</div>
+<div class="col-2 my-auto" >
+    <%= f.label :readstatus_id, style: "display: block" %>
+    <%= f.select :readstatus_id_eq, options_from_collection_for_select(Readstatus.all, :id, :name, 1), include_blank: false,
+                    {
+                      label: "",
+                      wrapper: { class: "has-warning", data: { foo: "bar" } },
+                      class: "selectpicker",
+                    }
+     %>
+</div>
+
+ <div class="col-sm">
+ <%= form.text_field :title,
+                     skip_label: true,
+                     label_as_placeholder: true,
+                     wrapper: false,
+                     control_class: "form-control form-control-sm" %>
+ </div>
+ <div class="col-sm">
+ <%= form.text_field :asin,
+                     skip_label: true,
+                     label_as_placeholder: true,
+                     wrapper: false,
+                     control_class: "form-control form-control-sm" %>
+ </div>
+ <div class="col-sm">
+    <%= form.select :shape, [["雑誌", 1], ["本", 2]],
+                    {
+                      label: "",
+                      wrapper: { class: "has-warning", data: { foo: "bar" } },
+                      class: "selectpicker",
+                    } %>
+</div>
+<div class="col-sm">
+    <%= form.select :bookstore, [*get_bookstore_options()],
+                    {
+                      wrapper: { class: "has-warning", data: { foo: "bar" } },
+                      class: "selectpicker",
+                    } %>
+</div>
+
+<div class="col-2 my-auto" >
+    <%= f.label :category_id, style: "display: block" %>
+    <%= f.select :category_id_eq, options_from_collection_for_select(Category.all, :id, :name, 1), include_blank: false,
+                    {
+                      label: "",
+                      wrapper: { class: "has-warning", data: { foo: "bar" } },
+                      class: "selectpicker",
+                    }
+     %>
+</div>
+
+<div class="col-sm">
+    <%= form.select :category, [*get_category_options()],
+                    {
+                      wrapper: { class: "has-warning", data: { foo: "bar" } },
+                      class: "selectpicker",
+                    } %>
+</div>
+
+</div>
+
+<div class="col-4">
+    <div class="d-flex justify-content-end">
+        <% # Bootstrapのprimary色のsubmitボタン %>
+        <%= form.primary class: "btn btn-primary btn-sm me-2" %>
+        <%= link_to "00キャンセル", booklist, class: "btn btn-sm btn-outline-secondary" %>
+    </div>
+</div>
+
+<% end %>
+<% end %>
+rd

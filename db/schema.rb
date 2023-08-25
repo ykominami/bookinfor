@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_23_114659) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_25_033809) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -44,18 +44,18 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_23_114659) do
     t.integer "totalID", null: false
     t.integer "xid"
     t.date "purchase_date", null: false
-    t.string "bookstore", null: false
     t.string "title", null: false
     t.string "asin"
-    t.integer "read_status", null: false
-    t.integer "shape", null: false
-    t.string "category", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "category_id", null: false
     t.integer "readstatus_id", null: false
+    t.bigint "shape_id"
+    t.bigint "bookstore_id"
+    t.index ["bookstore_id"], name: "index_booklists_on_bookstore_id"
     t.index ["category_id"], name: "index_booklists_on_category_id"
     t.index ["readstatus_id"], name: "index_booklists_on_readstatus_id"
+    t.index ["shape_id"], name: "index_booklists_on_shape_id"
     t.index ["totalID"], name: "index_booklists_on_totalID", unique: true
   end
 
@@ -91,6 +91,12 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_23_114659) do
     t.integer "readstatus_id", null: false
     t.index ["category_id"], name: "index_booklisttights_on_category_id"
     t.index ["readstatus_id"], name: "index_booklisttights_on_readstatus_id"
+  end
+
+  create_table "bookstores", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "calibrelists", force: :cascade do |t|
@@ -168,9 +174,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_23_114659) do
     t.string "category"
     t.integer "readstatus_id", null: false
     t.integer "category_id", null: false
+    t.bigint "shape_id"
     t.index ["asin"], name: "index_kindlelists_on_asin", unique: true
     t.index ["category_id"], name: "index_kindlelists_on_category_id"
     t.index ["readstatus_id"], name: "index_kindlelists_on_readstatus_id"
+    t.index ["shape_id"], name: "index_kindlelists_on_shape_id"
   end
 
   create_table "readinglists", force: :cascade do |t|
@@ -201,14 +209,17 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_23_114659) do
 
   add_foreign_key "booklistlooses", "categories"
   add_foreign_key "booklistlooses", "readstatuses"
+  add_foreign_key "booklists", "bookstores"
   add_foreign_key "booklists", "categories"
   add_foreign_key "booklists", "readstatuses"
+  add_foreign_key "booklists", "shapes"
   add_foreign_key "booklisttights", "categories"
   add_foreign_key "booklisttights", "readstatuses"
   add_foreign_key "calibrelists", "categories"
   add_foreign_key "calibrelists", "readstatuses"
   add_foreign_key "kindlelists", "categories"
   add_foreign_key "kindlelists", "readstatuses"
+  add_foreign_key "kindlelists", "shapes"
   add_foreign_key "readinglists", "readstatuses"
   add_foreign_key "readinglists", "shapes"
 end
