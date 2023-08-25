@@ -1,3 +1,92 @@
-<% @booklists.each do |booklist| %>
-<%= render "booklist", booklist: booklist %>
-<% end %>
+<p style="color: green"><%= notice %></p>
+
+<h1>Booklists</h1>
+  <div class="card shadow mt-3" >
+    <div class="card-header">
+    </div>
+    <div class="card-body">
+      <%= search_form_for(@search,
+                          html: {
+                            data: {
+                              turbo_frame: "booklist-list",
+                              controller: "form",
+                              action: "input->form#submit",
+                            },
+                          }) do |f| %>
+        <div class="row py-2 border-top">
+          <div class="row py-2">
+            <div class="col-2 my-auto" >
+              <%= f.label :purchase_date, style: "display: block" %>
+              <%= f.date_field :purchase_date_eq %>
+            </div>
+            <div class="col-2 my-auto" >
+              <%= f.label :shape_id, style: "display: block" %>
+              <%= f.select :shape_id_eq, options_from_collection_for_select(@shape_list, :id, :name, 1), include_blank: false %>
+            </div>
+            <div class="col-2 my-auto" >
+              <%= f.label :readstatus_id, style: "display: block" %>
+              <%= f.select :readstatus_id_eq, options_from_collection_for_select(@readstatus_list, :id, :name, 1), include_blank: false %>
+            </div>
+            <div class="col-1 my-auto" >
+              <div class="row">
+                <%= f.label :title %>
+                <%= f.search_field :title_cont %>
+              </div>
+            </div>
+            <div class="col-2 my-auto" >
+              <%= f.label :category_id, style: "display: block" %>
+              <%= f.select :category_id_eq, options_from_collection_for_select(@category_list, :id, :name, 1), include_blank: false %>
+            </div>
+            <div class="col-2 my-auto" >
+              <%= f.label :bookstore_id, style: "display: block" %>
+              <%= f.select :bookstore_id_eq, options_from_collection_for_select(@bookstore_list, :id, :name, 1), include_blank: false %>
+            </div>
+
+            <div class="col-2 d-flex align-items-end" >
+              <%= f.submit "検索", class: "btn btn-outline-secondary" %>
+              <%= link_to "クリア", booklists_path, class: "btn btn-outline-secondary" %>
+            </div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="card-body mx-3">
+    <%= turbo_frame_tag "booklist-list" do %>
+      <div class="row py-2">
+        <div class="col-2 mt-auto">
+          <%= sort_link(@search, :purchase_date) %>
+        </div>
+        <div class="col-1 mt-auto">
+          <%= sort_link(@search, :shape_id) %>
+        </div>
+        <div class="col-2 mt-auto">
+          <%= sort_link(@search, :readstatus_id) %>
+        </div>
+        <div class="col-1 mt-auto">
+          <%= sort_link(@search, :title) %>
+        </div>
+        <div class="col-1 mt-auto">
+          <%= sort_link(@search, :category_id) %>
+        </div>
+        <div class="col-1 mt-auto">
+          <%= sort_link(@search, :bookstore_id) %>
+        </div>
+        <div class="col-1 d-flex  align-items-end">
+          <%= link_to "登録",
+                      new_booklist_path,
+                      class: "btn btn-outline-primary",
+                      data: { turbo_frame: dom_id(Booklist.new) } %>
+        </div>
+      </div>
+
+      <div id="booklists">
+        <%= render @booklists %>
+      </div>
+
+      <div class="d-flex justify-content-end mt-3">
+        <%= paginate @booklists %>
+      </div>
+
+      <%= turbo_frame_tag Booklist.new %>
+    <% end %>
+  </div>

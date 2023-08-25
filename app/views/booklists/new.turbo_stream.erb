@@ -1,1 +1,8 @@
-<%= render "form", booklist: @booklist %>
+<%= turbo_frame_tag @booklist do %>
+  <%= render partial: "form", locals: { booklist: @booklist,
+                                        readstatus_list: @readstatus_list,
+                                        shape_list: @shape_list,
+                                        category_list: @category_list,
+                                        bookstore_list: @bookstore_list,
+                                        button_name: "登録" } %>
+<% end %>

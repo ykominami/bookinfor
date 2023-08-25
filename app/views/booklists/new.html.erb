@@ -1,9 +1,8 @@
-<h1>booklistを登録する</h1>
-
-<%= render "form", booklist: @booklist %>
-
-<br>
-
-<div>
-  <%= link_to "戻る", booklists_path %>
-</div>
+<%= turbo_frame_tag @booklist do %>
+  <%= render partial: "form", locals: { booklist: @booklist,
+                                        readstatus_list: @readstatus_list,
+                                        shape_list: @shape_list,
+                                        category_list: @category_list,
+                                        bookstore_list: @bookstore_list,
+                                        button_name: "登録" } %>
+<% end %>

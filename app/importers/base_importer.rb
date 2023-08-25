@@ -10,7 +10,7 @@ class BaseImporter
 
   def set_readstatus(x)
     status = x["status"]
-    p "set_readstatus status=#{status}"
+    # p "set_readstatus status=#{status}"
     if status
       status = Readstatus.find_by(name: status)
       x["readstatus_id"] ||= (status != nil ? status.first.id : 1)
@@ -50,6 +50,7 @@ class BaseImporter
       @delkeys.map { |k| x.delete(k) }
 
       xf_supplement(x, x)
+
       x.map { |k, v|
         next if @ignore_fields.find(k)
         @detector.find_duplicated_field_value(x, k, x)
@@ -80,7 +81,9 @@ class BaseImporter
   def load_data
     item = @vx[:key][@key]
     path = item.full_path
-    # puts "load_data path=#{path}"
+    puts "load_data path=#{path}"
+    # raise
+
     JsonUtils.parse(path)
   end
 
