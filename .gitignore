@@ -52,4 +52,6 @@ index-3.html.erb
 new_error.html.erb
 new_error.turbo_stream.erb
 _form_error.html.erb
+x-404*
+x
 

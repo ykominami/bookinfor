@@ -119,7 +119,7 @@ class DlImporter
       # p ":DATAX @save_hash=#{@save_hash}"
       ret = false unless @save_hash
     else
-      puts "Illeagl op is specified! (#{op})"
+      puts "Illeagal op is specified! (#{op})"
       ret = false
       #
     end
