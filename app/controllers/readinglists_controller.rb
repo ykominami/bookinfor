@@ -1,17 +1,17 @@
 class ReadinglistsController < ApplicationController
   before_action :set_readinglist, only: %i[ show edit update destroy ]
-  before_action :set_select_options, only: %i[ new edit ]
+  before_action :set_select_options, only: %i[ index new edit ]
 
   # GET /readinglists or /readinglists.json
   def index
     @search = Readinglist.ransack(params[:q])
     @search.sorts = "register_date desc" if @search.sorts.empty?
     @readinglists = @search.result.page(params[:page])
-    @new_readinglist = Readinglist.new
+    # @new_readinglist = Readinglist.new
     # p @kindlelists
-    @readstatus_list = ReadstatusesHelper::get_list()
+    # @readstatus_list = ReadstatusesHelper::get_list()
     # @category_list = CategoriesHelper::get_list()
-    @shape_list = ShapesHelper::get_list()
+    # @shape_list = ShapesHelper::get_list()
 
     # @readinglists = Readinglist.all
 
@@ -87,10 +87,11 @@ class ReadinglistsController < ApplicationController
   # DELETE /readinglists/1 or /readinglists/1.json
   def destroy
     @readinglist.destroy
+    flash.now.notice = "bookを作治しました"
 
     respond_to do |format|
-      format.html { render }
-      format.turbo_stream { render }
+      format.html { }
+      format.turbo_stream { }
       format.json { head :no_content }
     end
   end
@@ -98,8 +99,8 @@ class ReadinglistsController < ApplicationController
   private
 
   def set_select_options
-    @readstatus_list = ReadstatusesHelper::get_list()
-    @shape_list = ShapesHelper::get_list()
+    @readstatus_list = Readstatus.all
+    @shape_list = Shape.all
   end
 
   # Use callbacks to share common setup or constraints between actions.
