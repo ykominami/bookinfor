@@ -1,12 +1,24 @@
 <%= bootstrap_form_with(model: kindlelist) do |form| %>
   <div class="row py-2 border-top">
-    <div class="col-2 my-auto" >
-      <%= form.text_field :title,
-                          skip_label: false,
-                          label_as_placeholder: true,
-                          wrapper: { class: "has-warning", data: { foo: "bar" } },
-                          control_class: "form-control form-control-sm" %>
+    <div class="col-1" >
+      <%= form.select :readstatus_id, readstatus_list %>
+
     </div>
+
+    <div class="col-sm my-auto" >
+        <%= form.select :readstatus_id, options_from_collection_for_select(readstatus_list, :id, :name, 1), include_blank: false %>
+    </div>
+
+
+ </div>
+ <div class="col-2">
+  <div class="col-2 my-auto" >
+    <%= form.text_field :title,
+                        skip_label: false,
+                        label_as_placeholder: true,
+                        wrapper: { class: "has-warning", data: { foo: "bar" } },
+                        control_class: "form-control form-control-sm" %>
+  </div>
     <div class="col-2 my-auto" >
       <%= form.date_field :purchase_date, value: kindlelist.purchase_date %>
     </div>
@@ -36,11 +48,11 @@
     <div class="col-1 my-auto" >
       <%= form.text_field :asin, value: kindlelist.asin %>
     </div>
-    <div class="col-2 my-auto">
-      <div class="d-flex justify-content-end">
-        <%= form.primary "更新", { class: "btn btn-sm btn-outline-primary me-2" } %>
-        <%= link_to "取消", kindlelist_path(kindlelist), class: "btn btn-sm btn-outline-secondary me-2" %>
-      </div>
+  </div>
+  <div class="col-2 my-auto">
+    <div class="d-flex justify-content-end">
+      <%= form.primary "更新", { class: "btn btn-sm btn-outline-primary me-2" } %>
+      <%= link_to "取消", kindlelist_path(kindlelist), class: "btn btn-sm btn-outline-secondary me-2" %>
     </div>
   </div>
 <% end %>

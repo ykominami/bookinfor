@@ -1,13 +1,19 @@
 <%= turbo_frame_tag kindlelist do %>
   <div class="row py-2 border-top">
+    <div class="col-2 my-auto">
+      <%= kindlelist.purchase_date %>
+    </div>
+    <div class="col-1 my-auto">
+      <%= kindlelist.shape.name %>
+    </div>
     <div class="col-1 my-auto">
       <%= kindlelist.readstatus.name %>
     </div>
-    <div class="col-1 my-auto">
-      <%= kindlelist.category.name %>
-    </div>
     <div class="col-3 my-auto">
       <%= kindlelist.title %>
+    </div>
+    <div class="col-1 my-auto">
+      <%= kindlelist.category.name %>
     </div>
     <div class="col-1 my-auto">
       <%= kindlelist.publisher %>
@@ -16,7 +22,7 @@
       <%= kindlelist.author %>
     </div>
     <div class="col-2 my-auto">
-      <%= kindlelist.purchase_date %>
+      <%= kindlelist.asin %>
     </div>
     <div class="col-2 my-auto">
       <div class="d-flex justify-content-end">
