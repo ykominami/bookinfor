@@ -79,6 +79,8 @@
         </div>
       </div>
 
+      <%= turbo_frame_tag Booklist.new %>
+
       <div id="booklists">
         <%= render @booklists %>
       </div>
@@ -86,7 +88,5 @@
       <div class="d-flex justify-content-end mt-3">
         <%= paginate @booklists %>
       </div>
-
-      <%= turbo_frame_tag Booklist.new %>
     <% end %>
   </div>
