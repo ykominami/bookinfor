@@ -1,5 +1,7 @@
 <%= turbo_frame_tag @kindlelist do %>
-
-<%= render "form_comp", inst: @kindlelist, readstatus_list: @readstatus_list, category_list: @category_list %>
-
+  <%= render partial: "form_comp", locals: { kindlelist: @kindlelist,
+                                             readstatus_list: @readstatus_list,
+                                             shape_list: @shape_list,
+                                             category_list: @category_list,
+                                             button_name: "更新" } %>
 <% end %>
