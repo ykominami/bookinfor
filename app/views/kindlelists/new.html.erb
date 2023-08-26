@@ -1,4 +1,8 @@
 <%= turbo_frame_tag Kindlelist.new do %>
-  <%= render partial: "form", locals: { kindlelist: @kindlelist, readstatus_list: @readstatus_list, category_list: @category_list } %>
+  <%= render partial: "form", locals: { kindlelist: @kindlelist,
+                                        readstatus_list: @readstatus_list,
+                                        shape_list: @shape_list,
+                                        category_list: @category_list,
+                                        button_name: "登録" } %>
 <% end %>
 

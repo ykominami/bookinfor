@@ -8,6 +8,18 @@ class BaseImporter
     @ignore_fields ||= %W()
   end
 
+  def set_assoc(x, klass, oldname, newname)
+    key = newname + "_id"
+    x[key] = x[oldname]
+    s = klass.find_by(name: x[newname])
+    if s
+      x[key] = s.id
+    else
+      x[key] = 1
+      # p x
+    end
+  end
+
   def set_readstatus(x)
     status = x["status"]
     # p "set_readstatus status=#{status}"
