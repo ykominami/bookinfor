@@ -1,5 +1,3 @@
-<% turbo_stream.prepend "booklists", @booklist %>
-
-<%= turbo_stream.update Booklist.new, "" %>
-
+<%= turbo_stream.prepend "booklists", @booklist %>
 <%= turbo_stream_flash %>
+<%= turbo_stream.update Booklist.new, "" %>
