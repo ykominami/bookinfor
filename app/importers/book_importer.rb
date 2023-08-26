@@ -43,18 +43,6 @@ class BookImporter < BaseImporter
     select_valid_data(x, "purchase_date", "asin", Booklist, data_array)
   end
 
-  def set_assoc(x, klass, oldname, newname)
-    key = newname + "_id"
-    x[key] = x[oldname]
-    s = klass.find_by(name: x[newname])
-    if s
-      x[key] = s.id
-    else
-      x[key] = 1
-      # p x
-    end
-  end
-
   def xf_supplement(target, x, base_number = 0)
     # raise
 

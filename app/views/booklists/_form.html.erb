@@ -18,10 +18,10 @@
                       control_class: "form-control form-control-sm" %>
 </div>
 <div class="col-1 my-auto" >
-    <%= form.select :shape_id, options_from_collection_for_select(shape_list, :id, :name, 1), include_blank: false %>
+    <%= form.select :shape_id, options_from_collection_for_select(shape_list, :id, :name, booklist.shape_id), include_blank: false %>
 </div>
 <div class="col-sm my-auto" >
-    <%= form.select :readstatus_id, options_from_collection_for_select(readstatus_list, :id, :name, 1), include_blank: false %>
+    <%= form.select :readstatus_id, options_from_collection_for_select(readstatus_list, :id, :name, booklist.readstatus_id), include_blank: false %>
 </div>
 
  <div class="col-2">
@@ -42,11 +42,11 @@
                      control_class: "form-control form-control-sm" %>
  </div>
  <div class="col-1 my-auto" >
-    <%= form.select :category_id, options_from_collection_for_select(category_list, :id, :name, 1), include_blank: false %>
+    <%= form.select :category_id, options_from_collection_for_select(category_list, :id, :name, booklist.category_id), include_blank: false %>
  </div>
 
  <div class="col-1 my-auto" >
-    <%= form.select :bookstore_id, options_from_collection_for_select(bookstore_list, :id, :name, 1), include_blank: false %>
+    <%= form.select :bookstore_id, options_from_collection_for_select(bookstore_list, :id, :name, booklist.bookstore_id), include_blank: false %>
  </div>
 
 <div class="col-2 my-auto">
