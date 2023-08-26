@@ -1,52 +1,47 @@
 <%= form_with(model: kindlelist) do |form| %>
   <div class="row py-2 border-top">
-  <% if kindlelist.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(kindlelist.errors.count, "error") %> prohibited this kindlelist from being saved:</h2>
+    <% if kindlelist.errors.any? %>
+      <div style="color: red">
+        <h2><%= pluralize(kindlelist.errors.count, "error") %> prohibited this kindlelist from being saved:</h2>
 
-      <ul>
-        <% kindlelist.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
-
+        <ul>
+          <% kindlelist.errors.each do |error| %>
+            <li><%= error.full_message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+  </div>
+  <div class="col py-2 border-top">
   <div class="col-1 my-auto" >
-    <%= form.label :asin, style: "display: block" %>
     <%= form.text_field :asin %>
   </div>
 
   <div class="col-1 my-auto" >
-    <%= form.label :title, style: "display: block" %>
     <%= form.text_field :title %>
   </div>
 
   <div class="col-1 my-auto" >
-    <%= form.label :publisher, style: "display: block" %>
     <%= form.text_field :publisher %>
   </div>
 
   <div class="col-2 my-auto" >
-    <%= form.label :author, style: "display: block" %>
     <%= form.text_field :author %>
   </div>
 
   <div class="col-1 my-auto" >
-    <%= form.select :readstatus_id, readstatus_list %>
+    <%= form.select :readstatus_id, options_from_collection_for_select(readstatus_list, :id, :name, kindlelist.readstatus_id), include_blank: false %>
   </div>
 
   <div class="col-1 my-auto">
-    <%= form.select :category_id, category_list %>
+    <%= form.select :readstatus_id, options_from_collection_for_select(category_list, :id, :name, kindlelist.category_id), include_blank: false %>
   </div>
 
   <div class="col-2 my-auto" >
-    <%= form.label :publish_date, style: "display: block" %>
-    <%= form.date_field :publish_date %>
+    <%= form.date_field :publish_date, kindlelist.publish_date %>
   </div>
 
   <div class="col-2 my-auto" >
-    <%= form.label :purchase_date, style: "display: block" %>
     <%= form.date_field :purchase_date %>
   </div>
   <div class="col-2 my-auto">
@@ -57,5 +52,6 @@
     </div>
   </div>
 
+  </div>
   </div>
 <% end %>

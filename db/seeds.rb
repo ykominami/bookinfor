@@ -33,18 +33,19 @@ Abc.create(
 )
 Readstatus.create(
   [
-    { name: "etc" },
+    { name: "" },
     { name: "雑誌-開始" },
     { name: "雑誌-読了" },
     { name: "開始" },
     { name: "読了" },
     { name: "不明" },
+    { name: "etc" },
   ]
 )
 
 Category.create(
   [
-    { name: "etc" },
+    { name: "" },
     { name: "ソフトウェア" },
     { name: "スキル" },
     { name: "ビジネス" },
@@ -73,12 +74,13 @@ Category.create(
     { name: "エンタ" },
     { name: "不明" },
     { name: "本以外" },
+    { name: "etc" },
   ]
 )
 
 Shape.create(
   [
-    { name: "etc" },
+    { name: "" },
     { name: "雑誌" },
     { name: "本" },
     { name: "CD/DVD/BD" },
@@ -86,11 +88,12 @@ Shape.create(
     { name: "Kindle" },
     { name: "EBOOK" },
     { name: "その他" },
+    { name: "etc" },
   ]
 )
 Bookstore.create(
   [
-    { name: "etc" },
+    { name: "" },
     { name: "いまじん春日井南店" },
     { name: "TSUTAYA春日井店" },
     { name: "カルコス小牧店" },
@@ -147,6 +150,7 @@ Bookstore.create(
     { name: "正文館書店" },
     { name: "正文館書店本店" },
     { name: "正文館本店" },
+    { name: "etc" },
   ]
 )
 
