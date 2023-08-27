@@ -21,7 +21,7 @@ class ReadingImporter < BaseImporter
     if ret
       x["shape_id"] = ret.id
     else
-      puts "Can't find #{x["shape"]}"
+      puts "1 Can't find #{x["shape"]}"
       exit
     end
     x.delete("shape")
