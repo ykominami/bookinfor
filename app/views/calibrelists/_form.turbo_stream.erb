@@ -25,13 +25,6 @@
     <%= form.text_field :authors %>
   </div>
 
-  <div class="col-1 my-auto" >
-      <%= form.select :category_id, options_from_collection_for_select(category_list, :id, :name, calibrelist.category_id), include_blank: false %>
-  </div>
-
-  <div class="col-1 my-auto" >
-      <%= form.select :readstatus_id, options_from_collection_for_select(readstatus_list, :id, :name, calibrelist.readstatus_id), include_blank: false %>
-  </div>
 
   <div class="col-2 my-auto">
     <div class="d-flex justify-content-end">

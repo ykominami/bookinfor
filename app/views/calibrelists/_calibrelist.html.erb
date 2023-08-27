@@ -1,36 +1,37 @@
-<div id="<%= dom_id calibrelist %>">
-  <p>a
-    <strong>0 Title:</strong>
-    <%= calibrelist.title %>
-  </p>
-  <p>b
-    <strong>2 Series:</strong>
-    <%= calibrelist.series %>
-  </p>
-
-  <p>c
-    <strong>Authors:</strong>
-    <%= calibrelist.authors %>
-  </p>
-
-  <p>
-    <strong>Comments:</strong>
-    <%= calibrelist.comments %>
-  </p>
-
-  <p>
-    <strong>Tags:</strong>
-    <%= calibrelist.tags %>
-  </p>
-
-  <p>
-    <strong>Publisher:</strong>
-    <%= calibrelist.publisher %>
-  </p>
-
-  <p>
-    <strong>Languages:</strong>
-    <%= calibrelist.languages %>
-  </p>
-
-</div>
+<%= turbo_frame_tag calibrelist do %>
+    <div class="container" >
+        <div class="row py-2 border-top" >
+            <div class="col-1">
+              <div class="col"><%= calibrelist.xid %></div>
+            </div>
+            <div class="col-1">
+              <div class="col"><%= calibrelist.comments %></div>
+            </div>
+            <div class="col-2">
+              <div class="col"><%= calibrelist.title %></div>
+            </div>
+            <div class="col-1">
+              <div class="col"><%= calibrelist.tags %></div>
+            </div>
+            <div class="col-1">
+              <div class="col"><%= calibrelist.timestamp %></div>
+            </div>
+            <div class="col-1">
+              <div class="col"><%= calibrelist.publisher %></div>
+            </div>
+            <div class="col-1">
+              <div class="col"><%= calibrelist.authors %></div>
+            </div>
+            <div class="col-1">
+              <div class="col"><%= calibrelist.readstatus.name %></div>
+            </div>
+            <div class="col-1">
+              <div class="col"><%= calibrelist.category.name %></div>
+            </div>
+            <div class="col-2 d-flex align-items-end" >
+                <div class="col"><%= link_to "編集", edit_calibrelist_path(calibrelist), class: "btn btn-sm btn-outline-primary me-2" %></div>
+                <div class="col"><%= button_to "削除", calibrelist, method: :delete, class: "btn btn-sm btn-outline-danger", form: { data: { turbo_confirm: "本当に削除しますか？" } } %></div>
+            </div>
+        </div>
+    </div>
+<% end %>

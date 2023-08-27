@@ -1,0 +1,3 @@
+<%= turbo_stream.prepend "calibrelists", @calibrelist %>
+<%= turbo_stream_flash %>
+<%= turbo_stream.update Calibrelist.new, "" %>
