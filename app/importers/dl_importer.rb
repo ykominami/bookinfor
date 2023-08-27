@@ -225,7 +225,7 @@ class DlImporter
     hash = {}
     html_pn = Pathname.new(html_fname)
     unless html_pn.exist?
-      p "Can't find #{html_pn.to_s}"
+      p "2 Can't find #{html_pn.to_s}"
       return nil
     end
     html = File.read(html_fname)

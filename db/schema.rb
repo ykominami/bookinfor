@@ -10,10 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_25_114115) do
-  # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
-
+ActiveRecord::Schema[7.0].define(version: 2023_08_27_042133) do
   create_table "abcs", force: :cascade do |t|
     t.integer "zid", null: false
     t.string "s", null: false
@@ -50,8 +47,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_25_114115) do
     t.datetime "updated_at", null: false
     t.integer "category_id", null: false
     t.integer "readstatus_id", null: false
-    t.bigint "shape_id"
-    t.bigint "bookstore_id"
+    t.integer "shape_id"
+    t.integer "bookstore_id"
     t.index ["bookstore_id"], name: "index_booklists_on_bookstore_id"
     t.index ["category_id"], name: "index_booklists_on_category_id"
     t.index ["readstatus_id"], name: "index_booklists_on_readstatus_id"
@@ -101,29 +98,27 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_25_114115) do
 
   create_table "calibrelists", force: :cascade do |t|
     t.integer "xid", null: false
-    t.string "xxid", null: false
+    t.string "xxid"
     t.string "isbn"
-    t.integer "zid", null: false
-    t.string "uuid", null: false
+    t.integer "zid"
+    t.string "uuid"
     t.string "comments"
     t.integer "size"
     t.string "series"
-    t.integer "series_index", null: false
+    t.integer "series_index"
     t.string "title", null: false
-    t.string "title_sort", null: false
+    t.string "title_sort"
     t.string "tags"
-    t.string "library_name", null: false
-    t.string "formats", null: false
-    t.datetime "timestamp", precision: nil, null: false
-    t.datetime "pubdate", precision: nil, null: false
-    t.string "publisher", null: false
-    t.string "authors", null: false
-    t.string "author_sort", null: false
-    t.string "languages", null: false
+    t.string "library_name"
+    t.string "formats"
+    t.datetime "timestamp", null: false
+    t.datetime "pubdate"
+    t.string "publisher"
+    t.string "authors"
+    t.string "author_sort"
+    t.string "languages"
     t.string "rating"
     t.string "identifiers"
-    t.integer "read_status"
-    t.string "category"
     t.integer "category_id", null: false
     t.integer "readstatus_id", null: false
     t.index ["category_id"], name: "index_calibrelists_on_category_id"
@@ -132,24 +127,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_25_114115) do
 
   create_table "categories", force: :cascade do |t|
     t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "sort_a_key"
-    t.integer "sort_b_key"
-    t.integer "sort_c_key"
-  end
-
-  create_table "configs", force: :cascade do |t|
-    t.date "import_date_kindle"
-    t.date "import_date_book"
-    t.date "import_date_calibreate"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "defs", force: :cascade do |t|
-    t.integer "zid"
-    t.string "s"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -172,7 +149,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_25_114115) do
     t.datetime "updated_at", null: false
     t.integer "readstatus_id", null: false
     t.integer "category_id", null: false
-    t.bigint "shape_id"
+    t.integer "shape_id"
     t.index ["asin"], name: "index_kindlelists_on_asin", unique: true
     t.index ["category_id"], name: "index_kindlelists_on_category_id"
     t.index ["readstatus_id"], name: "index_kindlelists_on_readstatus_id"
@@ -188,7 +165,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_25_114115) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "readstatus_id", null: false
-    t.bigint "shape_id"
+    t.integer "shape_id"
     t.index ["readstatus_id"], name: "index_readinglists_on_readstatus_id"
     t.index ["shape_id"], name: "index_readinglists_on_shape_id"
   end
