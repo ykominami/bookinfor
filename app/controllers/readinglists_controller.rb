@@ -5,7 +5,7 @@ class ReadinglistsController < ApplicationController
   # GET /readinglists or /readinglists.json
   def index
     @search = Readinglist.ransack(params[:q])
-    @search.sorts = "register_date desc" if @search.sorts.empty?
+    @search.sorts = ['date desc', 'title asc']  if @search.sorts.empty?
     @readinglists = @search.result.page(params[:page])
     # @new_readinglist = Readinglist.new
     # logger.debug @kindlelists
