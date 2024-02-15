@@ -57,4 +57,5 @@ x
 setting.json
 cacert.pem
 docker-compose.yml
+*.sqlite3
 
