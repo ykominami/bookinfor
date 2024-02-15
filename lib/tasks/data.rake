@@ -141,8 +141,21 @@ namespace :data do
   task :importfile, ["search_file", "datalist_file"] do |_, args|
     importer_config_dir_pn = ConfigUtils.importer_config_dir_pn
 
-    datalist_file_pn = UtilUtils.check_file_exist(args.datalist_file, output_dir_pn, 11) if args.datalist_file
-    search_file_pn = UtilUtils.check_file_exist(args.search_file, importer_config_dir_pn, 12) if args.search_file
+    if args.search_file != nil && args.search_file != ""
+      search_file_pn = importer_config_dir_pn + args.search_file
+      unless search_file_pn.exist?
+        puts "Can't find search_file=#{search_file_pn}"
+        exit(12)
+      end
+    end
+
+    if args.datalist_file != nil && args.datalist_file != ""
+      datalist_file_pn = Pathname.new(args.datalist_file)
+      unless datalist_file_pn.exist?
+        puts "Can't find datalist_file=#{datalist_file_pn}"
+        exit(11)
+      end
+    end
 
     importer = KindlefileImporter.new(datalist_file_pn, search_file_pn)
     importer.execute()
