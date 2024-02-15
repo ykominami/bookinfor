@@ -174,13 +174,13 @@ namespace :data do
     sh "rake data:import[search_cf.json,,local_cf.json]"
   end
 
-  desc "data:file test kf"
+  desc "data:file test r"
   task :file_test_kr do
     sh "rake data:import[search_kf.json,,local_kf.json]"
     sh "rake data:import[search_rf.json,,local_rf.json]"
   end
 
-  desc "data:file test kf"
+  desc "data:file test k"
   task :file_test_k do
     sh "rake data:import[search_kf.json,,local_kf.json]"
   end
@@ -200,3 +200,4 @@ namespace :data do
     AllExporter.new(:import)
   end
 end
+
