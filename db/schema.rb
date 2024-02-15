@@ -128,12 +128,6 @@ ActiveRecord::Schema[7.1].define(version: 2023_08_27_042133) do
     t.index ["readstatus_id"], name: "index_calibrelists_on_readstatus_id"
   end
 
-  create_table "categories", force: :cascade do |t|
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "efgs", force: :cascade do |t|
     t.integer "zid"
     t.string "s"
