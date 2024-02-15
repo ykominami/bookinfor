@@ -88,10 +88,7 @@ class DlImporter
         ret = false
       end
     when :GET_AND_SAVE
-      # @logger.debug "DlImporter#do_op GET_AND_SAVE"
       specified_hash = @datalist.datax(@save_hash, @search_item)
-      # @logger.debug "specified_hash=#{specified_hash}"
-      # exit(20)
       ret = get_data_and_save_with_hash(specified_hash, @save_hash)
       @logger.debug "ret=#{ret}"
     when :PARSE_JSON_FILE
@@ -264,20 +261,18 @@ class DlImporter
     end
   end
 
-  def get_data_and_save_with_hash(selected_hash, out_hash)
-    ret = true
-    if selected_hash
-      get_array(selected_hash).flatten.each do |key|
-        ret = get_data_and_save_with_hash_by_key(out_hash[:key], key)
-        break unless ret
-      end
-    end
+  def datax_by_item(hash: hashx, arg1: nil, arg2: nil, arg3: nil)
+    num, keyx, value_kind = arg1
+    num2, keyx2, value_kind2 = arg2
+    num3, keyx3, value_kind3 = arg3
 
     ret
   end
 
   def get_data_and_save_with_hash_by_key(out_hash, key)
     # @logger.debug "###==== 0 1 get_data_and_save_with_hash_by_key key=#{key}"
+||||||| parent of e7ff4ad (fix)
+    # puts "###==== 0 1 get_data_and_save_with_hash_by_key key=#{key}"
     ret = true
     if out_hash
       item = out_hash[key]
