@@ -1,0 +1,11 @@
+<p style="color: green"><%= notice %></p>
+
+<h1>Readinglists</h1>
+
+<div id="readinglists">
+  <%= render @readinglists %>
+
+  <%= paginate @readinglists %>
+</div>
+
+<%= link_to "New readinglist", new_readinglist_path %>
