@@ -122,8 +122,16 @@ ActiveRecord::Schema[7.1].define(version: 2023_08_27_042133) do
     t.string "languages"
     t.string "rating"
     t.string "identifiers"
-    t.integer "read_status"
-    t.string "category"
+    t.integer "category_id", null: false
+    t.integer "readstatus_id", null: false
+    t.index ["category_id"], name: "index_calibrelists_on_category_id"
+    t.index ["readstatus_id"], name: "index_calibrelists_on_readstatus_id"
+  end
+
+  create_table "categories", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "efgs", force: :cascade do |t|
