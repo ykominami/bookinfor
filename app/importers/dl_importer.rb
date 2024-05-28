@@ -199,6 +199,7 @@ class DlImporter
       @debug.fatal exp.message
       ret = false
     end
+
     ret
   end
 
@@ -271,7 +272,6 @@ class DlImporter
 
   def get_data_and_save_with_hash_by_key(out_hash, key)
     # @logger.debug "###==== 0 1 get_data_and_save_with_hash_by_key key=#{key}"
-||||||| parent of e7ff4ad (fix)
     # puts "###==== 0 1 get_data_and_save_with_hash_by_key key=#{key}"
     ret = true
     if out_hash
@@ -287,10 +287,6 @@ class DlImporter
       else
         ret = false
       end
-    else
-      ret = false
-    end
-
-    ret
+    }
   end
 end
