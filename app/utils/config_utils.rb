@@ -17,7 +17,6 @@ class ConfigUtils
 
   attr_reader :output_pn
 
-  @src_url = "https://a.northern-cross.net/gas2/a.php"
   @html_filename = "b0.html"
   @output_dir = "data"
   # @config_dir_pn = Rails.root + "config" + "importers"
@@ -25,6 +24,12 @@ class ConfigUtils
   @config_dir_pn = Rails.root + "config"
   @importer_config_dir_pn = @config_dir_pn + "importers"
   @exporter_config_dir_pn = @config_dir_pn + "exporters"
+
+  # @src_url = "https://a.northern-cross.net/gas2/a.php"
+  @setting_pn = @importer_config_dir_pn + "setting.json"
+  setting_json = JsonUtils.parse(@setting_pn)
+  @src_url = setting_json["src_url"]
+  puts "@src_url=#{@src_url}"
 
   @output_dir_pn = Rails.root + @output_dir
   @export_output_dir_pn = @output_dir_pn + "export"
