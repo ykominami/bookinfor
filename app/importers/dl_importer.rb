@@ -25,27 +25,11 @@ class DlImporter
     # @out_json_pn = @datalist.file_pn
 
     @html_file_path = @datadir.output_pn + ConfigUtils.dl_html_filename
-
+    puts "@html_file_path=#{@html_file_path}"
     @out_hash = {}
     @hash_from_html = nil
   end
 
-=begin
-  def fetch(uri_str, limit = 10)
-    # You should choose better exception.
-    raise ArgumentError, "HTTP redirect too deep" if limit == 0
-
-    url = URI.parse(uri_str)
-    req = Net::HTTP::Get.new(url.path, { "User-Agent" => "Mozilla/5.0 (etc...)" })
-    response = Net::HTTP.start(url.host, url.port, use_ssl: true) { |http| http.request(req) }
-    case response
-    when Net::HTTPSuccess then response
-    when Net::HTTPRedirection then fetch(response["location"], limit - 1)
-    else
-      response.error!
-    end
-  end
-=end
   def copy_file(src_file, dest_file)
     src_file.each_line { |line| dest_file.puts(line) }
   end
@@ -205,16 +189,16 @@ class DlImporter
   end
 
   def get_and_save_page(src_url, out_fname)
-    # p "src_url=#{src_url}"
+    puts "DlImporter|get_and_save_page|src_url=#{src_url}"
     ret = true
     begin
       URI.open(src_url) { |f|
-        #  f.each_line{ |line| p line }
         File.open(out_fname, "w") { |out_f|
           copy_file(f, out_f)
         }
       }
     rescue => exp
+      p exp
       p exp.message
       ret = false
     end
