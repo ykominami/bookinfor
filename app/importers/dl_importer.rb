@@ -9,43 +9,33 @@ require "pathname"
 
 class DlImporter
   def initialize(cmd:, search_file_pn: nil)
-    # p "search_file_pn=#{search_file_pn}"
+    # puts "search_file_pn=#{search_file_pn}"
     @cmd = cmd
     @search_item = {}
     if search_file_pn
       if search_file_pn.exist?
         @search_item = JsonUtils.parse(search_file_pn)
+        puts "DlImporter#initialize @search_item=#{@search_item}"
       end
     end
 
     # @src_url = "https://a.northern-cross.net/gas2/a.php"
     @src_url = ConfigUtils.dl_src_url
+    # puts "@src_url=#{@src_url}"
+    # ConfigUtilクラスから、output_pnとexport_pnを取得・設定
     @datadir = DatadirUtils.new()
+    # puts "@datadir.output_pn.to_s=#{@datadir.output_pn.to_s}"
+    # puts "@datadir.export_pn.to_s=#{@datadir.export_pn.to_s}"
     @datalist = DatalistUtils.new(dir_pn: @datadir.output_pn)
+    # puts "@datalist=#{@datalist}"
     # @out_json_pn = @datalist.file_pn
 
     @html_file_path = @datadir.output_pn + ConfigUtils.dl_html_filename
-
+    # puts "@html_file_path=#{@html_file_path}"
     @out_hash = {}
     @hash_from_html = nil
   end
 
-=begin
-  def fetch(uri_str, limit = 10)
-    # You should choose better exception.
-    raise ArgumentError, "HTTP redirect too deep" if limit == 0
-
-    url = URI.parse(uri_str)
-    req = Net::HTTP::Get.new(url.path, { "User-Agent" => "Mozilla/5.0 (etc...)" })
-    response = Net::HTTP.start(url.host, url.port, use_ssl: true) { |http| http.request(req) }
-    case response
-    when Net::HTTPSuccess then response
-    when Net::HTTPRedirection then fetch(response["location"], limit - 1)
-    else
-      response.error!
-    end
-  end
-=end
   def copy_file(src_file, dest_file)
     src_file.each_line { |line| dest_file.puts(line) }
   end
@@ -90,8 +80,8 @@ class DlImporter
       # HTMLの解析結果であるハッシュをファイルに保存
       @out_hash = save_datalist_json_from_html(@hash_from_html)
 
-      pp @out_hash
       if @out_hash
+        pp @out_hash
         @save_hash = @out_hash
         # @save_hash = @out_hash[:key]
         ret = false unless @save_hash
@@ -99,8 +89,12 @@ class DlImporter
         ret = false
       end
     when :GET_AND_SAVE
+      # puts "DlImporter#do_op GET_AND_SAVE"
       specified_hash = @datalist.datax(@save_hash, @search_item)
+      # puts "specified_hash=#{specified_hash}"
+      # exit(20)
       ret = get_data_and_save_with_hash(specified_hash, @save_hash)
+      puts "ret=#{ret}"
     when :PARSE_JSON_FILE
       @out_hash = @datalist.parse()
       if @out_hash
@@ -128,6 +122,8 @@ class DlImporter
   end
 
   def get_data
+    # puts "##########"
+    # puts "DlImporter#get_data @cmd=#{@cmd}"
     op_list = case @cmd
       when :ALL
         %i(CLEAN_ALL_FILES GET_HTML PARSE_HTML HASH_TO_JSON_FILE GET_AND_SAVE)
@@ -197,7 +193,7 @@ class DlImporter
         clean_files_under_dir(it, re)
       else
         if re.match(it.extname)
-          puts "#{it} unlink"
+          # puts "#{it} unlink"
           FileUtils.rm_f(it)
         end
       end
@@ -205,16 +201,16 @@ class DlImporter
   end
 
   def get_and_save_page(src_url, out_fname)
-    # p "src_url=#{src_url}"
+    # puts "DlImporter|get_and_save_page|src_url=#{src_url}"
     ret = true
     begin
       URI.open(src_url) { |f|
-        #  f.each_line{ |line| p line }
         File.open(out_fname, "w") { |out_f|
           copy_file(f, out_f)
         }
       }
     rescue => exp
+      p exp
       p exp.message
       ret = false
     end
@@ -259,6 +255,7 @@ class DlImporter
   def save_datalist_json_from_html(hash)
     hash = add_blank_item(hash)
     out_hash = @datalist.parse_datalist_content(hash)
+    # puts "######### DlImporter#save_datalist_json_from_html"
     @datalist.make_output_json(out_hash[:key])
     # p "get_data_and_save_from_html"
     # p out_hash[:key]
@@ -292,6 +289,7 @@ class DlImporter
   end
 
   def get_data_and_save_with_hash_by_key(out_hash, key)
+    # puts "###==== 0 1 get_data_and_save_with_hash_by_key key=#{key}"
     ret = true
     if out_hash
       item = out_hash[key]
@@ -299,6 +297,9 @@ class DlImporter
         # relative_file = item.relative_file
         src_url = item.src_url
         full_path = item.full_path
+        # puts "###==== 0 2 get_data_and_save_with_hash_by_key key=#{key}"
+        # puts "src_url=#{src_url}"
+        # puts "full_path=#{full_path}"
         ret = get_and_save_page(src_url, full_path)
       else
         ret = false

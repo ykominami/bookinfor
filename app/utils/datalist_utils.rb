@@ -166,21 +166,38 @@ class DatalistUtils
   end
 
   def datax(hash, search_item)
+    # puts "DatalistUtils#datax hash=#{hash} search_item=#{search_item}"
+    # puts "DatalistUtils#datax hash.keys=#{hash.keys} search_item.keys=#{search_item.keys}"
+    # puts "search_item.class=#{search_item.class}"
     new_hash = {}
     if search_item
+      # puts "datax 1"
       search_item.keys.map { |kind|
+        # puts "datax 2 kind=#{kind}"
         # p "datax kind=#{kind}"
         new_hash[kind] ||= {}
         search_item[kind].map { |kindx|
+          # puts "datax: kindx=#{kindx}"
           kind_index, kindx_index = Keylable.reorder_kind(kind, kindx)
+          # puts "datax: kind_index=#{kind_index} kindx_index=#{kindx_index}"
           raise unless hash
           raise unless kind_index
           raise unless kind
           raise unless kindx_index
           raise unless kindx
           new_hash[kind][kindx] = datax_by_item(hash: hash, arg1: [kind_index, kind], arg2: [kindx_index, kindx])
+          # puts "new_hash[#{kind}][#{kindx}]=#{new_hash[kind][kindx]}"
         }
       }
+      # puts "new_hash.keys=#{new_hash.keys}"
+      new_hash.keys.each do |key|
+        # puts "key=#{key}"
+        # puts "new_hash[key].class=#{new_hash[key].class}"
+        # puts "new_hash[key].keys=#{new_hash[key].keys}"
+        new_hash[key].keys.each do |key2|
+          # puts "new_hash[#{key}][#{key2}]=#{new_hash[key][key2]}"
+        end
+      end
       new_hash
     else
       nil
@@ -204,10 +221,18 @@ class DatalistUtils
     num2, keyx2 = arg2
     num3, keyx3 = arg3
     keyx, ext = keyx.split("_")
+
+    # puts "datax_by_item ==== S"
+    # puts "num=#{num} keyx=#{keyx}"
+    # puts "num2=#{num2} keyx2=#{keyx2}"
+    # puts "num3=#{num3} keyx3=#{keyx3}"
+    # puts "keyx=#{keyx} ext=#{ext}"
+
     # p "keyx=#{keyx}"
     # p "keyx2=#{keyx2}"
     keyx2 = get_number(keyx2)
     keyx3 = get_number(keyx3)
+    # puts "keyx2=#{keyx2} keyx3=#{keyx3}"
 
     # p "keyx=#{keyx}"
     # p "keyx2=#{keyx2}"
@@ -215,21 +240,25 @@ class DatalistUtils
     # pp hash
     list = hash[:list].select { |item|
       # list = hash.select { |item|
-      #p item.category
-      #p item.label
-      #p item.year
-      #p item
-      if keyx2 == ":all" || keyx2 == ":latest" || keyx2 == ""
+      result = if keyx2 == ":all" || keyx2 == ":latest" || keyx2 == ""
         item.category == keyx
       else
+        if item.category == keyx
+          # p "item.category=#{item.category}"
+          # p "item.ywer=#{item.year}|#{item.year.class}"
+          # p "keyx2=#{keyx2}|#{keyx2.class}"
+        end
         ret = item.category == keyx && item.year == keyx2
         if item.category == "book" && keyx == "book"
           # puts "ret=#{ret} item.year=#{item.year} item.year.class=#{item.year.class} keyx2=#{keyx2} keyx2.class=#{keyx2.class}"
         end
         ret
       end
+      result
     }
+    # puts "list=#{list}"
 
+    ret_list = []
     if keyx2 == ":latest"
       target = list.sort_by { |a, b|
         if b
@@ -238,10 +267,13 @@ class DatalistUtils
           1
         end
       }.last
-      [target.key]
+      ret_list = [target.key]
     else
-      list.map { |target| target.key }
+      ret_list = list.map { |target| target.key }
     end
-    # exit 0
+    # puts "ret_list=#{ret_list}"
+    # puts "datax_by_item ==== E"
+
+    ret_list
   end
 end
