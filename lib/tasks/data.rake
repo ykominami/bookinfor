@@ -44,6 +44,8 @@ namespace :data do
 
     importer_config_dir_pn = ConfigUtils.importer_config_dir_pn
 
+    search_file_pn = nil
+    
     if args.searchfile
       search_file_pn = importer_config_dir_pn + args.searchfile
       unless search_file_pn.exist?
@@ -51,8 +53,14 @@ namespace :data do
         exit(11)
       end
     end
-
+    search_file_pn = importer_config_dir_pn + "search.json" unless search_file_pn
+    # puts "search_file_pn=#{search_file_pn}"
+    # puts "cmd=#{cmd}"
+    # exit(0)
+    # puts "=======data.download 1"
     dl = DlImporter.new(cmd: cmd, search_file_pn: search_file_pn)
+    # puts "=======data.download 2"
+    # exit(0)
     dl.get_data
   end
 
@@ -68,28 +76,12 @@ namespace :data do
     datalist_json_filename = ConfigUtils.datalist_json_filename
     datalist_file_pn = output_dir_pn + datalist_json_filename
 
-    if args.search_file != nil && args.search_file != ""
-      search_file_pn = importer_config_dir_pn + args.search_file
-      unless search_file_pn.exist?
-        puts "Can't find #{search_file_pn}"
-        exit(12)
-      end
-    end
+    datalist_file_pn = UtilUtils.check_file_exist(args.datalist_file, output_dir_pn, 11) if args.datalist_file
+    search_file_pn = UtilUtils.check_file_exist(args.search_file, importer_config_dir_pn, 12) if args.search_file
+    local_file_pn  = UtilUtils.check_file_exist(args.local_file,  importer_config_dir_pn, 10) if args.local_file 
 
-    if args.datalist_file != nil && args.datalist_file != ""
-      datalist_file_pn = output_dir_pn + args.datalist_file
-      unless datalist_file_pn.exist?
-        puts "Can't find #{datalist_file_pn}"
-        exit(11)
-      end
-    end
-
-    if args.local_file != nil && args.local_file != ""
-      local_file_pn = importer_config_dir_pn + args.local_file
-      unless local_file_pn.exist?
-        puts "Can't find #{local_file_pn}"
-        exit(10)
-      end
+    if UtilUtils.nil_or_empty?(search_file_pn)
+      search_file_pn = ConfigUtils.search_json_pn
     end
     importertop = TopImporter.new(datalist_file_pn, search_file_pn, local_file_pn)
     importertop.execute()
@@ -99,21 +91,8 @@ namespace :data do
   task :importfile, ["search_file", "datalist_file"] do |_, args|
     importer_config_dir_pn = ConfigUtils.importer_config_dir_pn
 
-    if args.search_file != nil && args.search_file != ""
-      search_file_pn = importer_config_dir_pn + args.search_file
-      unless search_file_pn.exist?
-        puts "Can't find search_file=#{search_file_pn}"
-        exit(12)
-      end
-    end
-
-    if args.datalist_file != nil && args.datalist_file != ""
-      datalist_file_pn = Pathname.new(args.datalist_file)
-      unless datalist_file_pn.exist?
-        puts "Can't find datalist_file=#{datalist_file_pn}"
-        exit(11)
-      end
-    end
+    datalist_file_pn = UtilUtils.check_file_exist(args.datalist_file, output_dir_pn, 11) if args.datalist_file
+    search_file_pn = UtilUtils.check_file_exist(args.search_file, importer_config_dir_pn, 12) if args.search_file
 
     importer = KindlefileImporter.new(datalist_file_pn, search_file_pn)
     importer.execute()

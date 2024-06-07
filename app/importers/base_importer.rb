@@ -93,14 +93,14 @@ class BaseImporter
   def load_data
     item = @vx[:key][@key]
     path = item.full_path
-    puts "load_data path=#{path}"
+    # puts "load_data path=#{path}"
     # raise
 
     JsonUtils.parse(path)
   end
 
   def valid_date?(target_date)
-    if ConfigUtils.use_import_date
+    if ConfigUtils.use_import_date?
       # p "kindle_importer valid_date? 1"
       @import_date.before? target_date
     else
