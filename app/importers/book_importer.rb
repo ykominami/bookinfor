@@ -142,7 +142,7 @@ class BookImporter < BaseImporter
 
   def load_data(item:, year: nil)
     path = item.full_path
-    puts "path=#{path}"
+    # puts "path=#{path}"
     # raise
     JsonUtils.parse(path)
   end
@@ -151,7 +151,7 @@ class BookImporter < BaseImporter
     # status = Readstatus.find_by(name: x["read_status"])
     # p "status=#{status} read_status=#{x["read_status"]}"
     # x[:readstatus_id] = status != nil ? status.id : 1
-    x[:readstatus_id] = x["read_status"] + 1
+    x[:readstatus_id] = x["read_status"].to_i + 1
     x.delete("read_status")
   end
 
