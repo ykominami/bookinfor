@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby "3.1.2"
+ruby "3.3.1"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.1.3"
@@ -76,8 +76,19 @@ end
 group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
-  gem "selenium-webdriver"
-  gem "webdrivers"
+  gem "selenium-webdriver", "4.21.1"
+  # gem "webdrivers"
 end
 
 gem "roo"
+gem "foreman"
+
+gem 'nkf', '0.2.0'
+# gem 'arxutils_sqlite3', path: '/home/ykominami/repo_ykominami/arxutils_sqlite3'
+gem 'arxutils_sqlite3', "0.1.63"
+
+gem 'csv'
+
+gem 'tilt'
+gem 'ykutils', "0.1.8"
+

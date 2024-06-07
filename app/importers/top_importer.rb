@@ -2,6 +2,7 @@ require "json"
 
 class TopImporter
   def initialize(datalist_file_pn, search_file_pn = nil, local_file_pn = nil)
+    puts "TopImporter init search_file_pn=#{search_file_pn}"
     config_pn = ConfigUtils.config_pn
     state_pn = ConfigUtils.state_pn
 
@@ -52,8 +53,6 @@ class TopImporter
           importerkind = "#{importer_kind_x}#{ext}"
           path = @local_files[importer_kind]
           date = get_import_date(importer_kind_x)
-          # p "path=#{path}"
-          # p "date=#{date}"
           importer = make(importerkind, importer_kind_x, date, path)
         else
           date = get_import_date(importer_kind)
