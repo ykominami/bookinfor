@@ -90,5 +90,5 @@ gem 'arxutils_sqlite3', "0.1.63"
 gem 'csv'
 
 gem 'tilt'
-gem 'ykutils', "0.1.8"
+gem 'ykutils', "0.1.10"
 
