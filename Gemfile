@@ -85,7 +85,7 @@ gem "foreman"
 
 gem 'nkf', '0.2.0'
 # gem 'arxutils_sqlite3', path: '/home/ykominami/repo_ykominami/arxutils_sqlite3'
-gem 'arxutils_sqlite3', "0.1.63"
+gem 'arxutils_sqlite3', "0.1.64"
 
 gem 'csv'
 
