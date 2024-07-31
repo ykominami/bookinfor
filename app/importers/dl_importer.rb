@@ -201,7 +201,8 @@ class DlImporter
   end
 
   def get_and_save_page(src_url, out_fname)
-    # puts "DlImporter|get_and_save_page|src_url=#{src_url}"
+    puts "DlImporter|get_and_save_page|src_url=#{src_url}"
+    #
     ret = true
     begin
       URI.open(src_url) { |f|
