@@ -18,7 +18,10 @@ class ConfigUtils
   attr_reader :output_pn
 
   @html_filename = "b0.html"
-  @output_dir = "data"
+  @data_dir = "data"
+  @output_dir = @data_dir
+  @input_dir = @data_dir
+
   # @config_dir_pn = Rails.root + "config" + "importers"
 
   @config_dir_pn = Rails.root + "config"
@@ -33,6 +36,8 @@ class ConfigUtils
 
   @output_dir_pn = Rails.root + @output_dir
   @export_output_dir_pn = @output_dir_pn + "export"
+
+  @input_dir_pn = Rails.root + @input_dir
 
   @config_pn = @importer_config_dir_pn + "config.json"
 
@@ -69,6 +74,10 @@ class ConfigUtils
       @output_dir_pn
     end
 
+    def input_dir_pn
+      @input_dir_pn
+    end
+
     def export_output_dir_pn
       @export_output_dir_pn
     end
@@ -99,6 +108,10 @@ class ConfigUtils
 
     def output_dir
       @output_dir
+    end
+
+    def input_dir
+      @input_dir
     end
 
     def config_pn

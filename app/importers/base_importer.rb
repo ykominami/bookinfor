@@ -135,7 +135,15 @@ class BaseImporter
   def select_valid_data(x, date_field, unique_field, ac_klass, data_array)
     target = x[date_field]
     if target.instance_of?(String)
-      target_date = Date.parse(target)
+      begin
+        target_date = Date.parse(target)
+      rescue Date::Error => exc
+        puts("0 Date parse error: #{exc.message} target=#{target}")
+        target_data = ""
+      rescue StandardError => exc
+        logger.fatal("1 Date parse error: #{exc.message} target=#{target}")
+        target_data = nil
+      end
     else
       target_date = target
     end
