@@ -5,6 +5,61 @@ require "pp"
 namespace :data do
   require Rails.root + "config/environment.rb"
 
+  # desc "data download url list and data"
+  # task :download, ["cmd", "searchfile"] do |task, args|
+  desc "get"
+  task :get, ["file"] do |task, args|
+    # puts args.file
+    case args.file
+    when :all 
+      puts ":all"
+      ret_all = true
+    when ":all"
+      puts ":all 2"
+      ret_all = true
+    else
+      puts "etc #{args.file}"
+      ret_all = false
+    end
+
+    files_pn = nil
+    input_dir_pn = ConfigUtils.input_dir_pn
+    data_dir_pn = input_dir_pn.join("api")
+
+    files_pn = if ret_all
+      data_dir_pn.children
+    else
+      [ data_dir_pn.join(args.file) ]
+    end
+    
+    files_pn.each do |input_file_pn|
+      content = input_file_pn.read
+      json = JSON.parse(content)
+      puts "json.size=#{json.size}"
+      case json.size
+      when 0
+        puts json 
+      when 1
+        puts json 
+      else
+        json.each{ |item|
+	  p "item=#{item}"
+	  #
+	  item.each_with_index do |obj, index|
+	    k, v = obj
+	    # puts v
+	    # next if v == nil || v =~ /\s*|}/
+            break if index == 0 && (v == nil || (v.instance_of?(String) && v =~ /\s+/))
+	    next if v == nil
+	    puts "# k=#{k} index=#{index} v=#{v}"
+	    puts v
+          end
+	  puts "=================================="
+        }
+      end 
+    end
+  end
+
   desc "data download url list and data"
   task :download, ["cmd", "searchfile"] do |task, args|
     if args.cmd == nil
@@ -136,4 +191,5 @@ namespace :data do
   task :export_import do
     AllExporter.new(:import)
   end
+
 end
