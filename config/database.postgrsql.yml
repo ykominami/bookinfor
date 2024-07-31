@@ -24,8 +24,6 @@ default: &default
   host: localhost
   username: postgres
   password: passw@rd
-  port: 5432
-  # port: 5433
 development:
   <<: *default
   database: bookinfo_development
