@@ -1,5 +1,5 @@
 class EfgsController < ApplicationController
-  before_action :set_efg, only: %i[ show edit update destroy ]
+  before_action :set_efg, only: %i[show edit update destroy]
 
   # GET /efgs or /efgs.json
   def index
@@ -12,8 +12,7 @@ class EfgsController < ApplicationController
   end
 
   # GET /efgs/1 or /efgs/1.json
-  def show
-  end
+  def show; end
 
   # GET /efgs/new
   def new
@@ -21,8 +20,7 @@ class EfgsController < ApplicationController
   end
 
   # GET /efgs/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /efgs or /efgs.json
   def create

@@ -3,31 +3,25 @@ module KindlelistsHelper
     attr_reader :header, :body, :name
 
     def initialize(name, kindlelists, view_context)
+      @logger = LoggerUtils.logger
+
       @name = name
       @kindlelists = kindlelists
       @view_context = view_context
       # @keys = %i(asin title publisher author publish_date purchase_date read_status category)
       # @keys = %i(read_status category title publisher author publish_date asin)
-      @keys = %i(read_status category title)
+      @keys = %i[read_status category title]
       key_header = { read_status: "re" }
-      @header = @keys.map { |key|
+      @header = @keys.map do |key|
         value = key_header[key]
-        # p value
-        value ? value : key.to_s
-      }
-      @body = @kindlelists.map { |item|
+        # @logger.debug value
+        value || key.to_s
+      end
+      @body = @kindlelists.map do |item|
         array = []
-        p item
-        @keys.each_with_index { |key, index|
-          # p key.class
-          # if key == :read_status
-          if key == :read_status
-            # item[key] = render_to_string LinkButttonComponent.new(label: "finish", url: "/abc")
-            item[key] = 0 unless item[key]
-            # item[key] = LinkButtonComponent.new(label: "#{key}", url: "/abc").render_in(@view_context)
-          else
-            # item[key] = key.size
-          end
+        @logger.debug item
+        @keys.each_with_index do |key, index|
+          item[key] = 0 if key == :read_status && item[key].nil?
 
           case index
           when 0
@@ -43,10 +37,10 @@ module KindlelistsHelper
           else
             array << { str: item[key], attr: "" }
           end
-        }
+        end
         array
-      }
-      p @body
+      end
+      @logger.debug @body
     end
   end
 end

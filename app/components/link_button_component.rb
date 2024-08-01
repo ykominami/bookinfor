@@ -22,5 +22,4 @@ class LinkButtonComponent < ApplicationComponent
   # def call
   #   link_to @label, @url, class: choose_size
   # end
-
 end

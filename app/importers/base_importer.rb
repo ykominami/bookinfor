@@ -1,11 +1,13 @@
 class BaseImporter
   def initialize(vx, keys, ks)
+    @logger = LoggerUtils.logger()
+
     @vx = vx
-    # p "BaseImporter keys=#{keys}"
+    @logger.debug "BaseImporter keys=#{keys}"
     @keys = keys
     @delkeys = @keys["remove"]
     @ks = ks
-    @ignore_fields ||= %W()
+    @ignore_fields ||= %w[]
   end
 
   def set_assoc(x, klass, oldname, newname)
@@ -16,84 +18,83 @@ class BaseImporter
       x[key] = s.id
     else
       x[key] = 1
-      # p x
+      # @logger.debug x
     end
   end
 
-  def set_readstatus(x)
+  def readstatus=(x)
     status = x["status"]
-    # p "set_readstatus status=#{status}"
-    if status
-      status = Readstatus.find_by(name: status)
-      x["readstatus_id"] ||= (status != nil ? status.first.id : 1)
-    end
+    # @logger.debug "readstatus= status=#{status}"
+    return if status.nil?
+
+    status = Readstatus.find_by(name: status)
+    x["readstatus_id"] ||= (status.nil? ? 1 : status.first.id)
   end
 
-  def xf_supplement(target, x, base_number = nil)
-  end
+  def xf_supplement(target, x, base_number = nil); end
 
   def detect_blank(inst, x)
     inst.detect_blank(x, x)
   end
 
-  def select_valid_data_x(x, data_array)
-  end
+  def select_valid_data_x(x, data_array); end
 
   def xf(key, mode = :register)
     @detector = DetectorImporter.new()
     data_array = []
     @key = key
 
-    if @vx[:category] == nil ||
-       @vx[:category][@name] == nil
+    if @vx[:category].nil? ||
+       @vx[:category][@name].nil?
       return
     end
 
     @ignore_fields.map { |field| @detector.register_ignore_blank_field(field) }
-    # p @ignore_fields
-    # p @detector.ignore_blank_keys
+    # @lpgger.debug @ignore_fields
+    # @logger.debug @detector.ignore_blank_keys
 
     json = load_data()
     new_json = @detector.detect_replace_key(json, @keys["key_replace"])
-    new_json_2 = @detector.cmoplement_key(new_json, @keys["key_complement"])
+    new_json_second = @detector.cmoplement_key(new_json, @keys["key_complement"])
 
-    # p "import_date=#{import_date}"
-    new_json_2.map { |x|
+    # @logger.debug "import_date=#{import_date}"
+    new_json_second.map do |x|
       @delkeys.map { |k| x.delete(k) }
 
       xf_supplement(x, x)
 
-      x.map { |k, v|
+      x.map do |k, _v|
         next if @ignore_fields.find(k)
+
         @detector.find_duplicated_field_value(x, k, x)
-      }
+      end
       x.delete("")
       detect_blank(@detector, x)
 
       # @detector.detect_blank(x, x)
 
-      set_readstatus(x)
+      readstatus=x
 
       select_valid_data_x(x, data_array)
       # select_valid_data(x, "purchase_date", "asin", Kindlelist, data_array)
-      #exit
-    }
-    count = @detector.show_detected()
-    if mode == :register && count == 0 && data_array.size > 0
-      @ar_klass.insert_all(data_array)
+      # exit
     end
+    count = @detector.show_detected()
+    return unless mode == :register && count.zero? && data_array.size.positive?
+
+    @ar_klass.insert_all(data_array)
   end
 
   def show(key, index)
     path = @vx[key][index]
-    json = JSON.parse(File.read(path))
-    # p json
+    JSON.parse(File.read(path))
+    # @logger.info json
   end
 
   def load_data
     item = @vx[:key][@key]
     path = item.full_path
-    # puts "load_data path=#{path}"
+    # @logger.debug "load_data path=#{path}"
     # raise
 
     JsonUtils.parse(path)
@@ -101,60 +102,58 @@ class BaseImporter
 
   def valid_date?(target_date)
     if ConfigUtils.use_import_date?
-      # p "kindle_importer valid_date? 1"
+      # @logger.debug "kindle_importer valid_date? 1"
       @import_date.before? target_date
     else
-      # p "kindle_importer valid_date? 2"
+      # @logger.debug "kindle_importer valid_date? 2"
       true
     end
   end
 
-  def get_import_date
+  def import_date
     date_str = @import_date
-    # p "date_str=#{date_str}"
     if date_str && date_str != ""
-      # p "get_import_date 1"
       import_date = Date.parse(date_str)
     else
-      # p "get_import_date 2"
       import_date = Date.new(1970, 1, 1)
     end
-    # baseline = Date.new(2023, 7, 10)
     import_date
   end
 
-  def append_data(x, data_array, use_check = true)
+  def append_data(x, data_array, use_check: true)
     if use_check
       detect_blank(@detector, x)
       data_array << x
     else
-      puts "append_data check_flag=true"
+      @logger.debug "append_data use_check=true"
     end
   end
 
   def select_valid_data(x, date_field, unique_field, ac_klass, data_array)
     target = x[date_field]
+    return if UtilUtils.nil_or_empty_string?(target)
+
     if target.instance_of?(String)
       begin
         target_date = Date.parse(target)
       rescue Date::Error => exc
-        puts("0 Date parse error: #{exc.message} target=#{target}")
-        target_data = ""
+        @logger.debug("0 Date parse error: #{exc.message} target=#{target}")
+        ""
       rescue StandardError => exc
-        logger.fatal("1 Date parse error: #{exc.message} target=#{target}")
-        target_data = nil
+        @logger.debug("1 Date parse error: #{exc.message} target=#{target}")
+        nil
       end
+      return if UtilUtils.nil_or_empty_string?(target)
+
     else
       target_date = target
     end
-    if valid_date?(target_date)
-      value = x[unique_field]
-      if ac_klass.find_by(unique_field.to_sym => value) != nil
-        # p "=1 value=#{value}"
-      else
-        # p "2 value=#{value}"
-        append_data(x, data_array)
-      end
-    end
+
+    return unless target_date.instance_of?(Date)
+
+    return unless valid_date?(target_date)
+
+    value = x[unique_field]
+    append_data(x, data_array) unless ac_klass.find_by(unique_field.to_sym => value)
   end
 end

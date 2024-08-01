@@ -1,7 +1,7 @@
 module ShapesHelper
-  def get_list
+  def list
     Hash[Shape.all.map { |x| [x.name, x.id] }]
   end
 
-  module_function :get_list
+  module_function :list
 end
