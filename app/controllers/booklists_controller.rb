@@ -1,7 +1,7 @@
 class BooklistsController < ApplicationController
-  before_action :set_booklist, only: %i[ show edit update destroy index index2 index3 ]
+  before_action :set_booklist, only: %i[show edit update destroy index index2 index3]
   #  before_action :set_booklist, only: %i[ show edit update destroy]
-  before_action :set_select_options, only: %i[ new edit index ]
+  before_action :set_select_options, only: %i[new edit index]
 
   def index3
     ind = params[:ind]
@@ -32,11 +32,8 @@ class BooklistsController < ApplicationController
     @ind_next = ind_next
     respond_to do |format|
       format.turbo_stream { render "index2", ind_next: ind_next }
-      #
       format.json { render :show, status: :created, location: @booklist }
-      #
       format.html { render "index2" }
-      #
     end
   end
 
@@ -67,7 +64,7 @@ class BooklistsController < ApplicationController
     @booklists = @search.result.page(params[:page])
 
     respond_to do |format|
-      format.html { }
+      format.html {}
       format.json { render :show, status: :created, location: @kindlelist }
     end
   end
@@ -87,8 +84,7 @@ class BooklistsController < ApplicationController
   end
 
   # GET /booklists/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /booklists or /booklists.json
   def create
@@ -96,11 +92,11 @@ class BooklistsController < ApplicationController
     year = @booklist.purchase_date.year
     #    @booklist.xid = BooklistsHelper::get_next_xid(year)
     @booklist.xid = get_next_xid(year)
-    p "@booklist.xid=#{@booklist.xid}"
+    logger.debug "@booklist.xid=#{@booklist.xid}"
 
     # @booklist.totalID = "#{year}#{sprintf("%03d", @booklist.xid.to_i)}"
     @booklist.totalID = @booklist.xid
-    p "@booklist.totalID=#{@booklist.totalID}"
+    logger.debug "@booklist.totalID=#{@booklist.totalID}"
 
     if @booklist.save
       flash.now.notice = "Booklistに登録しました。"
@@ -108,8 +104,8 @@ class BooklistsController < ApplicationController
       respond_to do |format|
         # format.html { redirect_to booklist_url(@booklist), notice: "Booklistに登録しました。" }
         # format.html { render BooklistComponent.new("Booklist component X", Booklist, params) }
-        format.html { }
-        format.turbo_stream { }
+        format.html {}
+        format.turbo_stream {}
         format.json { render :update, status: :created, location: @booklist }
       end
     else
@@ -128,8 +124,8 @@ class BooklistsController < ApplicationController
         flash.now.notice = "booklistを更新しました。"
         # format.html { redirect_to booklist_url(@booklist), notice: "Booklistを更新しました。" }
         # format.html { render BooklistComponent.new("Booklist component X", Booklist, params) }
-        format.html { }
-        format.turbo_stream { }
+        format.html {}
+        format.turbo_stream {}
         # format.turbo_stream { render :update, status: :ok, location: @booklist }
         format.json { render :show, status: :ok, location: @booklist }
       else
@@ -145,8 +141,8 @@ class BooklistsController < ApplicationController
 
     respond_to do |format|
       # format.html { redirect_to booklists_url, notice: "Booklistを削除しました。" }
-      format.html { }
-      format.turbo_stream { }
+      format.html {}
+      format.turbo_stream {}
       format.json { head :no_content }
     end
   end
@@ -184,7 +180,7 @@ class BooklistsController < ApplicationController
     list = Booklist.where(purchase_date: start_date..end_date).pluck(:xid)
     max_number = 0
     max_number = list.max if list
-    max_number = 0 unless max_number
+    max_number ||= 0
     max_number + 1
   end
 end
