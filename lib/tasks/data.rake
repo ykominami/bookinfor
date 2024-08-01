@@ -1,6 +1,5 @@
 require "pathname"
 require "json"
-require "pp"
 
 namespace :data do
   require Rails.root + "config/environment.rb"
@@ -8,10 +7,10 @@ namespace :data do
   # desc "data download url list and data"
   # task :download, ["cmd", "searchfile"] do |task, args|
   desc "get"
-  task :get, ["file"] do |task, args|
+  task :get, ["file"] do |_task, args|
     # puts args.file
     case args.file
-    when :all 
+    when :all
       puts ":all"
       ret_all = true
     when ":all"
@@ -21,52 +20,45 @@ namespace :data do
       puts "etc #{args.file}"
       ret_all = false
     end
-
-    files_pn = nil
     input_dir_pn = ConfigUtils.input_dir_pn
     data_dir_pn = input_dir_pn.join("api")
 
     files_pn = if ret_all
-      data_dir_pn.children
-    else
-      [ data_dir_pn.join(args.file) ]
-    end
-    
+                 data_dir_pn.children
+               else
+                 [data_dir_pn.join(args.file)]
+               end
+
     files_pn.each do |input_file_pn|
       content = input_file_pn.read
       json = JSON.parse(content)
       puts "json.size=#{json.size}"
       case json.size
-      when 0
-        puts json 
-      when 1
-        puts json 
+      when 0 | 1
+        puts json
       else
-        json.each{ |item|
-	  p "item=#{item}"
-	  #
-	  item.each_with_index do |obj, index|
-	    k, v = obj
-	    # puts v
-	    # next if v == nil || v =~ /\s*|}/
-            break if index == 0 && (v == nil || (v.instance_of?(String) && v =~ /\s+/))
-	    next if v == nil
-	    puts "# k=#{k} index=#{index} v=#{v}"
-	    puts v
+        json.each do |item|
+          p "item=#{item}"
+          item.each_with_index do |obj, index|
+            k, v = obj
+            break if index.zero? && (v.nil? || (v.instance_of?(String) && v =~ /\s+/))
+            next if v.nil?
+
+            puts "# k=#{k} index=#{index} v=#{v}"
+            puts v
           end
-	  puts "=================================="
-        }
-      end 
+          puts "=================================="
+        end
+      end
     end
   end
 
   desc "data download url list and data"
-  task :download, ["cmd", "searchfile"] do |task, args|
-    if args.cmd == nil
-      cmd = :ALL
-    end
+  task :download, ["cmd", "searchfile"] do |_task, args|
+    cmd = args.cmd
+    cmd = "all" if cmd.nil?
 
-    cmd_downcase = args.cmd.downcase
+    cmd_downcase = cmd.downcase
     case cmd_downcase
     when "all"
       cmd = :ALL
@@ -100,7 +92,7 @@ namespace :data do
     importer_config_dir_pn = ConfigUtils.importer_config_dir_pn
 
     search_file_pn = nil
-    
+
     if args.searchfile
       search_file_pn = importer_config_dir_pn + args.searchfile
       unless search_file_pn.exist?
@@ -108,7 +100,7 @@ namespace :data do
         exit(11)
       end
     end
-    search_file_pn = importer_config_dir_pn + "search.json" unless search_file_pn
+    search_file_pn ||= importer_config_dir_pn + "search.json"
     # puts "search_file_pn=#{search_file_pn}"
     # puts "cmd=#{cmd}"
     # exit(0)
@@ -121,23 +113,26 @@ namespace :data do
 
   desc "import data"
   task :import, ["search_file", "datalist_file", "local_file"] do |_, args|
-    # puts "search_file=#{args.search_file}"
+    puts "0 args.search_file=#{args.search_file}"
     # puts "datalist_file=#{args.datalist_file}"
     # puts "local_file=#{args.local_file}"
     ConfigUtils.use_import_date = false
 
     importer_config_dir_pn = ConfigUtils.importer_config_dir_pn
+    p "importer_config_dir_pn=#{importer_config_dir_pn}"
+
     output_dir_pn = ConfigUtils.output_dir_pn
     datalist_json_filename = ConfigUtils.datalist_json_filename
     datalist_file_pn = output_dir_pn + datalist_json_filename
 
     datalist_file_pn = UtilUtils.check_file_exist(args.datalist_file, output_dir_pn, 11) if args.datalist_file
-    search_file_pn = UtilUtils.check_file_exist(args.search_file, importer_config_dir_pn, 12) if args.search_file
-    local_file_pn  = UtilUtils.check_file_exist(args.local_file,  importer_config_dir_pn, 10) if args.local_file 
+    p "args.search_file=#{args.search_file}|"
+    search_file_pn = UtilUtils.check_file_exist(args.search_file, importer_config_dir_pn, 12) unless UtilUtils.nil_or_empty_string?(args.search_file)
+    local_file_pn  = UtilUtils.check_file_exist(args.local_file,  importer_config_dir_pn, 10) if args.local_file
 
-    if UtilUtils.nil_or_empty?(search_file_pn)
-      search_file_pn = ConfigUtils.search_json_pn
-    end
+    p "1 search_file_pn=#{search_file_pn}"
+    search_file_pn = ConfigUtils.search_json_pn if UtilUtils.nil_or_empty?(search_file_pn)
+    p "2 search_file_pn=#{search_file_pn}"
     importertop = TopImporter.new(datalist_file_pn, search_file_pn, local_file_pn)
     importertop.execute()
   end
@@ -191,5 +186,4 @@ namespace :data do
   task :export_import do
     AllExporter.new(:import)
   end
-
 end

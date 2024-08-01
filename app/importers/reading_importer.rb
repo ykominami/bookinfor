@@ -1,10 +1,12 @@
 class ReadingImporter < BaseImporter
   def initialize(vx, keys, ks, import_date)
+    @logger = LoggerUtils.get_logger()
+
     super(vx, keys, ks)
     @name = "reading"
     @ar_klass = Readinglist
     @import_date = import_date
-    @ignore_fields = %w(isbn ISBN)
+    @ignore_fields = %w[isbn ISBN]
   end
 
   def detec_blank(inst, x)
@@ -21,7 +23,7 @@ class ReadingImporter < BaseImporter
     if ret
       x["shape_id"] = ret.id
     else
-      puts "1 Can't find #{x["shape"]}"
+      @logger.debug "1 Can't find #{x["shape"]}"
       exit
     end
     x.delete("shape")

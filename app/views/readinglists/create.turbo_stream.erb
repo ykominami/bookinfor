@@ -1,5 +1,4 @@
 <%= turbo_stream.prepend "readinglists" do %>
-  <% p @readinglist %>
   <%= render partial: @readinglist %>
 <% end %>
 <%= turbo_stream.update Readinglist.new, "" %>

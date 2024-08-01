@@ -2,10 +2,10 @@ class KindleImporter < BaseImporter
   def initialize(vx, keys, ks, import_date)
     super(vx, keys, ks)
     @name = "kindle"
-    @ignore_fields = %W(publisher author publish_date purchase_date read_status category)
+    @ignore_fields = %w[publisher author publish_date purchase_date read_status category]
     @ar_klass = Kindlelist
     @import_date = import_date
-    @ignore_fields = %w(publisher publish_date)
+    @ignore_fields = %w[publisher publish_date]
   end
 
   def xf_supplement(target, x, base_number = nil)

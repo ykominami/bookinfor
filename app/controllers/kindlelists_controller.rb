@@ -1,6 +1,6 @@
 class KindlelistsController < ApplicationController
-  before_action :set_kindlelist, only: %i[ show edit update destroy ]
-  before_action :set_select_options, only: %i[ new edit index create ]
+  before_action :set_kindlelist, only: %i[show edit update destroy]
+  before_action :set_select_options, only: %i[new edit index create]
 
   # GET /kindlelists or /kindlelists.json
   def index
@@ -9,14 +9,13 @@ class KindlelistsController < ApplicationController
     @kindlelists = @search.result.page(params[:page])
 
     respond_to do |format|
-      format.html { }
+      format.html {}
       format.json { render :show, status: :created, location: @kindlelist }
     end
   end
 
   # GET /kindlelists/1 or /kindlelists/1.json
-  def show
-  end
+  def show; end
 
   # GET /kindlelists/new
   def new
@@ -24,8 +23,7 @@ class KindlelistsController < ApplicationController
   end
 
   # GET /kindlelists/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /kindlelists or /kindlelists.json
   def create
@@ -35,16 +33,16 @@ class KindlelistsController < ApplicationController
       ret = false
       begin
         ret = @kindlelist.save
-      rescue => exception
-        p exception.message
+      rescue StandardError => exception
+        logger.fatal exception.message
       end
       if ret
         flash.now.notice = "Kindlelistに登録しました。"
-        format.html { }
-        format.turbo_stream { }
+        format.html {}
+        format.turbo_stream {}
         format.json { render :show, status: :created, location: @kindlelist }
       else
-        p "create ret=#{ret} 2"
+        logger.debug "create ret=#{ret} 2"
         format.html { render :new, status: :unprocessable_entity }
         format.turbo_stream { render :new, status: :unprocessable_entity }
         format.json { render json: @kindlelist.errors, status: :unprocessable_entity }
@@ -57,8 +55,8 @@ class KindlelistsController < ApplicationController
     respond_to do |format|
       if @kindlelist.update(kindlelist_params)
         flash.now.notice = "kindlelistを更新しました。"
-        format.html { }
-        format.turbo_stream { }
+        format.html {}
+        format.turbo_stream {}
         format.json { render :show, status: :ok, location: @kindlelist }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -73,8 +71,8 @@ class KindlelistsController < ApplicationController
     @kindlelist.destroy
 
     respond_to do |format|
-      format.html { }
-      format.turbo_stream { }
+      format.html {}
+      format.turbo_stream {}
       format.json { head :no_content }
     end
   end
