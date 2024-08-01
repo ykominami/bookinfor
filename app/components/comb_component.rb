@@ -2,6 +2,6 @@
 
 class CombComponent < ApplicationComponent
   def initialize(name:)
-     @name = name
+    @name = name
   end
 end

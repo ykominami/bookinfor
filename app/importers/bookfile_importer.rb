@@ -1,21 +1,23 @@
 class BookfileImporter < BookImporter
   def initialize(vx, keys, ks, import_date, path_hash)
+    @logger = LoggerUtils.logger()
+
     super(vx, keys, ks, import_date)
     @path_hash = path_hash
   end
 
   def load_data(item:, year: nil)
     year_str = %(#{year})
-    #p year_str
-    #p @path_hash
+    # @logger.debug  year_str
+    # @logger.debug  @path_hash
     # raise
     content = @path_hash[year_str]
-    if content && content.strip.size > 0
+    if content && content.strip.size.positive?
       JsonUtils.parse(content)
     else
-      # puts "year_str=#{year_str}"
-      # puts "content=#{content}"
-      raise
+      # @logger.debug "year_str=#{year_str}"
+      # @logger.debug "content=#{content}"
+      # raise
       ""
     end
   end

@@ -6,5 +6,4 @@ class ComcComponent < ApplicationComponent
     @zid = zid
     @s = s
   end
-
 end
