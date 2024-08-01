@@ -1,6 +1,6 @@
 class ReadinglistsController < ApplicationController
-  before_action :set_readinglist, only: %i[ show edit update destroy ]
-  before_action :set_select_options, only: %i[ index new edit ]
+  before_action :set_readinglist, only: %i[show edit update destroy]
+  before_action :set_select_options, only: %i[index new edit]
 
   # GET /readinglists or /readinglists.json
   def index
@@ -8,7 +8,7 @@ class ReadinglistsController < ApplicationController
     @search.sorts = "register_date desc" if @search.sorts.empty?
     @readinglists = @search.result.page(params[:page])
     # @new_readinglist = Readinglist.new
-    # p @kindlelists
+    # logger.debug @kindlelists
     # @readstatus_list = ReadstatusesHelper::get_list()
     # @category_list = CategoriesHelper::get_list()
     # @shape_list = ShapesHelper::get_list()
@@ -19,14 +19,13 @@ class ReadinglistsController < ApplicationController
     respond_to do |format|
       # format.html { render TblComponent.new(name: readinglist.name, header: readinglist.header, body: readinglist.body) }
       # format.html { render TblComponent.new(name: readinglist.name, header: readinglist.header, body: readinglist.body) }
-      format.html { }
+      format.html {}
       format.json { render :show, status: :created, location: @kindlelist }
     end
   end
 
   # GET /readinglists/1 or /readinglists/1.json
-  def show
-  end
+  def show; end
 
   # GET /readinglists/new
   def new
@@ -45,23 +44,23 @@ class ReadinglistsController < ApplicationController
     @readinglist = Readinglist.new(readinglist_params)
     @readinglist["register_date"] = Date.today
     @readinglist["status"] = @readinglist.readstatus.name
-    p @readinglist
+    logger.debug @readinglist
 
     respond_to do |format|
       ret = false
       begin
         ret = @readinglist.save!
-      rescue => exception
-        p exception.message
+      rescue StandardError => exception
+        logger.fatal exception.message
       end
       if ret
         format.html { render }
         format.turbo_stream { render }
         format.json { render :show, status: :created, location: @kindlelist }
       else
-        @readstatus_list = ReadstatusesHelper::get_list()
+        @readstatus_list = ReadstatusesHelper.list()
         # @category_list = CategoriesHelper::get_list()
-        p "create ret=#{ret} 2"
+        logger.debug "create ret=#{ret} 2"
         format.html { render :new, status: :unprocessable_entity }
         format.turbo_stream { render :new, status: :unprocessable_entity }
         format.json { render json: @kindlelist.errors, status: :unprocessable_entity }
@@ -73,7 +72,7 @@ class ReadinglistsController < ApplicationController
   def update
     respond_to do |format|
       if @readinglist.update(readinglist_params)
-        format.html { }
+        format.html {}
         format.turbo_stream { render action: "show" }
         format.json { render :show, status: :ok, location: @kindlelist }
       else
@@ -90,8 +89,8 @@ class ReadinglistsController < ApplicationController
     flash.now.notice = "bookを作治しました"
 
     respond_to do |format|
-      format.html { }
-      format.turbo_stream { }
+      format.html {}
+      format.turbo_stream {}
       format.json { head :no_content }
     end
   end
