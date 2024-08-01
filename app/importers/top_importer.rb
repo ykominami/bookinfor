@@ -2,7 +2,9 @@ require "json"
 
 class TopImporter
   def initialize(datalist_file_pn, search_file_pn = nil, local_file_pn = nil)
-    puts "TopImporter init search_file_pn=#{search_file_pn}"
+    @logger = LoggerUtils.logger()
+
+    @logger.debug "TopImporter init search_file_pn=#{search_file_pn}"
     config_pn = ConfigUtils.config_pn
     state_pn = ConfigUtils.state_pn
 
@@ -21,7 +23,7 @@ class TopImporter
     @xkeys = obj["xkeys"]
     make_map
 
-    # p "@local_file_pn=#{@local_file_pn}"
+    # @logger.debug "@local_file_pn=#{@local_file_pn}"
     @local_files = JsonUtils.parse(@local_file_pn) if local_file_pn
 
     @state = JsonUtils.parse(state_pn)
@@ -32,23 +34,23 @@ class TopImporter
     begin
       date_str = @state["import_date"][key]
       ret = Date.parse(date_str)
-    rescue => exception
-      # p exception.message
+    rescue StandardError => exception
+      @logger.fatal exception.message
     end
 
     ret
   end
 
-  def execute()
+  def execute
     search_item = JsonUtils.parse(@search_file_pn)
     # exit
     list = @datalist.datax(@vx, search_item)
 
-    list.map { |importer_kind, value|
+    list.map do |importer_kind, value|
       importer_kind_x, ext = importer_kind.split("_")
 
-      value.map { |key2, value2|
-        # puts "importer_kind_x=#{importer_kind_x}"
+      value.map do |_key2, value2|
+        # @logger.debug "importer_kind_x=#{importer_kind_x}"
         if ext
           importerkind = "#{importer_kind_x}#{ext}"
           path = @local_files[importer_kind]
@@ -62,34 +64,24 @@ class TopImporter
         # raise
 
         case importer_kind_x
-        when "reading"
-          value2.map { |data_key|
+        when "reading" | "kindle" | "calibre"
+          value2.map do |data_key|
             # importer.xf_reading(data_key, :register)
             importer.xf(data_key, :register)
-          }
-        when "kindle"
-          value2.map { |data_key|
-            # importer.xf_kindle(data_key, :register)
-            importer.xf(data_key, :register)
-          }
-        when "calibre"
-          value2.map { |data_key|
-            # importer.xf_calibre(data_key, :register)
-            importer.xf(data_key, :register)
-          }
+          end
         when "book"
           # raise
-          value2.map { |data_key|
+          value2.map do |data_key|
             importer.xf_booklist(key: data_key, mode: :register)
-          }
+          end
         when "api"
-          puts "Not implemented Importer for api"
+          @logger.debug "Not implemented Importer for api"
         else
-          puts "Invalid category #{key}"
+          @logger.debug "Invalid category #{key}"
           raise
         end
-      }
-    }
+      end
+    end
   end
 
   def make(kind, name, import_date, path = nil)
@@ -120,9 +112,9 @@ class TopImporter
   end
 
   def make_map
-    @keys.map { |k|
+    @keys.map do |k|
       @ks[k] = k_check_x(k, @vx, 1)
-    }
+    end
     @ks
   end
 
@@ -131,8 +123,8 @@ class TopImporter
   end
 
   def k_check_x(key, hs, index)
-    hs[:key].keys.select { |k|
+    hs[:key].keys.select do |k|
       key_check_x(k, key, index)
-    }
+    end
   end
 end

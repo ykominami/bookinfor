@@ -1,0 +1,130 @@
+
+require:
+  - rubocop-rake
+  - rubocop-rspec
+
+inherit_from: .rubocop_todo.yml
+
+AllCops:
+  TargetRubyVersion: 3.0 
+  NewCops: enable
+
+  # DisplayCopNames: true
+  #
+  StyleGuideBaseURL: https://github.com/fortissimo1997/ruby-style-guide/blob/japanese/README.ja.md
+  #
+  # 結果のsuggest部分を非表示にする
+  SuggestExtensions: false
+  # rubocopの対象外ファイル
+  Exclude:
+    - "Gemfile"
+    - "bin/**/*"
+    - "db/**/*"
+    - "log/**/*"
+    - "tmp/**/*"
+    - "vendor/**/*"
+    - "lib/tasks/auto_annotate_models.rake"
+    - "config/environments/*"
+    - "config/puma.rb"
+    - "root/**/*"
+    - "test_data/**/*"
+    - "test_data_y/**/*"
+    - "test_other/**/*"
+    - "test_output/**/*"
+    - "tmp/**/*"
+    - "pkg/**/*"
+    - "docs/**/*"
+
+
+Naming:
+  AccessorMethodName:
+    Enabled: false
+  RescuedExceptionsVariableName:
+    PreferredName: exc
+# frozen_string_literal: trueが付かないようにする
+  VariableNumber:
+    EnforcedStyle: 'snake_case'
+#  Department:
+#    Enabled: false # 無効にする
+#    # Severity: warning # 警告レベルを下げる (デフォルトはerror)
+
+
+Layout:
+  # メソッド名をcamelCase に設定します
+  MethodName:
+    #  EnforcedStyle: camelCase
+    EnforcedStyle: snake_case
+  # 一行に 120 文字まで書いても OK とする
+  LineLength:
+    #  Max: 120
+    # Max: 150
+    # Max: 170
+    Max: 250
+    # max: 200
+
+Metrics:
+  ClassLength:
+    Max: 440 # クラスの最大行数をここで設定
+
+Style:
+  ClassAndModuleChildren:
+    Enabled: false
+
+  GuardClause:
+    Enabled: false
+  # 日本語のコメントを OK とする
+  AsciiComments:
+    Enabled: false
+
+  BlockComments:
+    Enabled: false
+
+  # class documentation commentのアラートを出さない
+  Documentation:
+    Enabled: false
+
+  Naming:
+    RescuedExceptionsVariableName: exc
+
+  StringLiterals:
+    Enabled: true
+    EnforcedStyle: double_quotes
+
+  StringLiteralsInInterpolation:
+    Enabled: true
+    EnforcedStyle: double_quotes
+
+  FrozenStringLiteralComment:
+    Enabled: false
+
+  RedundantBegin:
+    Enabled: false
+
+  #追加
+  StringConcatenation:
+    Enabled: false
+
+  IfWithBooleanLiteralBranches:
+    Enabled: false
+
+  IfUnlessModifier:
+    Exclude:
+
+Lint:
+  DuplicateRegexpCharacterClassElement:
+    Enabled: false
+
+#追加
+
+#
+# RSpec:
+  #SpecFilePathFormat:
+  #  Enabled: true
+  #SpecFilePathSuffix:
+  #  Enabled: true
+#
+
+#DisplayCopNames: true
+#
+
+

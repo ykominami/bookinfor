@@ -1,5 +1,5 @@
 class AbcsController < ApplicationController
-  before_action :set_abc, only: %i[ show edit update destroy ]
+  before_action :set_abc, only: %i[show edit update destroy]
 
   # GET /abcs or /abcs.json
   def index
@@ -12,11 +12,11 @@ class AbcsController < ApplicationController
     @abcs = Abc.all
     name = "Table 1"
     header = ["話題", "スコア"]
-    choice_names = {4 => "ch_a", 5 => "ch_b", 6 => "ch_c", 7 => "ch_d"}
+    choice_names = { 4 => "ch_a", 5 => "ch_b", 6 => "ch_c", 7 => "ch_d" }
     points = [3, 2, 1, 0]
 
     AbcsHelper::Choicex.init(points, choice_names)
-    # p AbcsHelper::Choicex.get_name_values
+    # logger.debug AbcsHelper::Choicex.get_name_values
 
     ts = AbcsHelper::TotalScorex.new(header)
 
@@ -32,13 +32,12 @@ class AbcsController < ApplicationController
     ts.add_or_change(votea)
     ts.add_or_change(voteb)
     ts.add_or_change(votec)
-    
+
     render(TableComponent.new(name: name, total_score: ts))
   end
 
   # GET /abcs/1 or /abcs/1.json
-  def show
-  end
+  def show; end
 
   # GET /abcs/new
   def new
@@ -46,8 +45,7 @@ class AbcsController < ApplicationController
   end
 
   # GET /abcs/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /abcs or /abcs.json
   def create
@@ -88,13 +86,14 @@ class AbcsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_abc
-      @abc = Abc.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def abc_params
-      params.require(:abc).permit(:zid, :s)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_abc
+    @abc = Abc.find(params[:id])
+  end
+
+  # Only allow a list of trusted parameters through.
+  def abc_params
+    params.require(:abc).permit(:zid, :s)
+  end
 end

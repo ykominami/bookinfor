@@ -8,7 +8,7 @@
             </tr>
         </thead>
         <tbody>
-            <% @total_score.get_sorted_choices.each do |name, score| %>
+            <% @total_score.sorted_choices.each do |name, score| %>
             <tr>
                 <% @total_score.data[name].each do |item| %>
                 <td>
