@@ -6,11 +6,11 @@ class ConfigUtils
       @obj = @json["xkeys"]
     end
 
-    def get_keys
+    def keys
       @json["keys"]
     end
 
-    def get_class(key)
+    def class(key)
       @obj[key]["ac_klass"].constantize
     end
   end
@@ -32,7 +32,6 @@ class ConfigUtils
   @setting_pn = @importer_config_dir_pn + "setting.json"
   setting_json = JsonUtils.parse(@setting_pn)
   @src_url = setting_json["src_url"]
-  # puts "@src_url=#{@src_url}"
 
   @output_dir_pn = Rails.root + @output_dir
   @export_output_dir_pn = @output_dir_pn + "export"
@@ -44,10 +43,9 @@ class ConfigUtils
   @aux_dbtbl_pn = @importer_config_dir_pn + "aux_dbtbl.json"
 
   @datalist_json_filename = "datalist.json"
-  
+
   @search_json_filename = "search.json"
   @search_json_pn = @importer_config_dir_pn + @search_json_filename
-  # puts "Configutils @search_json_pn=#{@search_json_pn}"
   @state_pn = @importer_config_dir_pn + "state.json"
   @use_import_date = false
 
@@ -143,6 +141,5 @@ class ConfigUtils
     end
   end
 
-  def initialize()
-  end
+  def initialize; end
 end

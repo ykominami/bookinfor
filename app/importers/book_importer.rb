@@ -1,34 +1,39 @@
 class BookImporter < BaseImporter
   class BookDetectorImporter < DetectorImporter
+    def initialize
+      @logger = LoggerUtils.logger()
+    end
+
     def show_detected
-      #show_blank_fields
-      #show_duplicated_fields
-      # puts "# show_detected (ImporterBook) S"
+      # show_blank_fields
+      # show_duplicated_fields
+      # @logger.debug "# show_detected (ImporterBook) S"
 
       count = super()
       count += show_duplicated_field("title")
-      # puts "# show_detected (ImporterBook) E"
+      # @logger.debug "# show_detected (ImporterBook) E"
       count
     end
 
     def detect(target, reg_hash)
-      ret = reg_hash.find { |key, reg_array|
-        retb = reg_array.find { |reg|
+      reg_hash.find do |key, reg_array|
+        retb = reg_array.find do |reg|
           word = target[key]
           reta = reg.match(word)
-          reta != nil
-        }
-        retb != nil
-      }
-      ret
+          !reta.nil?
+        end
+        !retb.nil?
+      end
     end
 
     def detect_ignore_items(target, reg_hash)
-      detect(target, reg_hash) != nil
+      !detect(target, reg_hash).nil?
     end
   end
 
   def initialize(vx, keys, ks, import_date)
+    @logger = LoggerUtils.logger()
+
     super(vx, keys, ks)
     @detector = BookDetectorImporter.new()
     @name = "book"
@@ -36,7 +41,7 @@ class BookImporter < BaseImporter
     @import_date = import_date
     # raise
 
-    @ignore_fields = %W(isbn series comments rating identifiers)
+    @ignore_fields = %w[isbn series comments rating identifiers]
   end
 
   def select_valid_data_x(x, data_array)
@@ -61,36 +66,28 @@ class BookImporter < BaseImporter
     x["shape_id"] = x["shape"]
     case x["shape"]
     when 3
-      # p "X shape=3"
+      # @logger.debug "X shape=3"
       case x["bookstore"]
-      when "紀伊國屋書店名古屋空港店"
-        # p x["bookstore"]
-        x["shape"] = Shape.find_by(name: "CD/DVD/BD").id
-      when "TSUTAYA春日井店"
-        # p x["bookstore"]
-        # p Shape.find_by(name: "CD/DVD/BD").id
-        x["shape"] = Shape.find_by(name: "CD/DVD/BD").id
-      when "TSUTAYA春 日 井 店"
-        # p x["bookstore"]
-        # p Shape.find_by(name: "CD/DVD/BD").id
+      when "紀伊國屋書店名古屋空港店" | "TSUTAYA春日井店" | "TSUTAYA春 日 井 店"
+        # @logger.debug x["bookstore"]
         x["shape"] = Shape.find_by(name: "CD/DVD/BD").id
       when "あおい書店西春店"
-        # p x["bookstore"]
+        # @logger.debug x["bookstore"]
         # x["shape"] = Shape.find_by(name: "その他").id
       when "アマゾン(Kindle)"
-        # p "SHAPE -Kindle"
-        # p x["bookstore"]
+        # @logger.debug "SHAPE -Kindle"
+        # @logger.debug x["bookstore"]
         x["shape"] = Shape.find_by(name: "Kindle").id
-        # p "kindle =#{x["shape"]}"
+        # @logger.debug "kindle =#{x["shape"]}"
         # raise
       when "アマゾン(Kindle unlimited)"
-        # p "SHAPE -Kindle un"
-        # p x["bookstore"]
+        # @logger.debug "SHAPE -Kindle un"
+        # @logger.debug x["bookstore"]
         x["shape"] = Shape.find_by(name: "Kindle-U").id
       else
-        p "SHAPE -else"
-        p x["bookstore"]
-        p "Not found bookstore #{x["bookstore"]}"
+        @logger.debug "SHAPE -else"
+        @logger.debug x["bookstore"]
+        @logger.debug "Not found bookstore #{x["bookstore"]}"
         raise
       end
     end
@@ -113,27 +110,21 @@ class BookImporter < BaseImporter
   end
 
   def get_year_and_item(key: nil, year: nil)
-    if key != nil
-      if year != nil
-        # puts "book return 2"
-        return
-      else
-        item = @vx[:key][key]
-        year = item.year
-      end
+    if key.nil?
+      return if year.nil?
+
+      item = @vx[:category][@name][year]
     else
-      if year != nil
-        item = @vx[:category][@name][year]
-      else
-        # puts "book return 3"
-        return
-      end
+      return unless year.nil?
+
+      item = @vx[:key][key]
+      year = item.year
     end
 
-    if @vx[:category] == nil ||
-       @vx[:category][@name] == nil ||
-       @vx[:category][@name][year] == nil
-      # puts "book return 1"
+    if @vx[:category].nil? ||
+       @vx[:category][@name].nil? ||
+       @vx[:category][@name][year].nil?
+      # @logger.debug "book return 1"
       return
     end
 
@@ -142,14 +133,14 @@ class BookImporter < BaseImporter
 
   def load_data(item:, year: nil)
     path = item.full_path
-    # puts "path=#{path}"
+    # @logger.debug "path=#{path}"
     # raise
     JsonUtils.parse(path)
   end
 
-  def set_readstatus(x)
+  def readstatus=(x)
     # status = Readstatus.find_by(name: x["read_status"])
-    # p "status=#{status} read_status=#{x["read_status"]}"
+    # @logger.debug "status=#{status} read_status=#{x["read_status"]}"
     # x[:readstatus_id] = status != nil ? status.id : 1
     x[:readstatus_id] = x["read_status"].to_i + 1
     x.delete("read_status")
@@ -161,28 +152,25 @@ class BookImporter < BaseImporter
     @detector = DetectorImporter.new()
     data_array = []
 
-    if @vx[:category] == nil ||
-       @vx[:category][@name] == nil
-      return
-    end
-    # raise
+    return if @vx[:category].nil? || @vx[:category][@name].nil?
 
     @ignore_fields.map { |field| @detector.register_ignore_blank_field(field) }
 
     array = get_year_and_item(key: key, year: year)
     return unless array
+
     year, item = array
 
     base_number = year * 1000
     # raise
     json = load_data(item: item, year: year)
-    # pp json
+    # @logger.debug json
     # raise
     new_json = @detector.detect_replace_key(json, @keys["key_replace"])
-    new_json_2 = @detector.cmoplement_key(new_json, @keys["key_complement"])
+    new_json_second = @detector.cmoplement_key(new_json, @keys["key_complement"])
 
-    new_json_2.map { |x|
-      # p x
+    new_json_second.map do |x|
+      # @logger.debug x
       # raise
       @delkeys.map { |k| x.delete(k) }
       if x["totalid"]
@@ -190,26 +178,20 @@ class BookImporter < BaseImporter
         x.delete("totalid")
       end
       x.delete("")
-      if x["totalID"]
-        x["totalID"] = x["xid"].to_i + base_number
-      end
-      if x["xid"]
-        x["xid"] = x["xid"].to_i + base_number
-      end
+      x["totalID"] = x["xid"].to_i + base_number if x["totalID"]
+      x["xid"] = x["xid"].to_i + base_number if x["xid"]
 
       xf_supplement(x, x)
 
       @detector.detect_blank(x, x)
 
-      set_readstatus(x)
+      readstatus=x
 
-      # p x
+      # @logger.debug x
       select_valid_data(x, "purchase_date", "asin", Booklist, data_array)
-    }
-    count = @detector.show_detected
-    if mode == :register && count == 0 && data_array.size > 0
-      @ar_klass.insert_all(data_array)
     end
+    count = @detector.show_detected
+    @ar_klass.insert_all(data_array) if mode == :register && count.zero? && data_array.size.positive?
     @detector.show_detected()
   end
 end

@@ -5,8 +5,5 @@ class HomeController < ApplicationController
   end
 
   # GET /home/1 or /home/1.json
-  def show
-  end
-
+  def show; end
 end
-
