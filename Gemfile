@@ -87,6 +87,7 @@ group :test do
 
 end
 
+gem "foreman"
 gem "roo"
 gem "foreman"
 
