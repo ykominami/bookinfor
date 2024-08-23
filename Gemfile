@@ -100,3 +100,5 @@ gem 'csv'
 gem 'tilt'
 gem 'ykutils', "0.1.10"
 
+gem "sqlite3"
+
