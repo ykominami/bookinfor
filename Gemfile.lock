@@ -379,6 +379,7 @@ DEPENDENCIES
   rubocop-rspec
   selenium-webdriver (= 4.23.0)
   sprockets-rails
+  sqlite3
   stimulus-rails
   tilt
   turbo-rails
