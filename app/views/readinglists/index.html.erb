@@ -19,11 +19,11 @@
           <div class="row py-2">
             <div class="col-2 my-auto"" >
               <%= f.label :readstatus_id, style: "display: block" %>
-              <%= f.select :readstatus_id_eq, @readstatus_list %>
+              <%= f.select :readstatus_id_eq, options_from_collection_for_select(@readstatus_list, :id, :name, 1), include_blank: true %>
             </div>
 
             <div class="col-2 my-auto"" >
-              <%= f.label :register_date, style: "display: block" %>
+              <%= f.label :date, style: "display: block" %>
               <%= f.date_field :date_eq %>
             </div>
             
@@ -34,7 +34,7 @@
 
             <div class="col-2 my-auto"" >
               <%= f.label :shape, style: "display: block" %>
-              <%= f.select :shape_id_eq, @shape_list %>
+              <%= f.select :readstatus_id_eq, options_from_collection_for_select(@shape_list, :id, :name, 1), include_blank: true %>
             </div>
 
             <div class="col-4 d-flex align-items-end" >
@@ -54,7 +54,7 @@
           <%= sort_link(@search, :readstatus_id) %>
         </div>
         <div class="col-4 mt-auto">
-          <%= sort_link(@search, :register_date) %>
+          <%= sort_link(@search, :date) %>
         </div>
         <div class="col-4 mt-auto">
           <%= sort_link(@search, :title) %>
