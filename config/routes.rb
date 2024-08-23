@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   resources :efgs
   get "booklists/displayx(/:ind)" => "booklists#displayx"
+  get "booklists/finish(/:ind)" => "booklists#finish"
   get "home/index" => "home#show"
   get "booklists/index2(/:ind)" => "booklists#index2"
   get "booklists/index3(/:ind)" => "booklists#index3"
