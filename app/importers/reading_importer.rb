@@ -1,6 +1,6 @@
 class ReadingImporter < BaseImporter
   def initialize(vx, keys, ks, import_date)
-    @logger = LoggerUtils.get_logger()
+    @logger = LoggerUtils.logger
 
     super(vx, keys, ks)
     @name = "reading"
