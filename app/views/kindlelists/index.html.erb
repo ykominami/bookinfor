@@ -1,6 +1,9 @@
 <p style="color: green"><%= notice %></p>
 
 <h1>Kindlelists</h1>
+<%= turbo_frame_tag "kindle_form" do %>
+  <%= render "form_comp", kl: paginatex[0] %>
+<% end %>
   <div class="card shadow mt-3" >
     <div class="card-header">
     </div>
@@ -37,16 +40,6 @@
               <%= f.label :category_id, style: "display: block" %>
               <%= f.select :category_id_eq, options_from_collection_for_select(@category_list, :id, :name, 1), include_blank: true %>
             </div>
-
-            <div class="col-2 d-flex align-items-end" >
-              <%= f.submit "検索", class: "btn btn-outline-secondary" %>
-              <%= link_to "クリア", kindlelists_path, class: "btn btn-outline-secondary" %>
-            </div>
-          </div>
-        </div>
-      <% end %>
-    </div>
-  </div>
 
   <div class="card-body mx-3">
     <%= turbo_frame_tag "kindlelist-list" do %>
