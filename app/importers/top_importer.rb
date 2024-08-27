@@ -63,8 +63,10 @@ class TopImporter
 
         # raise
 
+        p  "execute importer_kind_x=#{importer_kind_x}"
+
         case importer_kind_x
-        when "reading" | "kindle" | "calibre"
+        when /reading|kindle|calibre/
           value2.map do |data_key|
             # importer.xf_reading(data_key, :register)
             importer.xf(data_key, :register)
