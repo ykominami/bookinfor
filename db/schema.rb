@@ -11,6 +11,8 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[7.2].define(version: 2023_08_27_042133) do
+  # These are extensions that must be enabled in order to support this database
+
   create_table "abcs", force: :cascade do |t|
     t.integer "zid", null: false
     t.string "s", null: false
@@ -47,8 +49,8 @@ ActiveRecord::Schema[7.2].define(version: 2023_08_27_042133) do
     t.datetime "updated_at", null: false
     t.integer "category_id", null: false
     t.integer "readstatus_id", null: false
-    t.bigint "shape_id"
-    t.bigint "bookstore_id"
+    t.integer "shape_id"
+    t.integer "bookstore_id"
     t.index ["bookstore_id"], name: "index_booklists_on_bookstore_id"
     t.index ["category_id"], name: "index_booklists_on_category_id"
     t.index ["readstatus_id"], name: "index_booklists_on_readstatus_id"
@@ -111,7 +113,7 @@ ActiveRecord::Schema[7.2].define(version: 2023_08_27_042133) do
     t.string "tags"
     t.string "library_name"
     t.string "formats"
-    t.datetime "timestamp", precision: nil, null: false
+    t.datetime "timestamp", null: false
     t.datetime "pubdate"
     t.string "publisher"
     t.string "authors"
@@ -149,7 +151,7 @@ ActiveRecord::Schema[7.2].define(version: 2023_08_27_042133) do
     t.datetime "updated_at", null: false
     t.integer "readstatus_id", null: false
     t.integer "category_id", null: false
-    t.bigint "shape_id"
+    t.integer "shape_id"
     t.index ["asin"], name: "index_kindlelists_on_asin", unique: true
     t.index ["category_id"], name: "index_kindlelists_on_category_id"
     t.index ["readstatus_id"], name: "index_kindlelists_on_readstatus_id"
@@ -165,7 +167,7 @@ ActiveRecord::Schema[7.2].define(version: 2023_08_27_042133) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "readstatus_id", null: false
-    t.bigint "shape_id"
+    t.integer "shape_id"
     t.index ["readstatus_id"], name: "index_readinglists_on_readstatus_id"
     t.index ["shape_id"], name: "index_readinglists_on_shape_id"
   end

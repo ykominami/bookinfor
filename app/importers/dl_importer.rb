@@ -270,6 +270,19 @@ class DlImporter
     ret
   end
 
+  def get_data_and_save_with_hash(selected_hash, out_hash)
+    ret = true
+    if selected_hash
+      get_array(selected_hash).flatten.each do |key|
+        ret = get_data_and_save_with_hash_by_key(out_hash[:key], key)
+        break unless ret
+      end
+    end
+
+    ret
+  end
+
+
   def get_data_and_save_with_hash_by_key(out_hash, key)
     # @logger.debug "###==== 0 1 get_data_and_save_with_hash_by_key key=#{key}"
     # puts "###==== 0 1 get_data_and_save_with_hash_by_key key=#{key}"
