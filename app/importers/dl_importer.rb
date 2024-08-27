@@ -195,8 +195,8 @@ class DlImporter
         end
       end
     rescue StandardError => exp
-      @debug.fatal exp
-      @debug.fatal exp.message
+      @logger.fatal exp
+      @logger.fatal exp.message
       ret = false
     end
 

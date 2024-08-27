@@ -60,7 +60,8 @@ class BookImporter < BaseImporter
       @detector.find_duplicated_field_value(target, "totalID", x)
     end
 
-    set_assoc(x, Category, "read_status", "readstatus")
+    # set_assoc(x, Category, "read_status", "readstatus")
+    set_assoc(x, Readstatus, "read_status", "readstatus")
     set_assoc(x, Bookstore, "bookstore", "bookstore")
 
     x["shape_id"] = x["shape"]
@@ -68,7 +69,7 @@ class BookImporter < BaseImporter
     when 3
       # @logger.debug "X shape=3"
       case x["bookstore"]
-      when "紀伊國屋書店名古屋空港店" | "TSUTAYA春日井店" | "TSUTAYA春 日 井 店"
+      when /紀伊國屋書店名古屋空港店|TSUTAYA春日井店|TSUTAYA春 日 井 店/
         # @logger.debug x["bookstore"]
         x["shape"] = Shape.find_by(name: "CD/DVD/BD").id
       when "あおい書店西春店"
@@ -91,6 +92,7 @@ class BookImporter < BaseImporter
         raise
       end
     end
+    x.delete("read_status")
     x.delete("shape")
     x.delete("bookstore")
     x.delete("category")
@@ -191,6 +193,8 @@ class BookImporter < BaseImporter
       select_valid_data(x, "purchase_date", "asin", Booklist, data_array)
     end
     count = @detector.show_detected
+    #
+    p "data_array=#{data_array}"
     @ar_klass.insert_all(data_array) if mode == :register && count.zero? && data_array.size.positive?
     @detector.show_detected()
   end
