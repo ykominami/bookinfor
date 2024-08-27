@@ -7,9 +7,15 @@ class KindlelistsController < ApplicationController
     @search = Kindlelist.ransack(params[:q])
     @search.sorts = "purchase_date desc" if @search.sorts.empty?
     @kindlelists = @search.result.page(params[:page])
+    # kindlelists = Kindlelist.where("read_status != ?", 4)
+    kindlelists = Kindlelist.limit(2)
+    # kindlelists = Kindlelist.all
+    @kindlelists = kindlelists
 
+    # kindlelist = KindlelistsHelper::Kindlelistx.new("Kindlelist", @kindlelists, view_context)
     respond_to do |format|
-      format.html {}
+      # format.html { render TblComponent.new(name: readinglist.name, header: readinglist.header, body: readinglist.body) }
+      format.html { render locals: { listx: kindlelist, paginatex: @kindlelists } }
       format.json { render :show, status: :created, location: @kindlelist }
     end
   end
@@ -54,9 +60,11 @@ class KindlelistsController < ApplicationController
   def update
     respond_to do |format|
       if @kindlelist.update(kindlelist_params)
-        flash.now.notice = "kindlelistを更新しました。"
-        format.html {}
-        format.turbo_stream {}
+        # format.html { redirect_to kindlelist_url(@kindlelist), notice: "Kindlelist was successfully updated." }
+        format.html { }
+        # format.html { redirect_to kindlelist_url(@kindlelist), notice: "Kindlelist was successfully updated." }
+        format.turbo_stream { render locals: { inst: @kindlelist } }
+        # format.turbo_stream { render action: "show" }
         format.json { render :show, status: :ok, location: @kindlelist }
       else
         format.html { render :edit, status: :unprocessable_entity }
