@@ -6,21 +6,24 @@ class DatalistUtils
   class Keylable
     attr_reader :array, :year, :label, :category
 
-    @category_index = 1
-    @label_index = 4
-    @year_index = 5
+    # category_index = 1
+    # label_index = 4
+    # year_index = 5
+    CATEGORY_INDEX = 1
+    LABEL_INDEX = 4
+    YEAR_INDEX = 5
 
     def self.reorder_kind(kind, kindx)
-      kind_index = @category_index
+      kind_index = CATEGORY_INDEX
       case kind
       when "api"
         if kindx =~ /\d{4}/
-          kindx_index = @year_index
+          kindx_index = YEAR_INDEX
         else
-          kindx_index = @label_index
+          kindx_index = LABEL_INDEX
         end
       else
-        kindx_index = @year_index
+        kindx_index = YEAR_INDEX
       end
       raise unless kind_index
       raise unless kindx_index
@@ -28,12 +31,16 @@ class DatalistUtils
       [kind_index, kindx_index]
     end
 
+    def self.year_index
+      @year_index
+    end
+
     def initialize(str)
       @array = str.split("|")
-      @year = @array[@year_index].to_i
-      @label = @array[@label_index]
-      @category = @array[@category_index]
-      @logger = LoggerUtils.get_logger()
+      @year = @array[YEAR_INDEX].to_i
+      @label = @array[LABEL_INDEX]
+      @category = @array[CATEGORY_INDEX]
+      @logger = LoggerUtils.logger
     end
 
     def to_json(it)
@@ -91,13 +98,13 @@ class DatalistUtils
   end
 
   def initialize(dir_pn:, file_pn: nil)
-    @logger = LoggerUtils.get_logger()
+    @logger = LoggerUtils.logger
 
     @dir_pn = dir_pn
     @out_hash = {}
     @file_pn = file_pn if file_pn && file_pn.exist?
     @file_pn ||= @dir_pn + ConfigUtils.datalist_json_filename
-    @logger = LoggerUtils.get_logger()
+    @logger = LoggerUtils.logger
   end
 
   def ensure_datalist_json(out_hash)
