@@ -1,7 +1,7 @@
 require "json"
 
 class JsonUtils
-  @logger ||= LoggerUtils.get_logger()
+  @logger ||= LoggerUtils.logger
 
   class << self
     def parse(file)

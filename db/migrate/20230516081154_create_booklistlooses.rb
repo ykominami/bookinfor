@@ -4,12 +4,16 @@ class CreateBooklistlooses < ActiveRecord::Migration[7.0]
       t.integer :totalID
       t.integer :xid
       t.date :purchase_date
-      t.string :bookstore
       t.string :title
       t.string :asin
-      t.integer :read_status
-      t.integer :shape
-      t.string :category
+      # t.string :bookstore
+      t.integer :bookstore_id
+      # t.integer :read_status
+      t.integer :readstatus_id
+      # t.integer :shape
+      t.integer :shape_id
+      # t.string :category
+      t.string :category_id
 
       t.timestamps
     end
