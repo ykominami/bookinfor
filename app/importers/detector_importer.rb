@@ -64,13 +64,14 @@ class DetectorImporter
     value = fields[key]
     if @values[key]
       if @values[key][value]
-        ret = true
+        @values[key][value] += 1
+      	ret = true 
       else
-        @values[key][value] = fields
+        @values[key][value] = 1
       end
     else
       @values[key] = {}
-      @values[key][value] = fields
+      @values[key][value] = 1
     end
     if ret
       @dup_fields[key] ||= []
