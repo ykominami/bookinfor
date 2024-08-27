@@ -26,6 +26,7 @@
             <div class="col-2 d-flex align-items-end" >
                 <div class="col"><%= link_to "編集", edit_booklist_path(booklist), class: "btn btn-sm btn-outline-primary me-2" %></div>
                 <div class="col"><%= button_to "削除", booklist, method: :delete, class: "btn btn-sm btn-outline-danger", form: { data: { turbo_confirm: "本当に削除しますか？" } } %></div>
+                <div class="col"><%= button_to "読了", booklist, method: :delete, class: "btn btn-sm btn-outline-danger", form: { data: { turbo_confirm: "本当に削除しますか？" } } %></div>
             </div>
         </div>
     </div>

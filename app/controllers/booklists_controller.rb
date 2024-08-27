@@ -56,9 +56,6 @@ class BooklistsController < ApplicationController
 
   # GET /booklists or /booklists.json
   def index
-    # booklist_params
-    # @booklists = Booklist.all
-    # @booklists = Booklistloose.all
     @search = Booklist.ransack(params[:q])
     @search.sorts = "purchase_date desc" if @search.sorts.empty?
     @booklists = @search.result.page(params[:page])
