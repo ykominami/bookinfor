@@ -1,0 +1,2 @@
+#!/bin/bash
+bin/rails db:drop && bin/rails db:create && bin/rails db:migrate && bundle exec bin/setup 
