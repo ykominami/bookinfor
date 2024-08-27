@@ -108,7 +108,7 @@ namespace :data do
     dl = DlImporter.new(cmd: cmd, search_file_pn: search_file_pn)
     # puts "=======data.download 2"
     # exit(0)
-    dl.get_data
+    dl.data
   end
 
   desc "import data"
