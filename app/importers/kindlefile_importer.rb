@@ -2,7 +2,7 @@ require "roo"
 
 class KindlefileImporter < KindleImporter
   def initialize(vx, keys, ks, import_date, path_array)
-    @logger = LoggerUtils.get_logger()
+    @logger = LoggerUtils.logger
 
     super(vx, keys, ks, import_date)
     @path_array = path_array

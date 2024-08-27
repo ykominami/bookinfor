@@ -13,7 +13,12 @@ class BaseImporter
   def set_assoc(x, klass, oldname, newname)
     key = newname + "_id"
     x[key] = x[oldname]
-    s = klass.find_by(name: x[newname])
+    #
+    p "BaseImporter#set_assoce klass=#{klass} olbname=#{oldname} newname=#{newname}"
+    p "x=#{x}"
+    #
+    # s = klass.find_by(name: x[newname])
+    s = klass.find_by(name: x[key])
     if s
       x[key] = s.id
     else
@@ -61,6 +66,8 @@ class BaseImporter
     new_json_second.map do |x|
       @delkeys.map { |k| x.delete(k) }
 
+      puts "xf x=#{x}"
+
       xf_supplement(x, x)
 
       x.map do |k, _v|
@@ -75,6 +82,9 @@ class BaseImporter
 
       readstatus=x
 
+	p "xf key=#{key}"
+        p "data_array.size=#{data_array.size}"
+ 
       select_valid_data_x(x, data_array)
       # select_valid_data(x, "purchase_date", "asin", Kindlelist, data_array)
       # exit
@@ -82,7 +92,16 @@ class BaseImporter
     count = @detector.show_detected()
     return unless mode == :register && count.zero? && data_array.size.positive?
 
-    @ar_klass.insert_all(data_array)
+    begin
+      @ar_klass.insert_all(data_array)
+    rescue StandardError => exc
+      pp @ar_klass
+      pp exc.class
+      pp exc.message
+      pp exc.backtrace
+	
+      exit
+    end
   end
 
   def show(key, index)
