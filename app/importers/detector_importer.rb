@@ -2,7 +2,7 @@ class DetectorImporter
   attr_reader :ignore_blank_keys
 
   def initialize
-    @logger = LoggerUtils.get_logger()
+    @logger = LoggerUtils.logger
 
     @_errors = {}
     @_errors[:target] ||= {}
