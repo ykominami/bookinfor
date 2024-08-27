@@ -87,6 +87,7 @@ group :test do
 
 end
 
+gem "foreman"
 gem "roo"
 gem "foreman"
 
@@ -98,4 +99,6 @@ gem 'csv'
 
 gem 'tilt'
 gem 'ykutils', "0.1.10"
+
+gem "sqlite3"
 
