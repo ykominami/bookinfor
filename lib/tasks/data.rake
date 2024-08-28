@@ -130,9 +130,9 @@ namespace :data do
     search_file_pn = UtilUtils.check_file_exist(args.search_file, importer_config_dir_pn, 12) unless UtilUtils.nil_or_empty_string?(args.search_file)
     local_file_pn  = UtilUtils.check_file_exist(args.local_file,  importer_config_dir_pn, 10) if args.local_file
 
-    p "1 search_file_pn=#{search_file_pn}"
+    p "import data 1 search_file_pn=#{search_file_pn}"
     search_file_pn = ConfigUtils.search_json_pn if UtilUtils.nil_or_empty?(search_file_pn)
-    p "2 search_file_pn=#{search_file_pn}"
+    p "import data 2 search_file_pn=#{search_file_pn}"
     importertop = TopImporter.new(datalist_file_pn, search_file_pn, local_file_pn)
     importertop.execute()
   end

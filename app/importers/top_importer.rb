@@ -19,6 +19,11 @@ class TopImporter
     @vx = @datalist.parse
     @ks = {}
     obj = JsonUtils.parse(config_pn)
+    p "TopImporter config_pn=#{config_pn}"
+    p "obj.class=#{obj.class}"
+    # p "obj[0].class=#{obj[0].class}"
+    # p "obj[0]=#{obj[0]}"
+
     @keys = obj["keys"]
     @xkeys = obj["xkeys"]
     make_map
@@ -69,6 +74,7 @@ class TopImporter
         when /reading|kindle|calibre/
           value2.map do |data_key|
             # importer.xf_reading(data_key, :register)
+            p "Top_importer#execute data_key=#{data_key}"
             importer.xf(data_key, :register)
           end
         when "book"
