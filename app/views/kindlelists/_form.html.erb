@@ -1,58 +1,8 @@
-<%= form_with(model: kl) do |form| %>
-  <% if kl.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(kl.errors.count, "error") %> prohibited this kindlelist from being saved:</h2>
-
-      <ul>
-        <% kl.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
+<%= bootstrap_form_with(model: kindlelist) do |form| %>
+  <div class="col py-2 border-top">
+    <div class="col-2 my-auto" >
+      <%= form.date_field :purchase_date %>
     </div>
-  <% end %>
-
-  <div class="col-1 my-auto" >
-    <%= form.label :asin, style: "display: block" %>
-    <%= form.text_field :asin %>
-  </div>
-
-  <div class="col-1 my-auto" >
-    <%= form.label :title, style: "display: block" %>
-    <%= form.text_field :title %>
-  </div>
-
-  <div class="col-1 my-auto" >
-    <%= form.label :publisher, style: "display: block" %>
-    <%= form.text_field :publisher %>
-  </div>
-
-  <div class="col-2 my-auto" >
-    <%= form.label :author, style: "display: block" %>
-    <%= form.text_field :author %>
-  </div>
-
-  <div class="col-1"         %>
-    <%= form.select :readstatus_id, readstatus_list %>
-
-  </div>
-
-  <div class="col-1 my-auto">
-    <%= form.select :category_id, category_list %>
-  </div>
-
-  <div class="col-2 my-auto" >
-    <%= form.label :publish_date, style: "display: block" %>
-    <%= form.date_field :publish_date %>
-  </div>
-
-  <div class="col-2 my-auto" >
-    <%= form.label :purchase_date, style: "display: block" %>
-    <%= form.date_field :purchase_date %>
-  </div>
-  <div class="col-2 my-auto">
-    <div class="d-flex justify-content-end">
-      <%= form.submit "登録", { class: "btn btn-sm btn-outline-primary me-2" } %>
-      <%= link_to "取消", kindlelists_path, class: "btn btn-sm btn-outline-secondary me-2" %>
 
     <div class="col-2 my-auto" >
       <%= form.date_field :publish_date %>
