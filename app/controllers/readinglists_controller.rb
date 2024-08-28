@@ -4,22 +4,17 @@ class ReadinglistsController < ApplicationController
 
   # GET /readinglists or /readinglists.json
   def index
+    # @readinglists = Readinglist.all
     @search = Readinglist.ransack(params[:q])
-    @search.sorts = ['date desc', 'title asc']  if @search.sorts.empty?
+    @search.sorts = "date desc" if @search.sorts.empty?
     @readinglists = @search.result.page(params[:page])
-    # @new_readinglist = Readinglist.new
-    # logger.debug @kindlelists
-    # @readstatus_list = ReadstatusesHelper::get_list()
-    # @category_list = CategoriesHelper::get_list()
-    # @shape_list = ShapesHelper::get_list()
 
     # @readinglists = Readinglist.all
 
     # readinglist = ReadinglistsHelper::Readinglistx.new("Readinglist", @readinglists)
     respond_to do |format|
       # format.html { render TblComponent.new(name: readinglist.name, header: readinglist.header, body: readinglist.body) }
-      # format.html { render TblComponent.new(name: readinglist.name, header: readinglist.header, body: readinglist.body) }
-      format.html {}
+      format.html { render locals: { rl: readinglist, paginatex: @readinglists } }
       format.json { render :show, status: :created, location: @kindlelist }
     end
   end
@@ -97,11 +92,14 @@ class ReadinglistsController < ApplicationController
 
   private
 
-  def set_select_options
-    @readstatus_list = Readstatus.all
-    @shape_list = Shape.all
+=begin
+  def set_q
+    @q = Readinglist.ransack(params[:q])
+    @q.sorts = "id desc" if @q.sorts.empty?
+    @result = @q.result(distince: true)
+    # @result = params[:q]&.values&.reject(&blank?)
   end
-
+=end
   # Use callbacks to share common setup or constraints between actions.
   def set_readinglist
     @readinglist = Readinglist.find(params[:id])
@@ -109,6 +107,6 @@ class ReadinglistsController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def readinglist_params
-    params.require(:readinglist).permit(:register_date, :date, :title, :status, :shape, :isbn, :readstatus_id, :shape_id)
+    params.require(:readinglist).permit(:register_date, :date, :title, :status, :shape, :isbn)
   end
 end
