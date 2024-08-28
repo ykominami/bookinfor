@@ -15,6 +15,6 @@ class Calibrelist < ApplicationRecord
   end
 
   def self.ransackable_associations(auth_object = nil)
-    ["category", "readstatus", "shape"]
+    ["category_id", "readstatus_id"]
   end
 end
