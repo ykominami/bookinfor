@@ -22,6 +22,7 @@
               <%= f.select :readstatus_id_eq, options_from_collection_for_select(@readstatus_list, :id, :name, 1), include_blank: true %>
             </div>
 
+<<<<<<< HEAD
             <div class="col-2 my-auto"" >
               <%= f.label :date, style: "display: block" %>
               <%= f.date_field :date_eq %>
@@ -31,6 +32,22 @@
               <%= f.label :title_cont, "title" %>
               <%= f.search_field :title_cont %>
             </div>
+||||||| parent of cd0814a (hide status in index action of Reading)
+<div id="readinglists">
+  <% @readinglists.each do |readinglist| %>
+    <%= render readinglist %>
+    <p>
+      <%= link_to "Show this readinglist", readinglist %>
+    </p>
+  <% end %>
+</div>
+=======
+<div id="readinglists">
+  <%= render TblComponent.new(name: rl.name, header: rl.header, body: rl.body) %>
+
+  <%= paginate paginatex %>
+</div>
+>>>>>>> cd0814a (hide status in index action of Reading)
 
             <div class="col-2 my-auto"" >
               <%= f.label :shape, style: "display: block" %>
