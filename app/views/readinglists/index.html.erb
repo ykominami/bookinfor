@@ -22,11 +22,15 @@
               <%= f.select :readstatus_id_eq, options_from_collection_for_select(@readstatus_list, :id, :name, 1), include_blank: true %>
             </div>
 
-<div id="readinglists">
-  <%= render TblComponent.new(name: rl.name, header: rl.header, body: rl.body) %>
-
-  <%= paginate paginatex %>
-</div>
+            <div class="col-2 my-auto"" >
+              <%= f.label :date, style: "display: block" %>
+              <%= f.date_field :date_eq %>
+            </div>
+            
+            <div class="col-2 my-auto"" >
+              <%= f.label :title_cont, "title" %>
+              <%= f.search_field :title_cont %>
+            </div>
 
             <div class="col-2 my-auto"" >
               <%= f.label :shape, style: "display: block" %>

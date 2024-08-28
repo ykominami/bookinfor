@@ -2,7 +2,10 @@ class Readinglist < ApplicationRecord
   belongs_to :readstatus
   belongs_to :shape
 
-  default_scope { order("date DESC") }
+  # default_scope { order(:date :desc) }
+  # default_scope { order(:date :desc) }
+  # default_scope { order(:date :desc, :title) }
+  default_scope -> { order(date: :desc).order(:title) }
 
   def self.ransackable_attributes(auth_object = nil)
     ["id", "register_date", "date", 
