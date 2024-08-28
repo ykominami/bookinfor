@@ -4,6 +4,7 @@ class CreateCalibrelists < ActiveRecord::Migration[7.0]
       t.integer :xid, null: false, unique: true 
       t.string :xxid, null: false, unique: true 
       t.string :isbn, null: true
+
       t.integer :zid, null: false, unique: true 
       t.string :uuid, null: false, unique: true 
       t.string :comments, null: true 
@@ -22,7 +23,11 @@ class CreateCalibrelists < ActiveRecord::Migration[7.0]
       t.string :author_sort, null: false
       t.string :languages, null: false 
       t.string :rating, null: false 
-      t.string :identifiers, null: false 
+      t.string :identifiers, null: false
+
+      # t.integer :readstatus_id, null: false
+      # t.integer :category_id, null: false
+
     end
   end
 end
