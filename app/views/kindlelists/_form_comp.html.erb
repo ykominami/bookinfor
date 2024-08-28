@@ -1,46 +1,32 @@
-<%= bootstrap_form_with(model: kindlelist) do |form| %>
-  <div class="row py-2 border-top">
-    <div class="col-2 my-auto" >
-      <%= form.text_field :title,
-                          skip_label: false,
-                          label_as_placeholder: true,
-                          wrapper: { class: "has-warning", data: { foo: "bar" } },
-                          control_class: "form-control form-control-sm" %>
-    </div>
-    <div class="col-2 my-auto" >
-      <%= form.date_field :purchase_date, value: kindlelist.purchase_date %>
-    </div>
-    <div class="col-2 my-auto" >
-      <%= form.date_field :publish_date, value: kindlelist.publish_date %>
-    </div>
-    <div class="col-1 my-auto">
-      <%= form.select :shape_id, options_from_collection_for_select(shape_list, :id, :name, kindlelist.shape_id), include_blank: false %>
-    </div>
+<%= form_with(model: kl) do |form| %>
+  <% if kl.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(kl.errors.count, "error") %> prohibited this kindlelist from being saved:</h2>
 
-    <div class="col-sm my-auto" >
-      <%= form.select :readstatus_id, options_from_collection_for_select(readstatus_list, :id, :name , kindlelist.readstatus_id), include_blank: false %>
+      <ul>
+        <% kl.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
     </div>
+  <% end %>
 
-    <div class="col-1 my-auto">
-      <%= form.select :category_id, options_from_collection_for_select(category_list, :id, :name, kindlelist.category_id), include_blank: false %>
-    </div>
-    <div class="col-1 my-auto" >
-      <%= form.text_field :title, value: kindlelist.title %>
-    </div>
-    <div class="col-1 my-auto">
-      <%= form.text_field :publisher, value: kindlelist.publisher %>
-    </div>
-    <div class="col-2 my-auto">
-      <%= form.text_field :author , value: kindlelist.author %>
-    </div>
-    <div class="col-1 my-auto" >
-      <%= form.text_field :asin, value: kindlelist.asin %>
-    </div>
-    <div class="col-2 my-auto">
-      <div class="d-flex justify-content-end">
-        <%= form.primary "更新", { class: "btn btn-sm btn-outline-primary me-2" } %>
-        <%= link_to "取消", kindlelist_path(kindlelist), class: "btn btn-sm btn-outline-secondary me-2" %>
-      </div>
-    </div>
+  <div>
+    <%= form.label :asin, style: "display: block" %>
+    <%= form.text_field :asin %>
+  </div>
+
+  <div>
+    <%= form.label :title, style: "display: block" %>
+    <%= form.text_field :title %>
+  </div>
+
+  <div>
+    <%= form.label :purchase_date, style: "display: block" %>
+    <%= form.date_field :purchase_date %>
+  </div>
+
+  <div>
+    <%= form.submit %>
   </div>
 <% end %>
