@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @shape %>
+
+<div>
+  <%= link_to "Edit this shape", edit_shape_path(@shape) %> |
+  <%= link_to "Back to shapes", shapes_path %>
+
+  <%= button_to "Destroy this shape", @shape, method: :delete %>
+</div>

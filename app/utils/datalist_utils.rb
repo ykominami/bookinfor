@@ -226,7 +226,11 @@ class DatalistUtils
           1
         end
       end.last
-      ret_list = [target.key]
+      ret_list = if target
+                   [target.key]
+                 else
+	           []
+                 end
     else
       ret_list = list.map { |target| target.key }
     end

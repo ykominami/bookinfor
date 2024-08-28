@@ -8,11 +8,14 @@ class Booklist < ApplicationRecord
 
   validates :xid, presence: true
   def self.ransackable_attributes(auth_object = nil)
-    ["asin", "bookstore", "category", "created_at", "id", "purchase_date", "read_status",
-     "shape_id", "title", "totalID", "updated_at", "xid", "readstatus_id", "category_id", "bookstore_id"]
+    ["id",  "asin", "bookstore_id", "category_id", 
+    "totalID", "xid", "purchase_date", "title",  
+    "readstatus_id", "shape_id", 
+    "created_at",  "updated_at",
+    ]
   end
 
   def self.ransackable_associations(auth_object = nil)
-    ["category", "readstatus", "bookstore"]
+    ["category_id", "readstatus_id", "bookstore_id"]
   end
 end
