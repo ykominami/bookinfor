@@ -1,6 +1,9 @@
 <p style="color: green"><%= notice %></p>
 
 <h1>Kindlelists</h1>
+<%= turbo_frame_tag "kindle_form" do %>
+  <%= render "form_comp", kl: paginatex[0] %>
+<% end %>
   <div class="card shadow mt-3" >
     <div class="card-header">
     </div>
