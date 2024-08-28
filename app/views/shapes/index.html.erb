@@ -1,0 +1,16 @@
+<p style="color: green"><%= notice %></p>
+
+<% content_for :title, "Shapes" %>
+
+<h1>Shapes</h1>
+
+<div id="shapes">
+  <% @shapes.each do |shape| %>
+    <%= render shape %>
+    <p>
+      <%= link_to "Show this shape", shape %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New shape", new_shape_path %>

@@ -5,8 +5,18 @@ class JsonUtils
 
   class << self
     def parse(file)
+      p "Jsonutil file=#{file}"
       content = File.read(file)
-      JSON.parse(content)
+      obj = nil
+      begin
+        obj = JSON.parse(content)
+      rescue => exc
+	pp exc.class
+	pp exc.message
+        pp exc.backtrace
+      end
+
+      obj
     end
 
     def output(fio, obj)

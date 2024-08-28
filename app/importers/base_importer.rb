@@ -6,6 +6,10 @@ class BaseImporter
     @logger.debug "BaseImporter keys=#{keys}"
     @keys = keys
     @delkeys = @keys["remove"]
+    #
+    @after_delkeys = @keys["after_remove"]
+    @after_delkeys ||= []
+    #
     @ks = ks
     @ignore_fields ||= %w[]
   end
@@ -65,7 +69,7 @@ class BaseImporter
     # @logger.debug "import_date=#{import_date}"
     new_json_second.map do |x|
       @delkeys.map { |k| x.delete(k) }
-
+      @after_delkeys.map { |k| x.delete(k) }
       puts "xf x=#{x}"
 
       xf_supplement(x, x)
@@ -84,8 +88,8 @@ class BaseImporter
 
 	p "xf key=#{key}"
         p "data_array.size=#{data_array.size}"
- 
-      select_valid_data_x(x, data_array)
+        p "data_array[0]=#{data_array[0]}"
+      select_valid_data_x(readstatus, data_array)
       # select_valid_data(x, "purchase_date", "asin", Kindlelist, data_array)
       # exit
     end

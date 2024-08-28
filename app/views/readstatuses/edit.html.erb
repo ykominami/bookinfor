@@ -1,0 +1,12 @@
+<% content_for :title, "Editing readstatus" %>
+
+<h1>Editing readstatus</h1>
+
+<%= render "form", readstatus: @readstatus %>
+
+<br>
+
+<div>
+  <%= link_to "Show this readstatus", @readstatus %> |
+  <%= link_to "Back to readstatuses", readstatuses_path %>
+</div>

@@ -6,11 +6,12 @@ class Kindlelist < ApplicationRecord
   default_scope { order("purchase_date DESC") }
 
   def self.ransackable_attributes(auth_object = nil)
-    ["asin", "author", "category", "category_id", "created_at", "id", "publish_date",
-     "publisher", "purchase_date", "read_status", "readstatus_id", "title", "updated_at", "category_id", "shape_id"]
+    ["id", "asin", "author", "category_id", "title", "publisher", "readstatus_id", "shape_id",
+      "publish_date", "purchase_date", 
+    "created_at", "updated_at"]
   end
 
   def self.ransackable_associations(auth_object = nil)
-    ["category", "readstatus", "shape"]
+    ["category_id", "readstatus_id", "shape_id"]
   end
 end
