@@ -21,7 +21,7 @@
                     <% elsif col[:str].instance_of?(Date) %>
                         <%= col[:str] %>
                     <% elsif col[:str].instance_of?(Integer) %>
-                        <%= col[:str] %>
+                        <%= col[:str].class %>
                     <% elsif col[:str] == nil %>
 
                     <% else %>

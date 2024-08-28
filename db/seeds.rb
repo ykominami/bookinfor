@@ -6,6 +6,7 @@
 #   movies = Movie.create([{ name: "Star Wars" }, { name: "Lord of the Rings" }])
 #   Character.create(name: "Luke", movie: movies.first)
 # 参考: https://nekorich.com/cat-names
+=begin
 Abc.create(
   [
     { s: "アーチー", zid: 0 },
@@ -31,6 +32,7 @@ Abc.create(
 
   ]
 )
+=end
 Readstatus.create(
   [
     { name: "雑誌-開始" },
@@ -45,38 +47,46 @@ Readstatus.create(
 
 Category.create(
   [
-    { name: "ソフトウェア" },
-    { name: "スキル" },
-    { name: "ビジネス" },
-    { name: "防衛" },
-    { name: "原発" },
-    { name: "国際" },
-    { name: "社会" },
-    { name: "歴史" },
-    { name: "天皇" },
-    { name: "政治" },
-    { name: "思想" },
-    { name: "宗教" },
-    { name: "中国" },
-    { name: "相続" },
-    { name: "経済" },
-    { name: "法律" },
-    { name: "介護" },
-    { name: "健康" },
-    { name: "工学" },
-    { name: "数学" },
-    { name: "物理学" },
-    { name: "科学" },
-    { name: "気候変動" },
-    { name: "英語" },
-    { name: "語学" },
     { name: "エンタ" },
-    { name: "不明" },
-    { name: "本以外" },
-    { name: "etc" },
-    { name: "人文" },
-    { name: "言語" },
-    { name: "" },
+    { name: "スキル"},
+    { name: "ソフトウェア"},
+    { name: "ビジネス"},
+    { name: "中国" },
+    { name: "介護"},
+    { name: "健康"},
+    { name: "原発"},
+    { name: "国際"},
+    { name: "天皇"},
+    { name: "工学"},
+    { name: "思想"},
+    { name: "政治"},
+    { name: "数学"},
+    { name: "歴史"},
+    { name: "気候変動"},
+    { name: "法律"},
+    { name: "社会"},
+    { name: "言語"},
+    { name: "英語"},
+    { name: "人文"},
+    { name: "科学"},
+    { name: "生活"},
+    { name: "原発"},
+    { name: "宗教"},
+    { name: "温暖化"},
+    { name: "環境"},
+    { name: "相続"},
+    { name: "経済"},
+    { name: "語学"},
+    { name: "防衛"},
+    { name: "将棋"},
+    { name: "アイヌ"},
+    { name: "物理学"},
+    { name: "SF"},
+    { name: "小説"},
+    { name: "本以外"},
+    { name: "不明"},
+    { name: "不定"},
+    { name: ""}
   ]
 )
 
