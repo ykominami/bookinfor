@@ -54,9 +54,9 @@ class KindlelistsController < ApplicationController
   def update
     respond_to do |format|
       if @kindlelist.update(kindlelist_params)
-        flash.now.notice = "kindlelistを更新しました。"
-        format.html {}
-        format.turbo_stream {}
+        # format.html { redirect_to kindlelist_url(@kindlelist), notice: "Kindlelist was successfully updated." }
+        format.html { }
+        format.turbo_stream { render locals: { inst: @kindlelist } }
         format.json { render :show, status: :ok, location: @kindlelist }
       else
         format.html { render :edit, status: :unprocessable_entity }
