@@ -8,7 +8,9 @@ class Readinglist < ApplicationRecord
   default_scope -> { order(date: :desc).order(:title) }
 
   def self.ransackable_attributes(auth_object = nil)
-    ["created_at", "date", "id", "isbn", "readstatus_id", "register_date", "shape", "status", "title", "updated_at", "shape_id"]
+    ["id", "register_date", "date", 
+    "title", "status", "shape_id", "isbn", "readstatus_id",  
+    "created_at", "updated_at", ]
   end
 
   def self.ransackable_associations(auth_object = nil)

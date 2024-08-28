@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  resources :categories
+  resources :readstatuses
+  resources :shapes
+  resources :bookstores
   resources :efgs
   get "booklists/displayx(/:ind)" => "booklists#displayx"
   get "booklists/finish(/:ind)" => "booklists#finish"
