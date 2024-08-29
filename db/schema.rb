@@ -10,33 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2023_08_27_042133) do
-  create_table "abcs", force: :cascade do |t|
-    t.integer "zid", null: false
-    t.string "s", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "booklistlooses", force: :cascade do |t|
-    t.integer "totalID"
-    t.integer "xid"
-    t.date "purchase_date"
-    t.string "bookstore"
-    t.string "title"
-    t.string "asin"
-    t.integer "read_status"
-    t.integer "shape"
-    t.string "category"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "category_id", null: false
-    t.integer "readstatus_id", null: false
-    t.index ["category_id"], name: "index_booklistlooses_on_category_id"
-    t.index ["readstatus_id"], name: "index_booklistlooses_on_readstatus_id"
-    t.index ["totalID"], name: "index_booklistlooses_on_totalID"
-  end
-
+ActiveRecord::Schema[7.2].define(version: 2024_08_28_035102) do
   create_table "booklists", force: :cascade do |t|
     t.string "asin"
     t.integer "totalID", null: false
@@ -45,10 +19,10 @@ ActiveRecord::Schema[7.2].define(version: 2023_08_27_042133) do
     t.string "title", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "category_id", null: false
-    t.integer "readstatus_id", null: false
-    t.integer "shape_id"
+    t.integer "readstatus_id"
     t.integer "bookstore_id"
+    t.integer "shape_id"
+    t.integer "category_id"
     t.index ["bookstore_id"], name: "index_booklists_on_bookstore_id"
     t.index ["category_id"], name: "index_booklists_on_category_id"
     t.index ["readstatus_id"], name: "index_booklists_on_readstatus_id"
@@ -105,10 +79,9 @@ ActiveRecord::Schema[7.2].define(version: 2023_08_27_042133) do
     t.date "purchase_date", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "readstatus_id", null: false
-    t.integer "category_id", null: false
+    t.integer "readstatus_id"
     t.integer "shape_id"
-    t.index ["asin"], name: "index_kindlelists_on_asin", unique: true
+    t.integer "category_id"
     t.index ["category_id"], name: "index_kindlelists_on_category_id"
     t.index ["readstatus_id"], name: "index_kindlelists_on_readstatus_id"
     t.index ["shape_id"], name: "index_kindlelists_on_shape_id"
@@ -122,8 +95,8 @@ ActiveRecord::Schema[7.2].define(version: 2023_08_27_042133) do
     t.string "isbn"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "readstatus_id", null: false
-    t.bigint "shape_id"
+    t.integer "readstatus_id"
+    t.integer "shape_id"
     t.index ["readstatus_id"], name: "index_readinglists_on_readstatus_id"
     t.index ["shape_id"], name: "index_readinglists_on_shape_id"
   end
