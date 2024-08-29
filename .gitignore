@@ -54,7 +54,6 @@ new_error.html.erb
 new_error.turbo_stream.erb
 _form_error.html.erb
 x-404*
-x
 setting.json
 cacert.pem
 docker-compose.yml
