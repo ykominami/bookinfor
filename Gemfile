@@ -1,5 +1,5 @@
 source "https://rubygems.org"
-git_source(:github) { |repo| "https://github.com/#{repo}.git" }
+# git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby "3.3.1"
 
@@ -10,25 +10,30 @@ gem "rails", "~> 7.2.1"
 gem "sprockets-rails"
 
 # Use postgresql as the database for Active Record
-gem "pg", "~> 1.5"
+# gem "pg", "~> 1.5"
+gem "sqlite3", ">= 1.4"
 
-# Use the Puma web server [https://github.com/puma/puma]
-gem "puma", "~> 6.4"
-
-# Bundle and transpile JavaScript [https://github.com/rails/jsbundling-rails]
-gem "jsbundling-rails"
-
+gem "puma", ">= 5.0"
+# Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
+gem "importmap-rails"
 # Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
 gem "turbo-rails"
-
 # Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
 gem "stimulus-rails"
-
-# Bundle and process CSS [https://github.com/rails/cssbundling-rails]
-gem "cssbundling-rails"
-
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
+
+# Use the Puma web server [https://github.com/puma/puma]
+#gem "puma", "~> 6.4"
+
+# Bundle and transpile JavaScript [https://github.com/rails/jsbundling-rails]
+#gem "jsbundling-rails"
+
+# Bundle and process CSS [https://github.com/rails/cssbundling-rails]
+# gem "cssbundling-rails"
+
+# Build JSON APIs with ease [https://github.com/rails/jbuilder]
+# gem "jbuilder"
 
 # Use Redis adapter to run Action Cable in production
 # gem "redis", "~> 4.0"
@@ -94,15 +99,9 @@ gem 'nkf', '0.2.0'
 # gem 'arxutils_sqlite3', path: '/home/ykominami/repo_ykominami/arxutils_sqlite3'
 # gem 'arxutils_sqlite3', "0.1.64"
 # gem 'arxutils_sqlite3', "0.1.63"
-gem 'arxutils_sqlite3'
 
 gem 'csv'
 
 gem 'tilt'
 
-gem "sqlite3"
-
-# gem "arxutils_sqlite3"
-# gem "sqlite3", "~> 1.4"
-# gem "sqlite3", "~> 2.0.2"
 
