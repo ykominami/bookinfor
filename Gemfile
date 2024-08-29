@@ -89,22 +89,20 @@ end
 
 gem "foreman"
 gem "roo"
-gem "foreman"
 
 gem 'nkf', '0.2.0'
 # gem 'arxutils_sqlite3', path: '/home/ykominami/repo_ykominami/arxutils_sqlite3'
-gem 'arxutils_sqlite3', "0.1.64"
+# gem 'arxutils_sqlite3', "0.1.64"
 # gem 'arxutils_sqlite3', "0.1.63"
 gem 'arxutils_sqlite3'
 
 gem 'csv'
 
 gem 'tilt'
-gem 'ykutils', "0.1.10"
 
 gem "sqlite3"
 
-gem "arxutils_sqlite3"
+# gem "arxutils_sqlite3"
 # gem "sqlite3", "~> 1.4"
 # gem "sqlite3", "~> 2.0.2"
 
