@@ -103,21 +103,11 @@ GEM
     diff-lcs (1.5.1)
     drb (2.2.1)
     erubi (1.13.0)
-    erubis (2.7.0)
-    filex (0.1.8)
-      bundler
-      erubis
-      messagex
-      rake (~> 13.0)
     foreman (0.88.1)
     globalid (1.2.1)
       activesupport (>= 6.1)
     i18n (1.14.5)
       concurrent-ruby (~> 1.0)
-    importmap-rails (2.0.1)
-      actionpack (>= 6.0.0)
-      activesupport (>= 6.0.0)
-      railties (>= 6.0.0)
     io-console (0.7.2)
     irb (1.14.0)
       rdoc (>= 4.0.0)
@@ -150,7 +140,6 @@ GEM
       net-smtp
     marcel (1.0.4)
     matrix (0.4.2)
-    messagex (0.1.5)
     method_source (1.1.0)
     mini_mime (1.1.5)
     minitest (5.25.1)
@@ -335,10 +324,6 @@ GEM
     websocket-extensions (0.1.5)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    ykutils (0.1.10)
-      erubi
-      filex
-      tilt
     zeitwerk (2.6.17)
 
 PLATFORMS
@@ -357,6 +342,8 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
+  activesupport (>= 7.0.7.1)
+  arxutils_sqlite3
   bootsnap
   bootstrap_form
   capybara
@@ -385,7 +372,6 @@ DEPENDENCIES
   tzinfo-data
   view_component
   web-console
-  ykutils (= 0.1.10)
 
 BUNDLED WITH
    2.5.17
