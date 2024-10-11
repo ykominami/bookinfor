@@ -3,6 +3,7 @@ require "json"
 class TopImporter
   def initialize(datalist_file_pn, search_file_pn = nil, local_file_pn = nil)
     @logger = LoggerUtils.logger()
+    @logger.tagged("#{self.class.name}")
 
     @logger.debug "TopImporter init search_file_pn=#{search_file_pn}"
     config_pn = ConfigUtils.config_pn
@@ -19,10 +20,8 @@ class TopImporter
     @vx = @datalist.parse
     @ks = {}
     obj = JsonUtils.parse(config_pn)
-    p "TopImporter config_pn=#{config_pn}"
-    p "obj.class=#{obj.class}"
-    # p "obj[0].class=#{obj[0].class}"
-    # p "obj[0]=#{obj[0]}"
+    @logger.debug "TopImporter config_pn=#{config_pn}"
+    @logger.debug "obj.class=#{obj.class}"
 
     @keys = obj["keys"]
     @xkeys = obj["xkeys"]
@@ -68,19 +67,22 @@ class TopImporter
 
         # raise
 
-        p  "execute importer_kind_x=#{importer_kind_x}"
+        @logger.debug  "execute importer_kind_x=#{importer_kind_x}"
 
         case importer_kind_x
         when /reading|kindle|calibre/
           value2.map do |data_key|
             # importer.xf_reading(data_key, :register)
-            p "Top_importer#execute data_key=#{data_key}"
-            importer.xf(data_key, :register)
+            @logger.debug "1 Top_importer#execute data_key=#{data_key}"
+            ret = importer.xf(data_key, :register)
+            ret.nil? ? "" : ret
           end
         when "book"
           # raise
           value2.map do |data_key|
-            importer.xf_booklist(key: data_key, mode: :register)
+            @logger.debug "2 Top_importer#execute data_key=#{data_key}"
+            ret = importer.xf_booklist(key: data_key, mode: :register)
+            ret.nil? ? "" : ret
           end
         when "api"
           @logger.debug "Not implemented Importer for api"
@@ -93,6 +95,7 @@ class TopImporter
   end
 
   def make(kind, name, import_date, path = nil)
+    @logger.debug "TopImporter#make kind=#{kind} name=#{name} import_date=#{import_date} path=#{path}"
     case kind
     when "book"
       return BookImporter.new(@vx, @xkeys[name], @ks, import_date)

@@ -3,6 +3,8 @@ class DetectorImporter
 
   def initialize
     @logger = LoggerUtils.logger
+    @logger.tagged("#{self.class.name}")
+
 
     @_errors = {}
     @_errors[:target] ||= {}

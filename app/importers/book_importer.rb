@@ -2,6 +2,7 @@ class BookImporter < BaseImporter
   class BookDetectorImporter < DetectorImporter
     def initialize
       @logger = LoggerUtils.logger()
+      @logger.tagged("#{self.class.name}")
     end
 
     def show_detected
@@ -166,6 +167,10 @@ class BookImporter < BaseImporter
     base_number = year * 1000
     # raise
     json = load_data(item: item, year: year)
+    if json.nil?
+      @logger.debug "json is nil in BookImporter#xf_booklist"
+      return
+    end
     # @logger.debug json
     # raise
     new_json = @detector.detect_replace_key(json, @keys["key_replace"])
@@ -194,7 +199,7 @@ class BookImporter < BaseImporter
     end
     count = @detector.show_detected
     #
-    p "data_array=#{data_array}"
+    @logger.debug "data_array=#{data_array}"
     @ar_klass.insert_all(data_array) if mode == :register && count.zero? && data_array.size.positive?
     @detector.show_detected()
   end

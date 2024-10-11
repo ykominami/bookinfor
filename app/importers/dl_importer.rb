@@ -8,6 +8,8 @@ require "pathname"
 class DlImporter
   def initialize(cmd:, search_file_pn: nil)
     @logger = LoggerUtils.logger()
+    @logger.tagged("#{self.class.name}")
+
 
     @cmd = cmd
     @search_item = {}
@@ -26,10 +28,12 @@ class DlImporter
     # @logger.debug "@datadir.output_pn.to_s=#{@datadir.output_pn.to_s}"
     # @logger.debug "@datadir.export_pn.to_s=#{@datadir.export_pn.to_s}"
     @datalist = DatalistUtils.new(dir_pn: @datadir.output_pn)
+    p "@datadir.output_pn=#{@datadir.output_pn}"
     # @logger.debug "@datalist=#{@datalist}"
     # @out_json_pn = @datalist.file_pn
 
     @html_file_path = @datadir.output_pn + ConfigUtils.dl_html_filename
+    p "@html_file_path=#{@html_file_path}"
     # @logger.debug "@html_file_path=#{@html_file_path}"
     @out_hash = {}
     @hash_from_html = nil
@@ -283,18 +287,12 @@ class DlImporter
   end
 
   def get_data_and_save_with_hash_by_key(out_hash, key)
-    # @logger.debug "###==== 0 1 get_data_and_save_with_hash_by_key key=#{key}"
-    # puts "###==== 0 1 get_data_and_save_with_hash_by_key key=#{key}"
     ret = true
     if out_hash
       item = out_hash[key]
       if item
-        # relative_file = item.relative_file
         src_url = item.src_url
         full_path = item.full_path
-        # @logger.debug "###==== 0 2 get_data_and_save_with_hash_by_key key=#{key}"
-        # @logger.debug "src_url=#{src_url}"
-        # @logger.debug "full_path=#{full_path}"
         ret = get_and_save_page(src_url, full_path)
       else
         ret = false

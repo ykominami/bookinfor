@@ -2,18 +2,32 @@ require "json"
 
 class JsonUtils
   @logger ||= LoggerUtils.logger
+  @logger.tagged("#{self.class.name}")
 
   class << self
     def parse(file)
-      p "Jsonutil file=#{file}"
+      @logger.debug "Jsonutil file=#{file}"
       content = File.read(file)
       obj = nil
+      return obj if content.nil? || content == ""
+
+      pp ""
+      pp ""
+      pp ""
+      pp ""
+      pp "======= S"
+      pp "JsonUtils.parse file=#{file}"
+      # puts "content=#{content}"
+      pp "======= E"
+      pp ""
       begin
         obj = JSON.parse(content)
       rescue => exc
-	pp exc.class
-	pp exc.message
-        pp exc.backtrace
+        pp exc.class
+        pp "Excception from JSON.parse(content) file=#{file}"
+        # pp exc.message
+        # pp exc.backtrace
+        pp "Exception in JsonUtils.parse"
       end
 
       obj

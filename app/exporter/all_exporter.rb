@@ -1,19 +1,15 @@
 class AllExporter
   def initialize(cmd, search_file_pn = nil, local_file_pn = nil)
     @logger = LoggerUtils.logger()
+    @logger.tagged("#{self.class.name}")
 
     config_pn = ConfigUtils.config_pn
     aux_dbtbl_pn = ConfigUtils.aux_dbtbl_pn
-    p aux_dbtbl_pn
+    @logger.debug aux_dbtbl_pn
     # state_pn = ConfigUtils.state_pn
 
     @datadir = DatadirUtils.new()
 
-    # @search_file_pn = search_file_pn if search_file_pn && search_file_pn.exist?
-    # @local_file_pn = local_file_pn if local_file_pn && local_file_pn.exist?
-
-    # @state = JsonUtils.parse(state_pn)
-    ###############
     export_or_import(cmd, aux_dbtbl_pn)
     export_or_import(cmd, config_pn)
   end

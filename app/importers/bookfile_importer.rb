@@ -1,6 +1,7 @@
 class BookfileImporter < BookImporter
   def initialize(vx, keys, ks, import_date, path_hash)
     @logger = LoggerUtils.logger()
+    @logger.tagged("#{self.class.name}")
 
     super(vx, keys, ks, import_date)
     @path_hash = path_hash

@@ -101,12 +101,12 @@ namespace :data do
       end
     end
     search_file_pn ||= importer_config_dir_pn + "search.json"
-    # puts "search_file_pn=#{search_file_pn}"
-    # puts "cmd=#{cmd}"
+    p "search_file_pn=#{search_file_pn}"
+    p "cmd=#{cmd}"
     # exit(0)
-    # puts "=======data.download 1"
+     puts "=======data.download 1"
     dl = DlImporter.new(cmd: cmd, search_file_pn: search_file_pn)
-    # puts "=======data.download 2"
+     puts "=======data.download 2"
     # exit(0)
     dl.data
   end

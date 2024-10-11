@@ -1,6 +1,7 @@
 class BaseImporter
   def initialize(vx, keys, ks)
     @logger = LoggerUtils.logger()
+    @logger.tagged("#{self.class.name}")
 
     @vx = vx
     @logger.debug "BaseImporter keys=#{keys}"
@@ -18,8 +19,8 @@ class BaseImporter
     key = newname + "_id"
     x[key] = x[oldname]
     #
-    p "BaseImporter#set_assoce klass=#{klass} olbname=#{oldname} newname=#{newname}"
-    p "x=#{x}"
+    @logger.debug "BaseImporter#set_assoce klass=#{klass} olbname=#{oldname} newname=#{newname}"
+    @logger.debug "x=#{x}"
     #
     # s = klass.find_by(name: x[newname])
     s = klass.find_by(name: x[key])
@@ -63,6 +64,11 @@ class BaseImporter
     # @logger.debug @detector.ignore_blank_keys
 
     json = load_data()
+    if json.nil?
+      @logger.debug "json is nil in BaseImporter#xf"
+      return
+    end
+
     new_json = @detector.detect_replace_key(json, @keys["key_replace"])
     new_json_second = @detector.cmoplement_key(new_json, @keys["key_complement"])
 
@@ -70,7 +76,7 @@ class BaseImporter
     new_json_second.map do |x|
       @delkeys.map { |k| x.delete(k) }
       @after_delkeys.map { |k| x.delete(k) }
-      puts "xf x=#{x}"
+      @logger.debug "xf x=#{x}"
 
       xf_supplement(x, x)
 
@@ -86,9 +92,9 @@ class BaseImporter
 
       readstatus=x
 
-	p "xf key=#{key}"
-        p "data_array.size=#{data_array.size}"
-        p "data_array[0]=#{data_array[0]}"
+      @logger.debug "xf key=#{key}"
+      @logger.debug "data_array.size=#{data_array.size}"
+      @logger.debug "data_array[0]=#{data_array[0]}"
       select_valid_data_x(readstatus, data_array)
       # select_valid_data(x, "purchase_date", "asin", Kindlelist, data_array)
       # exit
@@ -99,10 +105,11 @@ class BaseImporter
     begin
       @ar_klass.insert_all(data_array)
     rescue StandardError => exc
-      pp @ar_klass
+      # pp @ar_klass
       pp exc.class
-      pp exc.message
-      pp exc.backtrace
+      pp "Excception from @ar_klass.insert_all(data_array)"
+      # pp exc.message
+      # pp exc.backtrace
 	
       exit
     end
@@ -117,7 +124,7 @@ class BaseImporter
   def load_data
     item = @vx[:key][@key]
     path = item.full_path
-    # @logger.debug "load_data path=#{path}"
+    @logger.debug "load_data path=#{path}"
     # raise
 
     JsonUtils.parse(path)
