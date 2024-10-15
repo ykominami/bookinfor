@@ -22,7 +22,7 @@ module ReadinglistsHelper
           when 0 | 3 | 4
             array << { str: item[key], attr: 50 }
           when 1
-            array << { str: item.category.name, attr: 100 }
+            array << { str: item[key], attr: 100 }
           when 2
             array << { str: item[key], attr: 100 }
           when 3

@@ -14,15 +14,15 @@
       <%= form.date_field :publish_date, value: kindlelist.publish_date %>
     </div>
     <div class="col-1 my-auto">
-      <%= form.select :shape_id, options_from_collection_for_select(shape_list, :id, :name, kindlelist.shape_id), include_blank: false %>
+      <%= form.select :shape_id, options_from_collection_for_select(shape_list, :id, :name, kindlelist.shape_id), include_blank: true %>
     </div>
 
     <div class="col-sm my-auto" >
-      <%= form.select :readstatus_id, options_from_collection_for_select(readstatus_list, :id, :name , kindlelist.readstatus_id), include_blank: false %>
+      <%= form.select :readstatus_id, options_from_collection_for_select(readstatus_list, :id, :name , kindlelist.readstatus_id), include_blank: true %>
     </div>
 
     <div class="col-1 my-auto">
-      <%= form.select :category_id, options_from_collection_for_select(category_list, :id, :name, kindlelist.category_id), include_blank: false %>
+      <%= form.select :category_id, options_from_collection_for_select(category_list, :id, :name, kindlelist.category_id), include_blank: true %>
     </div>
     <div class="col-1 my-auto" >
       <%= form.text_field :title, value: kindlelist.title %>
@@ -39,7 +39,7 @@
     <div class="col-2 my-auto">
       <div class="d-flex justify-content-end">
         <%= form.primary "更新", { class: "btn btn-sm btn-outline-primary me-2" } %>
-        <%= link_to "取消", kindlelist_path(kindlelist), class: "btn btn-sm btn-outline-secondary me-2" %>
+        <%= link_to "取消", kindlelist_path(id: kindlelist.id), class: "btn btn-sm btn-outline-secondary me-2" %>
       </div>
     </div>
   </div>

@@ -19,7 +19,7 @@ class BookfileImporter < BookImporter
       # @logger.debug "year_str=#{year_str}"
       # @logger.debug "content=#{content}"
       # raise
-      ""
+      {}
     end
   end
 end

@@ -45,53 +45,67 @@ class TopImporter
     ret
   end
 
+  def make_importer(ext, kind, name)
+    importerkind = "#{kind}#{ext}"
+    date = get_import_date(importerkind)
+    if ext
+      path = @local_files[importerkind]
+      # p "top_importer#make_importer 1 importerkind=#{importerkind} date=#{date} path=#{path}"
+      make(importerkind, kind, date, path)
+    else
+      # p "top_importer#make_importer 2 importerkind=#{importerkind} date=#{date}"
+      make(importerkind, kind, date)
+    end
+  end
+
+  def importer_xf(importer, data_key, importer_kind = nil)
+    @logger.debug "1 Top_importer#import_xf data_key=#{data_key}"
+    # p "1 Top_importer#import_xf data_key=#{data_key}"
+    if importer_kind.nil?
+      p "2 Top_importer#import_xf importer.class=#{importer.class} data_key=#{data_key}"
+      ret = importer.xf(data_key, :register)
+    else
+      p "3 Top_importer#import_xf importer.class=#{importer.class} data_key=#{data_key}"
+      ret = importer.xf_booklist(key: data_key, mode: :register)
+    end
+    ret
+  end
+
   def execute
+    p "=============== TopImporter#execute S"
     search_item = JsonUtils.parse(@search_file_pn)
     # exit
     list = @datalist.datax(@vx, search_item)
 
-    list.map do |importer_kind, value|
+    list.map do |importer_kind, data_keys_hash|
       importer_kind_x, ext = importer_kind.split("_")
+      @logger.debug  "execute importer_kind_x=#{importer_kind_x}"
 
-      value.map do |_key2, value2|
+      data_keys_hash.map do |_key2, data_keys|
         # @logger.debug "importer_kind_x=#{importer_kind_x}"
-        if ext
-          importerkind = "#{importer_kind_x}#{ext}"
-          path = @local_files[importer_kind]
-          date = get_import_date(importer_kind_x)
-          importer = make(importerkind, importer_kind_x, date, path)
-        else
-          date = get_import_date(importer_kind)
-          importer = make(importer_kind, importer_kind, date)
-        end
-
-        # raise
-
-        @logger.debug  "execute importer_kind_x=#{importer_kind_x}"
+        importer = make_importer(ext, importer_kind_x, data_keys)
+        # p "############################ top_importer#execute importer.class=#{importer.class}"
 
         case importer_kind_x
         when /reading|kindle|calibre/
-          value2.map do |data_key|
-            # importer.xf_reading(data_key, :register)
-            @logger.debug "1 Top_importer#execute data_key=#{data_key}"
-            ret = importer.xf(data_key, :register)
-            ret.nil? ? "" : ret
+          data_keys.map do |data_key|
+            importer_xf(importer, data_key)
           end
         when "book"
           # raise
-          value2.map do |data_key|
-            @logger.debug "2 Top_importer#execute data_key=#{data_key}"
-            ret = importer.xf_booklist(key: data_key, mode: :register)
-            ret.nil? ? "" : ret
+          data_keys.map do |data_key|
+            importer_xf(importer, data_key, :xf_booklist)
           end
         when "api"
           @logger.debug "Not implemented Importer for api"
+          # p "Not implemented Importer for api"
         else
           @logger.debug "Invalid category #{key}"
           raise
         end
       end
     end
+    p "=============== TopImporter#execute E"
   end
 
   def make(kind, name, import_date, path = nil)

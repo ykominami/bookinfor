@@ -24,8 +24,6 @@ module KindlelistsHelper
         # array << { str: (render_to_string html: kindlelist_path), attr: 100 }
         # array << { str: "", attr: 100 }
         @keys.each_with_index { |key, index|
-          # p key.class
-          # if key == :read_status
           if key == :read_status
             # item[key] = render_to_string LinkButttonComponent.new(label: "finish", url: "/abc")
             item[key] = 0 unless item[key]

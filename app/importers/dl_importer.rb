@@ -28,12 +28,12 @@ class DlImporter
     # @logger.debug "@datadir.output_pn.to_s=#{@datadir.output_pn.to_s}"
     # @logger.debug "@datadir.export_pn.to_s=#{@datadir.export_pn.to_s}"
     @datalist = DatalistUtils.new(dir_pn: @datadir.output_pn)
-    p "@datadir.output_pn=#{@datadir.output_pn}"
+    # p "@datadir.output_pn=#{@datadir.output_pn}"
     # @logger.debug "@datalist=#{@datalist}"
     # @out_json_pn = @datalist.file_pn
 
     @html_file_path = @datadir.output_pn + ConfigUtils.dl_html_filename
-    p "@html_file_path=#{@html_file_path}"
+    # p "@html_file_path=#{@html_file_path}"
     # @logger.debug "@html_file_path=#{@html_file_path}"
     @out_hash = {}
     @hash_from_html = nil

@@ -1,0 +1,2 @@
+class Readingstatus < ApplicationRecord
+end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_08_28_035102) do
+ActiveRecord::Schema[7.2].define(version: 2024_10_14_160612) do
   create_table "booklists", force: :cascade do |t|
     t.string "asin"
     t.integer "totalID", null: false
@@ -81,7 +81,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_08_28_035102) do
     t.datetime "updated_at", null: false
     t.integer "readstatus_id"
     t.integer "shape_id"
-    t.integer "category_id"
+    t.integer "category_id", null: false
     t.index ["category_id"], name: "index_kindlelists_on_category_id"
     t.index ["readstatus_id"], name: "index_kindlelists_on_readstatus_id"
     t.index ["shape_id"], name: "index_kindlelists_on_shape_id"
@@ -91,14 +91,19 @@ ActiveRecord::Schema[7.2].define(version: 2024_08_28_035102) do
     t.date "register_date", null: false
     t.date "date", null: false
     t.string "title", null: false
-    t.string "status", null: false
     t.string "isbn"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "readstatus_id"
     t.integer "shape_id"
-    t.index ["readstatus_id"], name: "index_readinglists_on_readstatus_id"
+    t.integer "readingstatus_id"
+    t.index ["readingstatus_id"], name: "index_readinglists_on_readingstatus_id"
     t.index ["shape_id"], name: "index_readinglists_on_shape_id"
+  end
+
+  create_table "readingstatuses", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "readstatuses", force: :cascade do |t|
@@ -122,6 +127,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_08_28_035102) do
   add_foreign_key "kindlelists", "categories"
   add_foreign_key "kindlelists", "readstatuses"
   add_foreign_key "kindlelists", "shapes"
-  add_foreign_key "readinglists", "readstatuses"
+  add_foreign_key "readinglists", "readingstatuses"
   add_foreign_key "readinglists", "shapes"
 end

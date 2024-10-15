@@ -49,26 +49,26 @@
         "register_date,",
         "date,",
         "title,",
-        "status,",
+        "readingstatus,",
         "shape,",
         "isbn",
-        "readstatus_id"
+        "readingstatus_id"
       ],
       "remove": [
         "category_id"
       ],
-      "not_duplicated": [],
+      "not_duplicated": ["date", "title", "status"],
       "not_blank": [],
       "key_replace": {
         "登録日": "register_date",
         "日付": "date",
         "書名": "title",
-        "状態": "status",
+        "状態": "readingstatus",
         "形態": "shape",
         "ISBN": "isbn"
       },
       "key_complement": {
-        "readstatus_id": 1,
+        "readingstatus_id": 1,
         "category_id": 1
       }
     },

@@ -11,6 +11,7 @@ class JsonUtils
       obj = nil
       return obj if content.nil? || content == ""
 
+=begin
       pp ""
       pp ""
       pp ""
@@ -20,6 +21,7 @@ class JsonUtils
       # puts "content=#{content}"
       pp "======= E"
       pp ""
+=end
       begin
         obj = JSON.parse(content)
       rescue => exc

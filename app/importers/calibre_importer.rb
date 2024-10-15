@@ -29,12 +29,25 @@ class CalibreImporter < BaseImporter
   end
 
   def select_valid_data_x(x, data_array)
-    select_valid_data(x, "timestamp", "zid", Calibrelist, data_array)
+    # p "#### calibre_importer#select_valid_data_x"
+    # raise
+    keys = x.keys
+    keys.each do |k|
+      if x[k].instance_of?(Hash)
+        select_valid_data(x[k], "timestamp", "zid", Calibrelist, data_array)        
+      else
+        # select_valid_data(x[k], "timestamp", "zid", Calibrelist, data_array)
+        raise    
+        p "#### calibre_importer#select_valid_data_x x[#{k}].class=#{x[k].class}"        
+      end
+    end
   end
 
-  def xf_supplement(target, x, base_number = nil)
-    x["zid"] = x["xid"]
-    # @logger.debug x
-    super(target, x, base_number)
+  def select_valid_data_y(x, data_array)
+    select_valid_data(x, "timestamp", "zid", Calibrelist, data_array)        
+  end
+
+  def xf_supplement(x, base_number = nil)
+    x["zid"] = x["xid"].nil? ? x["zid"] : x["xid"]
   end
 end

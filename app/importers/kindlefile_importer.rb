@@ -39,6 +39,6 @@ class KindlefileImporter < KindleImporter
       array << hash
     end
     # @logger.debugp array
-    array
+    JSON.stringify(array)
   end
 end
