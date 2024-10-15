@@ -1,8 +1,10 @@
 <p style="color: green"><%= notice %></p>
 
-<h1>Kindlelists</h1>
+<h1>Kindlelists <% @kindlelist %> ABC <% @kindlelists %>DEF</h1>
 <%= turbo_frame_tag "kindle_form" do %>
-  <%= render "form_comp", kl: paginatex[0] %>
+  <% if @kindlelist.nil? == false  %>
+    <%= render "form_comp_0" , kindlelist: @kindlelist, shape_list: @shape_list, readstatus_list: @readstatus_list,  category_list: @category_list %>
+  <% end %>
 <% end %>
   <div class="card shadow mt-3" >
     <div class="card-header">

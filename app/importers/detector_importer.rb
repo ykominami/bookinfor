@@ -3,6 +3,8 @@ class DetectorImporter
 
   def initialize
     @logger = LoggerUtils.logger
+    @logger.tagged("#{self.class.name}")
+
 
     @_errors = {}
     @_errors[:target] ||= {}
@@ -128,32 +130,70 @@ class DetectorImporter
 
   def show_detected
     # @logger.debug "# show_detected (Importer) S"
+    p "#### show_detected S"
     count = show_blank_fields
     count += show_duplicated_fields
     # @logger.debug "# show_detected (Importer) E"
+    p "#### show_detected E (count=#{count})"
     count
   end
 
-  def detect_replace_key(json, replace_keys)
-    json.map do |x|
-      new_x = {}
-      x.each_key do |key|
-        if (new_key = replace_keys[key])
-          new_x[new_key] = x[key]
-        else
-          new_x[key] = x[key]
-        end
+  def detect_replace_key_sub(hash, replace_keys)
+    new_x = {}
+    hash.each_key do |key|
+      if (new_key = replace_keys[key])
+        new_x[new_key] = hash[key]
+      else
+        new_x[key] = hash[key]
       end
-      new_x
+      # p "detector_importer key=#{key} new_key=#{new_key}"
+    end
+    new_x
+  end
+
+  def detect_replace_key_x(hash, replace_keys)
+    new_hash = {}
+    keys = hash.keys
+    keys.each do |k|
+      new_hash[k] = detect_replace_key(hash[k], replace_keys)
+    end
+    new_hash
+  end
+
+  def detect_replace_key(hash, replace_keys)
+    if hash.instance_of?(Hash)
+      # p "detector_importer hash=#{} Hash"
+      detect_replace_key_sub(hash, replace_keys)
+    else
+      if json.instance_of?(String)
+        p "detector_importer hash=#{hash} String"
+        raise
+      elsif hash.instance_of?(Array)
+        p "detector_importer hash=#{hash} Array"
+        raise
+        hash.map do |x|
+          detect_replace_key(x, replace_keys)
+        end
+      else
+        raise
+      end
     end
   end
 
-  def cmoplement_key(json, complement_key_value)
-    json.map do |x|
-      complement_key_value.each do |key, default_value|
-        x[key] = default_value unless x[key]
-      end
-      x
+  def complement_key_x(hash, complement_key_value)
+    new_hash = {}
+    hash.each_key do |k|
+      new_hash[k] = complement_key(hash[k], complement_key_value)
     end
+    new_hash
+  end
+
+  def complement_key(hash, complement_key_value)
+    # p "detector_importer#complement_key hash.class=#{hash.class}"
+    # p "hash=#{hash}"
+    complement_key_value.each do |complement_key, default_value|
+      hash[complement_key] = default_value unless hash[complement_key]
+    end
+    hash
   end
 end

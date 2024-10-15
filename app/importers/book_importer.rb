@@ -2,6 +2,7 @@ class BookImporter < BaseImporter
   class BookDetectorImporter < DetectorImporter
     def initialize
       @logger = LoggerUtils.logger()
+      @logger.tagged("#{self.class.name}")
     end
 
     def show_detected
@@ -45,7 +46,24 @@ class BookImporter < BaseImporter
   end
 
   def select_valid_data_x(x, data_array)
-    select_valid_data(x, "purchase_date", "asin", Booklist, data_array)
+    # p "#### book_importer#select_valid_data_x"
+    # raise
+    keys = x.keys
+    keys.each do |k|
+      if x[k].instance_of?(Hash)
+        select_valid_data_y(x[k], data_array)
+      else
+        p "#### book_importer#select_valid_data_x x[#{k}].class=#{x[k].class}"
+      end
+    end
+  end
+
+  def select_valid_data_y(x, data_array)
+    if x.instance_of?(Hash)
+      select_valid_data(x, "purchase_date", "asin", Booklist, data_array)
+    else
+      p "#### book_importer#select_valid_data_y x.class=#{x.class}"
+    end
   end
 
   def xf_supplement(target, x, base_number = 0)
@@ -61,10 +79,12 @@ class BookImporter < BaseImporter
     end
 
     # set_assoc(x, Category, "read_status", "readstatus")
+    if x["read_status"] == 0
+      x["read_status"] = Readstatus.find_by(name: "").id
+    end
     set_assoc(x, Readstatus, "read_status", "readstatus")
     set_assoc(x, Bookstore, "bookstore", "bookstore")
 
-    x["shape_id"] = x["shape"]
     case x["shape"]
     when 3
       # @logger.debug "X shape=3"
@@ -92,6 +112,36 @@ class BookImporter < BaseImporter
         raise
       end
     end
+    x["shape_id"] = x["shape"]
+    if x["shape_id"].nil?
+      x["shape_id"] = Shape.find_by(name: "").id
+    elsif x["shape_id"].instance_of?(String) && x["shape_id"].strip.empty?
+      x["shape_id"] = Shape.find_by(name: "").id
+    end
+
+    x["category_id"] = x["category"]
+    if x["category_id"].nil?
+      x["category_id"] = Category.find_by(name: "").id
+    elsif x["category_id"].instance_of?(String) 
+      if x["category_id"].strip.empty?
+        x["category_id"] = Category.find_by(name: "").id
+      else
+        # p "category_id=#{x["category_id"]}"
+        category = Category.find_by(name: x["category_id"])
+        if category
+          x["category_id"] = category.id          
+          p "1 category_id=#{x["category_id"]}"
+        else
+          x["category_id"] = Category.find_by(name: "").id
+          p "2 category_id=#{x["category_id"]}"
+          # raise
+        end
+      end
+    else
+      p "category_id=#{x["category_id"]}"
+      raise
+    end
+
     x.delete("read_status")
     x.delete("shape")
     x.delete("bookstore")
@@ -140,62 +190,89 @@ class BookImporter < BaseImporter
     JsonUtils.parse(path)
   end
 
-  def readstatus=(x)
-    # status = Readstatus.find_by(name: x["read_status"])
-    # @logger.debug "status=#{status} read_status=#{x["read_status"]}"
-    # x[:readstatus_id] = status != nil ? status.id : 1
-    x[:readstatus_id] = x["read_status"].to_i + 1
-    x.delete("read_status")
-  end
-
   def xf_booklist(year: nil, key: nil, mode: :register)
     # raise
 
     @detector = DetectorImporter.new()
     data_array = []
 
-    return if @vx[:category].nil? || @vx[:category][@name].nil?
-
+    if @vx[:category].nil? ||
+       @vx[:category][@name].nil?
+      p "book_importer xf_booklist -1"
+      return
+    end
+  
     @ignore_fields.map { |field| @detector.register_ignore_blank_field(field) }
 
     array = get_year_and_item(key: key, year: year)
-    return unless array
-
+    unless array
+      p "book_importer xf_booklist -2"
+      return
+    end
+  
     year, item = array
 
     base_number = year * 1000
     # raise
     json = load_data(item: item, year: year)
+    if json.nil?
+      @logger.debug "json is nil in BookImporter#xf_booklist"
+      p "book_importer xf_booklist -3"
+      return
+    end
     # @logger.debug json
     # raise
-    new_json = @detector.detect_replace_key(json, @keys["key_replace"])
-    new_json_second = @detector.cmoplement_key(new_json, @keys["key_complement"])
+    new_json = @detector.detect_replace_key_x(json, @keys["key_replace"])
+    new_json_second = @detector.complement_key_x(new_json, @keys["key_complement"])
 
-    new_json_second.map do |x|
-      # @logger.debug x
-      # raise
-      @delkeys.map { |k| x.delete(k) }
-      if x["totalid"]
-        x["totalID"] = x["totalid"]
-        x.delete("totalid")
-      end
-      x.delete("")
-      x["totalID"] = x["xid"].to_i + base_number if x["totalID"]
-      x["xid"] = x["xid"].to_i + base_number if x["xid"]
+    new_json_second.delete("")
 
-      xf_supplement(x, x)
-
-      @detector.detect_blank(x, x)
-
-      readstatus=x
-
-      # @logger.debug x
-      select_valid_data(x, "purchase_date", "asin", Booklist, data_array)
+    keys = new_json_second.keys
+    keys.each do |k|
+      delete_key(new_json_second[k], @delkeys)
     end
+    keys.each do |k|
+      new_json_second[k].delete("")
+    end
+    keys.each do |k|
+      xf_supplement(new_json_second[k], new_json_second[k])
+    end
+    keys.each do |k|
+      # @detector.detect_blank(new_json_second, new_json_second)
+      detect_blank(@detector, new_json_second[k])
+    end
+    keys.each do |k|
+      if new_json_second[k]["totalid"]
+        new_json_second[k]["totalID"] = new_json_second["totalid"]
+        new_json_second[k].delete("totalid")
+      end
+      new_json_second[k]["totalID"] = new_json_second["xid"].to_i + base_number if new_json_second["totalID"]
+      new_json_second[k]["xid"] = new_json_second["xid"].to_i + base_number if new_json_second[k]["xid"]
+    end
+
+
+    # @logger.debug x
+    # select_valid_data(new_json_second, "purchase_date", "asin", Booklist, data_array)
+    keys.each do |k|
+      select_valid_data_y(new_json_second[k], data_array)
+    end
+    # raise
+
     count = @detector.show_detected
     #
-    p "data_array=#{data_array}"
-    @ar_klass.insert_all(data_array) if mode == :register && count.zero? && data_array.size.positive?
+    p "============= bookimporter xf_booklist count=#{count}"
+    @logger.debug "data_array=#{data_array}"
+    if mode == :register && count.zero? && data_array.size.positive?
+      p "data_array.size=#{data_array.size}"
+      p data_array[0]
+      @ar_klass.insert_all( data_array ) 
+    else
+      p "#### xf_booklist S"
+      p "mode=#{mode}"
+      p "count=#{count}"
+      p "data_array.size=#{data_array.size}"
+      p "#### xf_booklist E"
+    end
     @detector.show_detected()
   end
 end

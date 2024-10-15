@@ -4,6 +4,7 @@ module KindlelistsHelper
 
     def initialize(name, kindlelists, view_context)
       @logger = LoggerUtils.logger
+      @logger.tagged("#{self.class.name}")
 
       @name = name
       @kindlelists = kindlelists
@@ -19,12 +20,10 @@ module KindlelistsHelper
       end
       @body = @kindlelists.map do |item|
         array = []
-        p item
+        @logger.debug item
         # array << { str: (render_to_string html: kindlelist_path), attr: 100 }
         # array << { str: "", attr: 100 }
         @keys.each_with_index { |key, index|
-          # p key.class
-          # if key == :read_status
           if key == :read_status
             # item[key] = render_to_string LinkButttonComponent.new(label: "finish", url: "/abc")
             item[key] = 0 unless item[key]

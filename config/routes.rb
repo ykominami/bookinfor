@@ -11,10 +11,13 @@ Rails.application.routes.draw do
   get "booklists/index3(/:ind)" => "booklists#index3"
   # root to: "home#index"
 
+  # get "kindlelists/show(/:id)" => "kindlelists#show"
+
   resources :abcs
   resources :calibrelists
   resources :readinglists
-  resources :kindlelists
+  resources :kindlelists, only: [:show, :index, :new, :edit]
+
   resources :booklists
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

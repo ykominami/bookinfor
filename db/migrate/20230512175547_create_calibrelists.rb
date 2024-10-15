@@ -24,10 +24,6 @@ class CreateCalibrelists < ActiveRecord::Migration[7.0]
       t.string :languages, null: false 
       t.string :rating, null: false 
       t.string :identifiers, null: false
-
-      # t.integer :readstatus_id, null: false
-      # t.integer :category_id, null: false
-
     end
   end
 end

@@ -1,7 +1,7 @@
 class Kindlelist < ApplicationRecord
-  belongs_to :readstatus
-  belongs_to :category
-  belongs_to :shape
+  belongs_to :readstatus, dependent: :destroy
+  belongs_to :category, dependent: :destroy
+  belongs_to :shape, dependent: :destroy
 
   default_scope { order("purchase_date DESC") }
 

@@ -1,5 +1,5 @@
 class KindlelistsController < ApplicationController
-  before_action :set_kindlelist, only: %i[show edit update destroy]
+  before_action :set_kindlelist, only: %i[index show edit update destroy]
   before_action :set_select_options, only: %i[new edit index create]
 
   # GET /kindlelists or /kindlelists.json
@@ -7,6 +7,10 @@ class KindlelistsController < ApplicationController
     @search = Kindlelist.ransack(params[:q])
     @search.sorts = "purchase_date desc" if @search.sorts.empty?
     @kindlelists = @search.result.page(params[:page])
+    @kindlelist = @kindlelists.first
+    @shape_list = Shape.all
+    @readstatus_list = Readstatus.all
+    @category_list = Category.all
 
     respond_to do |format|
       format.html {}
@@ -15,7 +19,9 @@ class KindlelistsController < ApplicationController
   end
 
   # GET /kindlelists/1 or /kindlelists/1.json
-  def show; end
+  def show
+    @kindlelist = Kindlelist.find(params[:id])
+  end
 
   # GET /kindlelists/new
   def new
