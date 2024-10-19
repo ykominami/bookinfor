@@ -107,39 +107,39 @@ class BaseImporter
   
     new_json_second.delete("")
 
-    keys = new_json_second.keys
-    keys.each do |k|
-      delete_key(new_json_second[k], @delkeys)
-      after_delete_key(new_json_second[k], @after_delkeys)
+    col_keys = new_json_second.keys
+    col_keys.each do |col_k|
+      delete_key(new_json_second[col_k], @delkeys)
+      after_delete_key(new_json_second[col_k], @after_delkeys)
     end
-    keys.each do |k|
-      new_json_second[k].delete("")
+    col_keys.each do |col_k|
+      new_json_second[col_k].delete("")
     end
-    keys.each do |k|
-      xf_supplement(new_json_second[k])
+    col_keys.each do |col_k|
+      xf_supplement(new_json_second[col_k])
     end
-    keys.each do |k|
-      detect_blank(@detector, new_json_second[k])
+    col_keys.each do |col_k|
+      detect_blank(@detector, new_json_second[col_k])
     end
-    keys.each do |k|
-      new_json_second[k].each_key do |k2|
-        next if @ignore_fields.find(k2)
+    col_keys.each do |col_k|
+      new_json_second[col_k].each_key do |col_k2|
+        next if @ignore_fields.find(col_k2)
 
-        @detector.find_duplicated_field_value(k, k2, new_json_second[k])
+        @detector.find_duplicated_field_value(col_k, col_k2, new_json_second[col_k])
       end
     end
     # readstatus=new_json_second
-    keys.each do |k|
-      @logger.debug "xf k=#{k}"
+    col_keys.each do |col_k|
+      @logger.debug "xf col_k=#{col_k}"
       @logger.debug "data_array.size=#{data_array.size}"
       @logger.debug "data_array[0]=#{data_array[0]}"
       # select_valid_data_x(readstatus, data_array)
-      readstatus = new_json_second[k]
+      readstatus = new_json_second[col_k]
       if new_json_second[k].instance_of?(Hash)
-        p "new_json_second[k]=#{new_json_second[k]}"
-        select_valid_data_y(new_json_second[k], data_array)
+        p "new_json_second[k]=#{new_json_second[col_k]}"
+        select_valid_data_y(new_json_second[col_k], data_array)
       else
-        p "base_importer xf 5 new_json_second[k].class=#{new_json_second[k].class}"
+        p "base_importer xf 5 new_json_second[k].class=#{new_json_second[col_k].class}"
         raise
       end
     end
