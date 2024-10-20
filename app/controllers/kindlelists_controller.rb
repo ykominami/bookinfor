@@ -39,8 +39,8 @@ class KindlelistsController < ApplicationController
       ret = false
       begin
         ret = @kindlelist.save
-      rescue StandardError => exception
-        logger.fatal exception.message
+      rescue StandardError => exc
+        LoggerUtils.log_fatal_p exc.message
       end
       if ret
         flash.now.notice = "Kindlelistに登録しました。"
@@ -48,7 +48,7 @@ class KindlelistsController < ApplicationController
         format.turbo_stream {}
         format.json { render :show, status: :created, location: @kindlelist }
       else
-        logger.debug "create ret=#{ret} 2"
+        LoggerUtils.log_debug_p "create ret=#{ret} 2"
         format.html { render :new, status: :unprocessable_entity }
         format.turbo_stream { render :new, status: :unprocessable_entity }
         format.json { render json: @kindlelist.errors, status: :unprocessable_entity }

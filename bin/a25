@@ -1,8 +1,0 @@
-#!/bin/bash
-# bin/rails db:drop 
-# bin/rails db:create
-# bin/rails db:migrate
-# bundle exec bin/setup
-# bin/rails data:download[all]
-bin/rails data:import
-

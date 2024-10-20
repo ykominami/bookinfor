@@ -29,16 +29,13 @@ class CalibreImporter < BaseImporter
   end
 
   def select_valid_data_x(x, data_array)
-    # p "#### calibre_importer#select_valid_data_x"
-    # raise
     keys = x.keys
     keys.each do |k|
       if x[k].instance_of?(Hash)
         select_valid_data(x[k], "timestamp", "zid", Calibrelist, data_array)        
       else
-        # select_valid_data(x[k], "timestamp", "zid", Calibrelist, data_array)
-        raise    
         p "#### calibre_importer#select_valid_data_x x[#{k}].class=#{x[k].class}"        
+        raise    
       end
     end
   end

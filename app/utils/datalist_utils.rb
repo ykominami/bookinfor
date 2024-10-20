@@ -13,24 +13,6 @@ class DatalistUtils
     LABEL_INDEX = 4
     YEAR_INDEX = 5
 
-    def self.reorder_kind(kind, kindx)
-      kind_index = CATEGORY_INDEX
-      case kind
-      when "api"
-        if kindx =~ /\d{4}/
-          kindx_index = YEAR_INDEX
-        else
-          kindx_index = LABEL_INDEX
-        end
-      else
-        kindx_index = YEAR_INDEX
-      end
-      raise unless kind_index
-      raise unless kindx_index
-
-      [kind_index, kindx_index]
-    end
-
     def self.year_index
       @year_index
     end
@@ -75,6 +57,7 @@ class DatalistUtils
     extend Forwardable
     def_delegators(:@keylabel, :year, :label, :category, :array)
 
+    attr_reader :key, :array
     def initialize(key, relative_file, src_url, full_path, keylabel = nil)
       @key = key
       @keylabel = keylabel || DatalistUtils::Keylable.new(key)
@@ -120,8 +103,9 @@ class DatalistUtils
   end
 
   def parse_datalist_content(hash)
-    hash.each_with_object({ key: {}, category: {}, list: [], category_list: [] }) do |xv, memo|
+    hash.each_with_object({ key: {}, category: {}, list: [], category_list: [] }) do |xv,memo|
       key = xv[0]
+
       relative_file = xv[1][0]
       src_url = xv[1][1]
       if relative_file == ""
@@ -129,11 +113,7 @@ class DatalistUtils
       else
         full_path = @dir_pn + relative_file
         item = Item.new(key, relative_file, src_url, full_path)
-        # @logger.debug "Datalist relative_file=#{relative_file}"
-        # @logger.debug "src_url=#{src_url}"
-        # @logger.debug "full_path=#{full_path}"
       end
-      # path = @dir_pn + relative_file
 
       memo[:key] ||= {}
       memo[:key][item.key] = item
@@ -151,7 +131,6 @@ class DatalistUtils
     new_hash = hash.each_with_object({}) do |obj, memo|
       obj[0]
       item = obj[1]
-      # exit(0)
 
       tmp = [item.relative_file, item.src_url]
       memo[item.key] = tmp
@@ -160,30 +139,25 @@ class DatalistUtils
   end
 
   def datax(hash, search_item)
+    # binding.debugger
+
     new_hash = {}
+    return nil unless hash
     return nil unless search_item
 
-    search_item.keys.map do |kind|
-      new_hash[kind] ||= {}
-      search_item[kind].map do |kindx|
-        kind_index, kindx_index = Keylable.reorder_kind(kind, kindx)
-        raise unless hash
-        raise unless kind_index
-        raise unless kind
-        raise unless kindx_index
-        raise unless kindx
+    search_item.each_key do |category|
+      new_hash[category] ||= {}
+      search_item[category].map do |year|
+        new_hash[category][year] ||= {}
+        # categoryとyearの組み合わせでソートされたリストを割り当てしなおす
+        new_hash[category][year][:list] = sorted_by_category_and_year(list: hash[:list], category: category, year: year)
+      end
+    end
 
-        new_hash[kind][kindx] = datax_by_item(hash: hash, arg1: [kind_index, kind], arg2: [kindx_index, kindx])
-      end
-    end
-    new_hash.each_key do |key|
-      new_hash[key].each_key do |key2|
-        @logger.debug "new_hash[#{key}][#{key2}]=#{new_hash[key][key2]}"
-      end
-    end
     new_hash
   end
 
+  # 4桁の数字部分を含んでいる場合は、その数字部分を数値として取り出す
   def get_number(str)
     if str
       if str =~ /\d{4}/
@@ -196,43 +170,42 @@ class DatalistUtils
     end
   end
 
-  def datax_by_item(hash:, arg1: nil, arg2: nil, arg3: nil)
-    _, keyx = arg1
-    _, keyx2 = arg2
-    _, keyx3 = arg3
-    keyx, = keyx.split("_")
+  def sorted_by_category_and_year(list:, category: nil, year: nil)
+    category, = category.split("_")
+    # 数字部分を含んでいる場合は、その数字部分を取り出す
+    year = get_number(year)
 
-    keyx2 = get_number(keyx2)
-    get_number(keyx3)
+    # 指定categoryに一致するものを取り出す(yearが:allの場合は全ての年、:latestの場合は最新の年のみが指定されているとして扱う）
+    # または、指定categoryと指定yearに一致するものを取り出す
 
-    list = hash[:list].select do |item|
-      result = if [":all", ":latest", ""].include?(keyx2)
-                 item.category == keyx
-               else
-                 @logger.debug "keyx2=#{keyx2}|#{keyx2.class}" if item.category == keyx
-                 ret = item.category == keyx && item.year == keyx2
-                 @logger.debug "ret=#{ret} item.year=#{item.year} item.year.class=#{item.year.class} keyx2=#{keyx2} keyx2.class=#{keyx2.class}" if item.category == "book" && keyx == "book"
-                 ret
-               end
-      result
+    # 以下で、:listはRubyのシンボルである。":all"は":latest"はシンボルではなく、文字列として扱われる
+    new_list = list.select do |item|
+      if [":all", ":latest", ""].include?(year)
+        item.category == category
+      else
+        item.category == category && item.year == year
+      end
     end
 
     ret_list = []
-    if keyx2 == ":latest"
-      target = list.sort_by do |a, b|
-        if b
-          a.year <=> b.year
-        else
-          1
-        end
-      end.last
+    # :latestの場合は最新の年のみを取り出す
+    if year == ":latest"
+      target = new_list.sort_by do |a, b|
+                              if b
+                                a.year <=> b.year
+                              else
+                                1
+                              end
+                            end.last
+      # 配列からlastメソッドで取り出したので、targetは配列ではない
+      # そのため、targetがnilでない場合は、配列に変換して返す
       ret_list = if target
-                   [target.key]
+                   [target]
                  else
-	           []
+	                []
                  end
     else
-      ret_list = list.map { |target| target.key }
+      ret_list = new_list
     end
 
     ret_list

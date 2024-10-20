@@ -1,5 +1,5 @@
 {
-  "book_file": {
-    "2021": "book_2021.json"
+  "bookfile": {
+    "2021": "data/book/2021.json"
   }
 }

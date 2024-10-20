@@ -1,9 +1,21 @@
 class ConfigUtils
   class Configx
-    def initialize(path_pn)
-      @path_pn = path_pn
-      @json = JsonUtils.parse(@path_pn)
-      @obj = @json["xkeys"]
+    attr :obj, :book
+    def initialize(json_path_pn, book_yaml_path_pn)
+      if json_path_pn
+        @json_path_pn = json_path_pn
+        @json = JsonUtils.parse(@json_path_pn)
+        @obj = @json["xkeys"]
+      else
+        @json_path_pn = nil
+      end
+
+      if book_yaml_path_pn
+        @book_yaml_path_pn = book_yaml_path_pn
+        @book = YamlUtils.parse(@book_yaml_path_pn)
+      else
+        @book_yaml_path_pn = nil
+      end
     end
 
     def keys
@@ -39,6 +51,7 @@ class ConfigUtils
   @input_dir_pn = Rails.root + @input_dir
 
   @config_pn = @importer_config_dir_pn + "config.json"
+  @book_yaml_pn = @importer_config_dir_pn + "book.yaml"
 
   @aux_dbtbl_pn = @importer_config_dir_pn + "aux_dbtbl.json"
 
@@ -64,8 +77,12 @@ class ConfigUtils
       @output_export_dir_pn
     end
 
-    def get_configx(path)
-      Configx.new(path)
+    def get_configx(pn)
+      Configx.new(pn, nil)
+    end
+
+    def get_configx_for_book_ymal(book_yaml_pn)
+      Configx.new(nil, book_yaml_pn)
     end
 
     def output_dir_pn
@@ -138,6 +155,10 @@ class ConfigUtils
 
     def search_json_pn
       @search_json_pn
+    end
+
+    def book_yaml_pn
+      @book_yaml_pn
     end
   end
 

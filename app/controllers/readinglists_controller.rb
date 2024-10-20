@@ -42,8 +42,8 @@ class ReadinglistsController < ApplicationController
       ret = false
       begin
         ret = @readinglist.save!
-      rescue StandardError => exception
-        logger.fatal exception.message
+      rescue StandardError => exc
+        LoggerUtils.log_fatal_p exc.message
       end
       if ret
         format.html { render }
