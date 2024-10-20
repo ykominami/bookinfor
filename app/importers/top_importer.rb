@@ -60,21 +60,16 @@ class TopImporter
 
   def importer_xf(importer, data_key, importer_kind = nil)
     @logger.debug "1 Top_importer#import_xf data_key=#{data_key}"
-    # p "1 Top_importer#import_xf data_key=#{data_key}"
     if importer_kind.nil?
-      p "2 Top_importer#import_xf importer.class=#{importer.class} data_key=#{data_key}"
       ret = importer.xf(data_key, :register)
     else
-      p "3 Top_importer#import_xf importer.class=#{importer.class} data_key=#{data_key}"
       ret = importer.xf_booklist(key: data_key, mode: :register)
     end
     ret
   end
 
   def execute
-    p "=============== TopImporter#execute S"
     search_item = JsonUtils.parse(@search_file_pn)
-    # exit
     list = @datalist.datax(@vx, search_item)
 
     list.map do |importer_kind, data_keys_hash|
@@ -84,7 +79,6 @@ class TopImporter
       data_keys_hash.map do |_key2, data_keys|
         # @logger.debug "importer_kind_x=#{importer_kind_x}"
         importer = make_importer(ext, importer_kind_x, data_keys)
-        # p "############################ top_importer#execute importer.class=#{importer.class}"
 
         case importer_kind_x
         when /reading|kindle|calibre/
@@ -92,20 +86,17 @@ class TopImporter
             importer_xf(importer, data_key)
           end
         when "book"
-          # raise
           data_keys.map do |data_key|
             importer_xf(importer, data_key, :xf_booklist)
           end
         when "api"
           @logger.debug "Not implemented Importer for api"
-          # p "Not implemented Importer for api"
         else
           @logger.debug "Invalid category #{key}"
           raise
         end
       end
     end
-    p "=============== TopImporter#execute E"
   end
 
   def make(kind, name, import_date, path = nil)
