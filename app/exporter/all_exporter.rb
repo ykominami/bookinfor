@@ -16,9 +16,9 @@ class AllExporter
 
   def export_or_import(cmd, json_pn)
     configx = ConfigUtils.get_configx(json_pn)
-    keys = configx.get_keys()
+    keys = configx.keys()
     keys.map do |key|
-      klass = configx.get_class(key)
+      klass = configx.class(key)
       output_pn = make_file_pn(@datadir.export_pn, key)
       @logger.debug "output_pn=#{output_pn}"
       @logger.debug klass

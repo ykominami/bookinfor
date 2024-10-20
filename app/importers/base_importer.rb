@@ -1,3 +1,5 @@
+require 'pp'
+
 class BaseImporter
   def initialize(vx, keys, ks)
     @logger = LoggerUtils.logger()
@@ -15,45 +17,40 @@ class BaseImporter
     @ignore_fields ||= %w[]
   end
 
-  def set_assoc(x, klass, oldname, newname)
-    key = newname + "_id"
+  def set_assoc(x, klass, oldname, newname = nil)
+    if newname.nil?
+      key = oldname + "_id"
+    else
+      key = newname
+    end
     #
     @logger.debug "BaseImporter#set_assoce klass=#{klass} olbname=#{oldname} newname=#{newname}"
     @logger.debug "x=#{x}"
     #
     if x[oldname].instance_of?(Integer)
-      p "base_importer set_assoc 1 klass=#{klass} x[oldname]=#{x[oldname]}"
       x[key] = x[oldname]
-      p "1 set_assoc x[#{key}]=#{x[key]}"
     elsif x[oldname].instance_of?(String)
-      p "base_importer set_assoc 2 klass=#{klass} x[oldname]=#{x[oldname]}"
       s = klass.find_by(name: x[oldname])
       if s
         x[key] = s.id
-        p "2 set_assoc x[#{key}]=#{x[key]}"
       else
         s = klass.find_by(name: "")
         if s
             x[key] = s.id
-            p "3 set_assoc x[#{key}]=#{x[key]}"
         else
-          p "4 base_importer set_assoc 2 klass=#{klass} Can't get s"
+          p "klass.find_by(name: "") s=#{s} klass=#{klass} klass.all.size=#{klass.all.size}"
           raise
         end
       end      
     else
-      p "5 base_importer set_assoc 3 klass=#{klass} x[oldname]=#{x[oldname]}"
       s = klass.find_by(name: "")
       if s
         x[key] = s.id
-        p "6 set_assoc x[#{key}]=#{x[key]}"
       else
-        p "7 base_importer set_assoc 1 klass=#{klass} Can't get s"
+        p "klass.find_by(name: "") s=#{s} klass=#{klass} klass.all.size=#{klass.all.size}"
         raise
       end
     end
-    # s = klass.find_by(name: x[newname])
-    p "set_assoc E x[#{key}]=#{x[key]}"
   end
 
   def readstatus=(x)
@@ -77,30 +74,25 @@ class BaseImporter
     after_delkeys.map { |delkey| x.delete(delkey) }
   end
 
-  def xf(key, mode = :register)
-    # p "base_importer xf 0"
+  def xf(key:, year:, mode: :register)
     @detector = DetectorImporter.new()
     data_array = []
+
     @key = key
 
     if @vx[:category].nil? ||
        @vx[:category][@name].nil?
-       p "base_importer xf -1"
       return
     end
-    # p "base_importer xf 1"
 
     @ignore_fields.map { |field| @detector.register_ignore_blank_field(field) }
-    # @lpgger.debug @ignore_fields
-    # @logger.debug @detector.ignore_blank_keys
 
     json = load_data()
     if json.nil?
-      @logger.debug "json is nil in BaseImporter#xf"
-      p "base_importer xf -2"
+      msg = "json is nil in BaseImporter#xf"
+      LoggerUtils.log_debug_p(msg, @logger)
       return
     end
-    # p "base_importer xf 2"
 
     new_json = @detector.detect_replace_key_x(json, @keys["key_replace"])
     new_json_second = @detector.complement_key_x(new_json, @keys["key_complement"])
@@ -135,38 +127,24 @@ class BaseImporter
       @logger.debug "data_array[0]=#{data_array[0]}"
       # select_valid_data_x(readstatus, data_array)
       readstatus = new_json_second[col_k]
-      if new_json_second[k].instance_of?(Hash)
-        p "new_json_second[k]=#{new_json_second[col_k]}"
+      if new_json_second[col_k].instance_of?(Hash)
         select_valid_data_y(new_json_second[col_k], data_array)
       else
-        p "base_importer xf 5 new_json_second[k].class=#{new_json_second[col_k].class}"
+        p "new_json_second[col_k].class=#{new_json_second[col_k].class}"
         raise
       end
     end
-    # raise
-    # exit
     count = @detector.show_detected()
     unless mode == :register && count.zero? && data_array.size.positive?
-      p "base_importer xf -10"
-      p "mode=#{mode}"
-      p "count=#{count}"
-      p "data_array.size=#{data_array.size}"
       return
     end
 
-    p "base_importer xf 10"
-    p data_array
     begin
-      # p data_array
-      # exit
       @ar_klass.insert_all( data_array )
     rescue StandardError => exc
-      # pp @ar_klass
-      pp exc.class
-      pp "Excception from @ar_klass.insert_all(data_array)"
-      pp exc.message
-      # pp exc.backtrace
-      p "base_importer xf -3"
+      LoggerUtils.log_fatal_p exc.class
+      LoggerUtils.log_fatal_p "Excception from @ar_klass.insert_all(data_array)"
+      LoggerUtils.log_fatal_p exc.message
 
       exit
     end
@@ -180,20 +158,18 @@ class BaseImporter
 
   def load_data
     item = @vx[:key][@key]
+    if item.nil?
+      p "exit BaseImporter#load_data"
+      exit 
+    end
     path = item.full_path
-    @logger.debug "load_data path=#{path}"
-    # p "base_importer load_data path=#{path}"
-    # raise
-
     JsonUtils.parse(path)
   end
 
   def valid_date?(target_date)
     if ConfigUtils.use_import_date?
-      # @logger.debug "kindle_importer valid_date? 1"
       @import_date.before? target_date
     else
-      # @logger.debug "kindle_importer valid_date? 2"
       true
     end
   end
@@ -206,7 +182,6 @@ class BaseImporter
       import_date = Date.new(1970, 1, 1)
     end
     import_date
-    raise
   end
 
   def append_data(x, data_array, use_check: true)
@@ -217,25 +192,12 @@ class BaseImporter
       @logger.debug "append_data use_check=true"
     end
   end
-=begin
-  def select_valid_data_x(x, date_field, unique_field, ac_klass, data_array)
-    keys = x.keys
-    keys.each do |k|
-      select_valid_data(x[k], date_field, unique_field, ac_klass, data_array)
-    end
-  end
-=end
+
   private
 
   def select_valid_data(x, date_field, unique_field, ac_klass, data_array)
-    # p "x.class=#{x.class}"
-    # p "x=#{x}"
-    # p "date_field=#{date_field}"
     target = x[date_field]
     if UtilUtils.nil_or_empty_string?(target)
-      p "basee_importer select_valid_data 1 target=#{target}"
-      p "date_field=#{date_field}"
-      p "x=#{x}"
       return 
     end
     if target.instance_of?(String)
@@ -251,12 +213,10 @@ class BaseImporter
     end
 
     unless target_date.instance_of?(Date)
-      p "basee_importer select_valid_data 3 target_date=#{target_date}"
       return
     end
 
     unless valid_date?(target_date)
-      p "basee_importer select_valid_data 4 target_date=#{target_date}"
       return
     end
 
@@ -264,10 +224,6 @@ class BaseImporter
     record = ac_klass.find_by(unique_field.to_sym => value)
     unless record
         append_data(x, data_array) 
-      # p "base_importer#select_valid_data append #{unique_field}: #{value}"
-    else
-      p "base_importer#select_valid_data not append #{unique_field}: #{value}"
-      p record
     end
   end
 end

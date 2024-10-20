@@ -1,29 +1,30 @@
-require "json"
+require "yaml"
 
-class JsonUtils
+class YamlUtils
   @logger ||= LoggerUtils.logger
   @logger.tagged("#{self.class.name}")
 
   class << self
     def parse(file)
-      @logger.debug "Jsonutil file=#{file}"
+      @logger.debug "Yamlutil file=#{file}"
       content = File.read(file)
       obj = nil
       return obj if content.nil? || content == ""
 
       begin
-        obj = JSON.parse(content)
+        obj = YAML.safe_load(content)
       rescue => exc
         LoggerUtils.log_fatel_p exc.class
-        LoggerUtils.log_fatel_p "Excception from JSON.parse(content) file=#{file}"
-        LoggerUtils.log_fatel_p "Exception in JsonUtils.parse"
+        LoggerUtils.log_fatel_p "Excception from YAML.safe_load(content) file=#{file}"
+        LoggerUtils.log_fatel_p "Exception in YamlUtils.parse"
       end
 
       obj
     end
 
     def output(fio, obj)
-      json_str = JSON.pretty_generate(obj)
+      @logger.debug "============================ YamlUtils.output"
+      json_str = YAML.dump(obj)
       pn = Pathname.new(fio)
       @logger.debug "pn.to_s=#{pn}"
       pn.write(json_str)
