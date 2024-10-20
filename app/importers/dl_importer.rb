@@ -5,6 +5,55 @@ require "net/http"
 require "nokogiri"
 require "pathname"
 
+class DlResultStack
+  class DlResult
+    attr_accessor :op, :result
+    def initialize(op, result)
+      @op = op
+      @result = result
+      @messages = []
+    end
+
+    def eql?(other)
+      @op == other.op && @result == other.result
+    end
+
+    def add_message(msg)
+      @messages.push(msg)
+    end
+  end
+  
+  def initialize
+    @stack = []
+  end
+
+  def last
+    @stack.last
+  end
+
+  def size
+    @stack.size
+  end
+
+  def empty?
+    @stack.empty?
+  end
+
+  def peek_at(index)
+    @stack[index]
+  end
+
+  def add(result)
+    @stack.push(result)
+  end
+
+  def dump
+    @stack.each do |it|
+      p it
+    end
+  end
+end
+
 class DlImporter
   def initialize(cmd:, search_file_pn: nil)
     @logger = LoggerUtils.logger()
@@ -20,21 +69,12 @@ class DlImporter
       end
     end
 
-    # @src_url = "https://a.northern-cross.net/gas2/a.php"
     @src_url = ConfigUtils.dl_src_url
-    # @logger.debug "@src_url=#{@src_url}"
     # ConfigUtilクラスから、output_pnとexport_pnを取得・設定
     @datadir = DatadirUtils.new()
-    # @logger.debug "@datadir.output_pn.to_s=#{@datadir.output_pn.to_s}"
-    # @logger.debug "@datadir.export_pn.to_s=#{@datadir.export_pn.to_s}"
     @datalist = DatalistUtils.new(dir_pn: @datadir.output_pn)
-    # p "@datadir.output_pn=#{@datadir.output_pn}"
-    # @logger.debug "@datalist=#{@datalist}"
-    # @out_json_pn = @datalist.file_pn
 
     @html_file_path = @datadir.output_pn + ConfigUtils.dl_html_filename
-    # p "@html_file_path=#{@html_file_path}"
-    # @logger.debug "@html_file_path=#{@html_file_path}"
     @out_hash = {}
     @hash_from_html = nil
   end
@@ -44,85 +84,79 @@ class DlImporter
   end
 
   def do_op(op)
-    ret = true
+    dlresult = DlResultStack::DlResult.new(op, false)
+
     @logger.debug "do_op op=#{op}"
     case op
     when :CLEAN_ALL_FILES
-      clean_all_files()
+      clean_all_files(dlresult)
+      dlresult.result = true
     when :CLEAN_JSON_FILES
-      clean_json_files()
+      clean_json_files(dlresult)
+      dlresult.result = true
     when :CLEAN_HTML_FILES
-      clean_html_files()
+      clean_html_files(dlresult)
     when :GET_HTML
       # 取得内容をHTMLファイルとして保存
-      ret = get_and_save_page(@src_url, @html_file_path)
+      get_and_save_page(@src_url, @html_file_path, dlresult)
     when :PARSE_HTML
       # HTMLファイルを解析
-      @hash_from_html = parse_html_file(@html_file_path)
-      ret = false unless @hash_from_html
+      @hash_from_html = parse_html_file(@html_file_path, dlresult)
     when :PARSE_HTML_AND_SHOW
       # HTMLファイルを解析
-      @hash_from_html = parse_html_file(@html_file_path)
+      @hash_from_html = parse_html_file(@html_file_path, dlresult)
       @logger.debug @hash_from_html
-      ret = false unless @hash_from_html
     when :HASH_TO_JSON_FILE
       # HTMLの解析結果であるハッシュをファイルに保存
-      # @logger.debug "@hash_from_html=#{@hash_from_html}"
-      # @logger.debug  @hash_from_html
-      @out_hash = save_datalist_json_from_html(@hash_from_html)
-      # @out_hash = get_data_and_save_from_html(specified_hash)
+      @out_hash = save_datalist_json_from_html(@hash_from_html, dlresult)
       if @out_hash
-        # @save_hash = @out_hash[:key]
         @save_hash = @out_hash
-        ret = false unless @save_hash
-      else
-        ret = false
       end
       # @logger.debug @out_hash
     when :HASH_TO_JSON_FILE_AND_SHOW
       # HTMLの解析結果であるハッシュをファイルに保存
-      @out_hash = save_datalist_json_from_html(@hash_from_html)
+      @out_hash = save_datalist_json_from_html(@hash_from_html, dlresult)
 
       if @out_hash
         @logger.debug @out_hash
         @save_hash = @out_hash
         # @save_hash = @out_hash[:key]
-        ret = false unless @save_hash
-      else
-        ret = false
       end
     when :GET_AND_SAVE
       specified_hash = @datalist.datax(@save_hash, @search_item)
-      ret = get_data_and_save_with_hash(specified_hash, @save_hash)
-      @logger.debug "ret=#{ret}"
+      get_data_and_save_with_hash(specified_hash, @save_hash, dlresult)
+      @logger.debug "dlresult.result=#{dlresult.result}"
     when :PARSE_JSON_FILE
+      dlresult.result = true
       @out_hash = @datalist.parse()
       if @out_hash
         # @save_hash = @out_hash[:key]
         @save_hash = @out_hash
       else
-        ret = false
+        dlresult.result = false
       end
     when :SHOW_JSON
       @logger.debug @save_hash
+      dlresult.result = true
     when :SHOW_JSON_SELECTED
       specified_hash = @datalist.datax(@save_hash, @search_item)
       @logger.debug specified_hash
+      dlresult.result = true
     when :DATAX
+      dlresult.result = true
       @save_hash = @datalist.datax(@out_hash, @search_item)
       # @logger.debog ":DATAX @save_hash=#{@save_hash}"
-      ret = false unless @save_hash
+      dlresult.result = false unless @save_hash
     else
-      @logger.debug "Illeagal op is specified! (#{op})"
-      ret = false
+      message = "Illeagal op is specified! (#{op})"
+      @logger.debug message
+      dlresult.result = false
     end
 
-    ret
+    dlresult
   end
 
   def data
-    # @logger.debug "##########"
-    # @logger.debug "DlImporter#get_data @cmd=#{@cmd}"
     op_list = case @cmd
               when :ALL
                 %i[CLEAN_ALL_FILES GET_HTML PARSE_HTML HASH_TO_JSON_FILE GET_AND_SAVE]
@@ -152,46 +186,47 @@ class DlImporter
                 @logger.debug "iLLEGAL_OP(#{@cmd})"
                 %i[ILLGAL_OP]
               end
-
-    # @logger.debug "op_list=#{op_list}"
+    result_stack = DlResultStack.new
     op_list.each do |op|
-      # @logger.debug "get_data | op=#{op}"
-      ret = do_op(op)
-      break unless ret
+      result_item = do_op(op)
+      result_stack.add(result_item)
+      break unless result_item.result
+    end
+    result_stack
+  end
+
+  def clean_all_files(dlresult)
+    output_pn = Pathname.new(ConfigUtils.output_dir)
+    clean_files_under_dir(output_pn, /\.json/i, dlresult)
+    if dlresult
+      clean_files_under_dir(output_pn, /\.html/i, dlresult)
     end
   end
 
-  def clean_all_files
+  def clean_json_files(dlresult)
     output_pn = Pathname.new(ConfigUtils.output_dir)
-    clean_files_under_dir(output_pn, /\.json/i)
-    clean_files_under_dir(output_pn, /\.html/i)
+    clean_files_under_dir(output_pn, /\.json/i, dlresult)
   end
 
-  def clean_json_files
+  def clean_html_files(dlresult)
     output_pn = Pathname.new(ConfigUtils.output_dir)
-    clean_files_under_dir(output_pn, /\.json/i)
+    clean_files_under_dir(output_pn, /\.html/i, dlresult)
   end
 
-  def clean_html_files
-    output_pn = Pathname.new(ConfigUtils.output_dir)
-    clean_files_under_dir(output_pn, /\.html/i)
-  end
-
-  def clean_files_under_dir(dir_pn, re)
+  def clean_files_under_dir(dir_pn, re, dlresult)
     dir_pn.children.each do |it|
-      # @logger.debug it.to_s
       if it.directory?
-        clean_files_under_dir(it, re)
+        clean_files_under_dir(it, re, dlresult)
       elsif re.match(it.extname)
-        # @logger.debug "#{it} unlink"
         FileUtils.rm_f(it)
       end
+      break unless dlresult.result
     end
   end
 
-  def get_and_save_page(src_url, out_fname)
+  def get_and_save_page(src_url, out_fname, dlresult)
     @logger.debug "DlImporter|get_and_save_page|src_url=#{src_url}"
-    ret = true
+    dlresult.result = true
     begin
       URI.open(src_url) do |f|
         File.open(out_fname, "w") do |out_f|
@@ -201,27 +236,31 @@ class DlImporter
     rescue StandardError => exp
       @logger.fatal exp
       @logger.fatal exp.message
-      ret = false
+      dlresult.result = false
     end
 
-    ret
+    dlresult.result
   end
 
-  def parse_html_file(html_fname)
+  def parse_html_file(html_fname, dlresult)
+    dlresult.result = true
     hash = {}
     html_pn = Pathname.new(html_fname)
     unless html_pn.exist?
-      @logger.debug "2 Can't find #{html_pn}"
+      message = "2 Can't find #{html_pn}"
+      @logger.debug(message)
+      dlresult.add_message(message)
+      dlresult.result = false
       return nil
     end
     html = File.read(html_fname)
     page = Nokogiri::HTML(html)
     object = page.css("#itemA")
-    # output_link( object )
     get_links(hash, object)
 
-    object = page.css("#itemB")
-    get_links(hash, object)
+    object2 = page.css("#itemB")
+    get_links(hash, object2)
+    dlresult.result = false unless hash
 
     hash
   end
@@ -242,13 +281,15 @@ class DlImporter
     new_hash
   end
 
-  def save_datalist_json_from_html(hash)
+  def save_datalist_json_from_html(hash, dlresult)
+    dlresult.result = true
     hash = add_blank_item(hash)
     out_hash = @datalist.parse_datalist_content(hash)
-    # @logger.debug "######### DlImporter#save_datalist_json_from_html"
-    @datalist.make_output_json(out_hash[:key])
-    # @logger.debug "get_data_and_save_from_html"
-    # @logger.debug out_hash[:key]
+    if out_hash
+      @datalist.make_output_json(out_hash[:key])
+    else
+      dlresult.result = false
+    end 
     out_hash
   end
 
@@ -266,36 +307,26 @@ class DlImporter
     end
   end
 
-  def datax_by_item(hash: hashx, arg1: nil, arg2: nil, arg3: nil)
-    num, keyx, value_kind = arg1
-    num2, keyx2, value_kind2 = arg2
-    num3, keyx3, value_kind3 = arg3
-
-    ret
-  end
-
-  def get_data_and_save_with_hash(selected_hash, out_hash)
-    ret = true
+  def get_data_and_save_with_hash(selected_hash, out_hash, dlresult)
+    dlresult.result = true
     if selected_hash
       get_array(selected_hash).flatten.each do |key|
-        ret = get_data_and_save_with_hash_by_key(out_hash[:key], key)
-        break unless ret
+        dlresult.result = get_data_and_save_with_hash_by_key(out_hash[:key], key, dlresult)
+        break unless dlresult.result
       end
     end
 
-    ret
+    dlresult.result
   end
 
-  def get_data_and_save_with_hash_by_key(out_hash, key)
-    ret = true
+  def get_data_and_save_with_hash_by_key(out_hash, key, dlresult)
+    dlresult.result = false
     if out_hash
       item = out_hash[key]
       if item
         src_url = item.src_url
         full_path = item.full_path
-        ret = get_and_save_page(src_url, full_path)
-      else
-        ret = false
+        get_and_save_page(src_url, full_path, dlresult)
       end
     end
   end
