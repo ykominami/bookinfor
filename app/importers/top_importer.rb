@@ -25,6 +25,7 @@ class TopImporter
 
     @keys = obj["keys"]
     @xkeys = obj["xkeys"]
+
     make_map
 
     # @logger.debug "@local_file_pn=#{@local_file_pn}"
@@ -38,93 +39,134 @@ class TopImporter
     begin
       date_str = @state["import_date"][key]
       ret = Date.parse(date_str)
-    rescue StandardError => exception
-      @logger.fatal exception.message
+    rescue StandardError => exc
+      @logger.fatal exc.message
     end
 
     ret
   end
 
-  def make_importer(ext, kind, name)
+  def make_importer(ext, kind)
     importerkind = "#{kind}#{ext}"
     date = get_import_date(importerkind)
-    if ext
+    if ext && !@local_files.nil?
       path = @local_files[importerkind]
-      # p "top_importer#make_importer 1 importerkind=#{importerkind} date=#{date} path=#{path}"
+      if path.nil?
+        msg = "TopImporter#make_importer path is nil importerkind=#{importerkind}"
+        p msg
+        raise
+      end
       make(importerkind, kind, date, path)
     else
-      # p "top_importer#make_importer 2 importerkind=#{importerkind} date=#{date}"
       make(importerkind, kind, date)
     end
   end
 
-  def importer_xf(importer, data_key, importer_kind = nil)
-    @logger.debug "1 Top_importer#import_xf data_key=#{data_key}"
-    if importer_kind.nil?
-      ret = importer.xf(data_key, :register)
+  def importer_xf(importer, item, year, kind = nil)
+    msg = "TopImporter#import_xf importer.class=#{importer.class} item=#{item} year=#{year} kind=#{kind}"
+    LoggerUtils.log_debug_p(msg, @logger)
+
+    key = item[1][0].key
+
+    if kind.nil?
+      ret = importer.xf(key: key, year: year, mode: :register)
     else
-      ret = importer.xf_booklist(key: data_key, mode: :register)
+      ret = importer.xf_booklist(key: key, year: year, mode: :register)
     end
     ret
   end
 
+  def execute_importer_xf(importer, item_list, year, kind)
+    item_list.map do |item|
+      importer_xf(importer, item, year, kind)
+    end
+  end
+
+  def execute_sub(category, data_keys_hash)
+    category_x, ext = category.split("_")
+    msg = "execute_sub category_x.class=#{category_x.class}"
+    LoggerUtils.log_debug_p(msg, @logger)
+
+    case category_x
+    when /reading|kindle|calibre/
+      kind = nil
+    when "book"
+      kind = :xf_booklist
+    when "api"
+      kind = nil
+      msg = "Not implemented Importer for api"
+      LoggerUtils.log_debug_p(msg, @logger)
+    else
+      msg = "Invalid category #{key}"
+      LoggerUtils.log_debug_p(msg, @logger)
+      raise
+    end
+
+    # binding.debugger
+    importer = make_importer(ext, category_x)
+    return unless importer
+
+    msg = "TopImporter#execute_sub importer.class=#{importer.class}"    
+    LoggerUtils.log_debug_p(msg, @logger)
+    data_keys_hash.map do |year, item_list|
+      msg = "TopImporter#execute_sub year=#{year} #{item_list.class}"
+      LoggerUtils.log_debug_p(msg, @logger)
+    end
+
+    data_keys_hash.map do |year, item_list|
+      msg = "TopImporter#execute_sub year=#{year} item_list.class=#{item_list.class}"
+      LoggerUtils.log_debug_p(msg, @logger)
+      execute_importer_xf(importer, item_list, year, kind)
+    end
+  end
+
+  def make_import_data_list(search_file_pn, vx)
+    search_item = JsonUtils.parse(search_file_pn)
+
+    @datalist.datax(vx, search_item)
+  end
+
   def execute
-    search_item = JsonUtils.parse(@search_file_pn)
-    list = @datalist.datax(@vx, search_item)
+    hash = make_import_data_list(@search_file_pn, @vx)
 
-    list.map do |importer_kind, data_keys_hash|
-      importer_kind_x, ext = importer_kind.split("_")
-      @logger.debug  "execute importer_kind_x=#{importer_kind_x}"
-
-      data_keys_hash.map do |_key2, data_keys|
-        # @logger.debug "importer_kind_x=#{importer_kind_x}"
-        importer = make_importer(ext, importer_kind_x, data_keys)
-
-        case importer_kind_x
-        when /reading|kindle|calibre/
-          data_keys.map do |data_key|
-            importer_xf(importer, data_key)
-          end
-        when "book"
-          data_keys.map do |data_key|
-            importer_xf(importer, data_key, :xf_booklist)
-          end
-        when "api"
-          @logger.debug "Not implemented Importer for api"
-        else
-          @logger.debug "Invalid category #{key}"
-          raise
-        end
-      end
+    hash.map do |category, data_keys_hash|
+      msg = "TopImporter#execute category=#{category}"
+      LoggerUtils.log_debug_p(msg, @logger)
+      execute_sub(category, data_keys_hash)
     end
   end
 
   def make(kind, name, import_date, path = nil)
-    @logger.debug "TopImporter#make kind=#{kind} name=#{name} import_date=#{import_date} path=#{path}"
+    msg = "TopImporter#make kind=#{kind} name=#{name} import_date=#{import_date} path=#{path}|"
+    LoggerUtils.log_debug_p(msg, @logger)
+
     case kind
     when "book"
-      return BookImporter.new(@vx, @xkeys[name], @ks, import_date)
+      import = BookImporter.new(@vx, @xkeys[name], @ks, import_date)
     when "bookfile"
-      return BookfileImporter.new(@vx, @xkeys[name], @ks, import_date, path)
+      import = BookfileImporter.new(@vx, @xkeys[name], @ks, import_date, path)
     when "bookloose"
-      return BooklooseImporter.new(@vx, @xkeys[name], @ks, import_date)
+      import = BooklooseImporter.new(@vx, @xkeys[name], @ks, import_date)
     when "booktight"
-      return BooktightImporter.new(@vx, @xkeys[name], @ks, import_date)
+      import = BooktightImporter.new(@vx, @xkeys[name], @ks, import_date)
     when "reading"
-      return ReadingImporter.new(@vx, @xkeys[name], @ks, import_date)
+      #binding.debugger
+      import = ReadingImporter.new(@vx, @xkeys[name], @ks, import_date)
     when "readingfile"
-      return ReadingfileImporter.new(@vx, @xkeys[name], @ks, import_date, path)
+      import = ReadingfileImporter.new(@vx, @xkeys[name], @ks, import_date, path)
     when "kindle"
-      return KindleImporter.new(@vx, @xkeys[name], @ks, import_date)
+      import = KindleImporter.new(@vx, @xkeys[name], @ks, import_date)
     when "kindlefile"
-      return KindlefileImporter.new(@vx, @xkeys[name], @ks, import_date, path)
+      import = KindlefileImporter.new(@vx, @xkeys[name], @ks, import_date, path)
     when "calibre"
-      return CalibreImporter.new(@vx, @xkeys[name], @ks, import_date)
+      import =CalibreImporter.new(@vx, @xkeys[name], @ks, import_date)
     when "calibrefile"
-      return CalibrefileImporter.new(@vx, @xkeys[name], @ks, import_date, path)
+      import = CalibrefileImporter.new(@vx, @xkeys[name], @ks, import_date, path)
     else
-      return nil
+      import = nil
     end
+    # binding.debugger unless import
+    return import
   end
 
   def make_map

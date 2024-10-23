@@ -1,3 +1,5 @@
+require 'pp'
+
 class BaseImporter
   def initialize(vx, keys, ks)
     @logger = LoggerUtils.logger()
@@ -15,8 +17,12 @@ class BaseImporter
     @ignore_fields ||= %w[]
   end
 
-  def set_assoc(x, klass, oldname, newname)
-    key = newname + "_id"
+  def set_assoc(x, klass, oldname, newname = nil)
+    if newname.nil?
+      key = oldname + "_id"
+    else
+      key = newname
+    end
     #
     @logger.debug "BaseImporter#set_assoce klass=#{klass} olbname=#{oldname} newname=#{newname}"
     @logger.debug "x=#{x}"
@@ -32,6 +38,7 @@ class BaseImporter
         if s
             x[key] = s.id
         else
+          p "klass.find_by(name: "") s=#{s} klass=#{klass} klass.all.size=#{klass.all.size}"
           raise
         end
       end      
@@ -40,10 +47,10 @@ class BaseImporter
       if s
         x[key] = s.id
       else
+        p "klass.find_by(name: "") s=#{s} klass=#{klass} klass.all.size=#{klass.all.size}"
         raise
       end
     end
-    # s = klass.find_by(name: x[newname])
   end
 
   def readstatus=(x)
@@ -67,9 +74,10 @@ class BaseImporter
     after_delkeys.map { |delkey| x.delete(delkey) }
   end
 
-  def xf(key, mode = :register)
+  def xf(key:, year:, mode: :register)
     @detector = DetectorImporter.new()
     data_array = []
+
     @key = key
 
     if @vx[:category].nil? ||
@@ -81,7 +89,8 @@ class BaseImporter
 
     json = load_data()
     if json.nil?
-      @logger.debug "json is nil in BaseImporter#xf"
+      msg = "json is nil in BaseImporter#xf"
+      LoggerUtils.log_debug_p(msg, @logger)
       return
     end
 
@@ -118,14 +127,13 @@ class BaseImporter
       @logger.debug "data_array[0]=#{data_array[0]}"
       # select_valid_data_x(readstatus, data_array)
       readstatus = new_json_second[col_k]
-      if new_json_second[k].instance_of?(Hash)
+      if new_json_second[col_k].instance_of?(Hash)
         select_valid_data_y(new_json_second[col_k], data_array)
       else
+        p "new_json_second[col_k].class=#{new_json_second[col_k].class}"
         raise
       end
     end
-    # raise
-    # exit
     count = @detector.show_detected()
     unless mode == :register && count.zero? && data_array.size.positive?
       return
@@ -134,11 +142,9 @@ class BaseImporter
     begin
       @ar_klass.insert_all( data_array )
     rescue StandardError => exc
-      # pp @ar_klass
-      pp exc.class
-      pp "Excception from @ar_klass.insert_all(data_array)"
-      pp exc.message
-      # pp exc.backtrace
+      LoggerUtils.log_fatal_p exc.class
+      LoggerUtils.log_fatal_p "Excception from @ar_klass.insert_all(data_array)"
+      LoggerUtils.log_fatal_p exc.message
 
       exit
     end
@@ -152,9 +158,11 @@ class BaseImporter
 
   def load_data
     item = @vx[:key][@key]
+    if item.nil?
+      p "exit BaseImporter#load_data"
+      exit 
+    end
     path = item.full_path
-    @logger.debug "load_data path=#{path}"
-
     JsonUtils.parse(path)
   end
 
@@ -174,7 +182,6 @@ class BaseImporter
       import_date = Date.new(1970, 1, 1)
     end
     import_date
-    raise
   end
 
   def append_data(x, data_array, use_check: true)

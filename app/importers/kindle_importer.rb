@@ -23,13 +23,10 @@ class KindleImporter < BaseImporter
   end
   
   def select_valid_data_x(x, data_array)
-    # p "#### kindle_importer#select_valid_data_x"
     keys = x.keys
     keys.each do |k|
       if x[k].instance_of?(Hash)
         select_valid_data(x[k], "purchase_date", "asin", Kindlelist, data_array)
-      else
-        p "#### kindle_importer#select_valid_data_x x[#{k}].class=#{x[k].class}"
       end
     end
   end
@@ -42,7 +39,9 @@ def xf_supplement(x, base_number = nil)
   set_assoc(x, Readstatus, "read_status", "readstatus")
   x.delete("read_status")
 
+  x.delete("readstatus")
+
   x["shape"] = "Kindle" unless x["shape"]
-  set_assoc(x, Shape, "shape", "shape")
+  set_assoc(x, Shape, "shape")
   x.delete("shape")
 end

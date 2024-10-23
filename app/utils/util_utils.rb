@@ -18,11 +18,23 @@ class UtilUtils
         file_pn = dir_pn.join(fname)
         @logger.debug "check_file_exist fname=#{fname} file_pn=#{file_pn}"
         unless file_pn.exist?
-          @logger.debug "Can't find #{file_pn}"
+          msg = "Can't find #{file_pn}"
+          LoggerUtils.log_debug_p(msg, @logger)
+          msg = "UtilUtils.check_file_exit fname=#{fname} dir_pn=#{dir_pn} exit_code=#{exit_code}"
+          LoggerUtils.log_debug_p(msg, @logger)
           exit(exit_code)
         end
       end
       file_pn
     end
+
+    def dump_hash(new_hash, var_name = "")
+      new_hash.each_key do |kind|
+        new_hash[kind].each_key do |kindx|
+          msg = "#{var_name}[#{kind}][#{kindx}]=#{new_hash[kind][kindx]}"
+          LoggerUtils.log_debug_p(msg, @logger)
+        end
+      end
+    end  
   end
 end

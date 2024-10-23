@@ -130,11 +130,8 @@ class DetectorImporter
 
   def show_detected
     # @logger.debug "# show_detected (Importer) S"
-    p "#### show_detected S"
     count = show_blank_fields
     count += show_duplicated_fields
-    # @logger.debug "# show_detected (Importer) E"
-    p "#### show_detected E (count=#{count})"
     count
   end
 
@@ -146,7 +143,6 @@ class DetectorImporter
       else
         new_x[key] = hash[key]
       end
-      # p "detector_importer key=#{key} new_key=#{new_key}"
     end
     new_x
   end
@@ -162,19 +158,16 @@ class DetectorImporter
 
   def detect_replace_key(hash, replace_keys)
     if hash.instance_of?(Hash)
-      # p "detector_importer hash=#{} Hash"
       detect_replace_key_sub(hash, replace_keys)
     else
       if json.instance_of?(String)
-        p "detector_importer hash=#{hash} String"
-        raise
+        # p "detector_importer hash=#{hash} String"
       elsif hash.instance_of?(Array)
-        p "detector_importer hash=#{hash} Array"
-        raise
         hash.map do |x|
           detect_replace_key(x, replace_keys)
         end
       else
+        p "detector_importer hash.class=#{hash.class}"
         raise
       end
     end
@@ -189,8 +182,6 @@ class DetectorImporter
   end
 
   def complement_key(hash, complement_key_value)
-    # p "detector_importer#complement_key hash.class=#{hash.class}"
-    # p "hash=#{hash}"
     complement_key_value.each do |complement_key, default_value|
       hash[complement_key] = default_value unless hash[complement_key]
     end

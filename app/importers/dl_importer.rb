@@ -55,6 +55,43 @@ class DlResultStack
 end
 
 class DlImporter
+  class << self
+    def fix_cmd(cmd)
+      cmd_downcase = cmd.downcase
+      case cmd_downcase
+      when "all"
+        cmd = :ALL
+      when "data_json"
+        cmd = :DATA_JSON
+      when "data_json_show"
+        cmd = :DATA_JSON_SHOW
+      when "data_json_show_selected"
+        cmd = :DATA_JSON_SHOW_SELECTED
+      when "data_json_x"
+        cmd = :DATA_JSON_X
+      when "html"
+        cmd = :HTML
+      when "fromhtml"
+        cmd = :FROM_HTML
+      when "fromhtmltojson"
+        cmd = :FROM_HTML_TO_JSON
+      when "htmlx"
+        cmd = :HTMLX
+      when "clean_all_files"
+        cmd = :CLEAN_ALL_FILES
+      else
+        cmd = :NOTHING
+      end
+
+      if cmd == :NOTHING
+        LoggerUtils.log_fatal_p "Invalid command(#{cmd_downcase}) is specified!"
+        exit(10)
+      end
+
+      cmd
+    end
+  end
+
   def initialize(cmd:, search_file_pn: nil)
     @logger = LoggerUtils.logger()
     @logger.tagged("#{self.class.name}")
@@ -156,7 +193,7 @@ class DlImporter
     dlresult
   end
 
-  def data
+  def execute_data_op
     op_list = case @cmd
               when :ALL
                 %i[CLEAN_ALL_FILES GET_HTML PARSE_HTML HASH_TO_JSON_FILE GET_AND_SAVE]
