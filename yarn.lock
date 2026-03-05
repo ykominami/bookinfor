@@ -7,15 +7,15 @@
   resolved "https://registry.npmjs.org/@esbuild/aix-ppc64/-/aix-ppc64-0.25.9.tgz"
   integrity sha512-OaGtL73Jck6pBKjNIe24BnFE6agGl+6KxDtTfHhy1HmhthfKouEcOhqpSL64K4/0WCtbKFLOdzD/44cJ4k9opA==
 
-"@esbuild/android-arm@0.25.9":
-  version "0.25.9"
-  resolved "https://registry.npmjs.org/@esbuild/android-arm/-/android-arm-0.25.9.tgz"
-  integrity sha512-5WNI1DaMtxQ7t7B6xa572XMXpHAaI/9Hnhk8lcxF4zVN4xstUgTlvuGDorBguKEnZO70qwEcLpfifMLoxiPqHQ==
-
 "@esbuild/android-arm64@0.25.9":
   version "0.25.9"
   resolved "https://registry.npmjs.org/@esbuild/android-arm64/-/android-arm64-0.25.9.tgz"
   integrity sha512-IDrddSmpSv51ftWslJMvl3Q2ZT98fUSL2/rlUXuVqRXHCs5EUF1/f+jbjF5+NG9UffUDMCiTyh8iec7u8RlTLg==
+
+"@esbuild/android-arm@0.25.9":
+  version "0.25.9"
+  resolved "https://registry.npmjs.org/@esbuild/android-arm/-/android-arm-0.25.9.tgz"
+  integrity sha512-5WNI1DaMtxQ7t7B6xa572XMXpHAaI/9Hnhk8lcxF4zVN4xstUgTlvuGDorBguKEnZO70qwEcLpfifMLoxiPqHQ==
 
 "@esbuild/android-x64@0.25.9":
   version "0.25.9"
@@ -42,15 +42,15 @@
   resolved "https://registry.npmjs.org/@esbuild/freebsd-x64/-/freebsd-x64-0.25.9.tgz"
   integrity sha512-mrKX6H/vOyo5v71YfXWJxLVxgy1kyt1MQaD8wZJgJfG4gq4DpQGpgTB74e5yBeQdyMTbgxp0YtNj7NuHN0PoZg==
 
-"@esbuild/linux-arm@0.25.9":
-  version "0.25.9"
-  resolved "https://registry.npmjs.org/@esbuild/linux-arm/-/linux-arm-0.25.9.tgz"
-  integrity sha512-HBU2Xv78SMgaydBmdor38lg8YDnFKSARg1Q6AT0/y2ezUAKiZvc211RDFHlEZRFNRVhcMamiToo7bDx3VEOYQw==
-
 "@esbuild/linux-arm64@0.25.9":
   version "0.25.9"
   resolved "https://registry.npmjs.org/@esbuild/linux-arm64/-/linux-arm64-0.25.9.tgz"
   integrity sha512-BlB7bIcLT3G26urh5Dmse7fiLmLXnRlopw4s8DalgZ8ef79Jj4aUcYbk90g8iCa2467HX8SAIidbL7gsqXHdRw==
+
+"@esbuild/linux-arm@0.25.9":
+  version "0.25.9"
+  resolved "https://registry.npmjs.org/@esbuild/linux-arm/-/linux-arm-0.25.9.tgz"
+  integrity sha512-HBU2Xv78SMgaydBmdor38lg8YDnFKSARg1Q6AT0/y2ezUAKiZvc211RDFHlEZRFNRVhcMamiToo7bDx3VEOYQw==
 
 "@esbuild/linux-ia32@0.25.9":
   version "0.25.9"
@@ -150,7 +150,7 @@
   resolved "https://registry.npmjs.org/@hotwired/turbo/-/turbo-7.3.0.tgz"
   integrity sha512-Dcu+NaSvHLT7EjrDrkEmH4qET2ZJZ5IcCWmNXxNQTBwlnE5tBZfN6WxZ842n5cHV52DH/AKNirbPBtcEXDLW4g==
 
-"@popperjs/core@^2.11.6", "@popperjs/core@^2.11.7":
+"@popperjs/core@^2.11.7":
   version "2.11.7"
   resolved "https://registry.npmjs.org/@popperjs/core/-/core-2.11.7.tgz"
   integrity sha512-Cr4OjIkipTtcXKjAsm8agyleBuDHvxzeBoa1v543lbv1YaIwQjESsVcmjiWiPEbC1FIeHOG/Op9kdCmAmiS3Kw==
@@ -257,9 +257,9 @@ glob-parent@~5.1.2:
     is-glob "^4.0.1"
 
 immutable@^4.0.0:
-  version "4.3.0"
-  resolved "https://registry.npmjs.org/immutable/-/immutable-4.3.0.tgz"
-  integrity sha512-0AOCmOip+xgJwEVTQj1EfiDDOkPmuyllDuTuEX+DDXUgapLAsBIfkg3sxCYyCEA8mQqZrrxPUGjcOQ2JS3WLkg==
+  version "4.3.8"
+  resolved "https://registry.yarnpkg.com/immutable/-/immutable-4.3.8.tgz#02d183c7727fb2bb1d5d0380da0d779dce9296a7"
+  integrity sha512-d/Ld9aLbKpNwyl0KiM2CT1WYvkitQ1TSvmRtkcV8FKStiDoA7Slzgjmb/1G2yhKM1p0XeNOieaTbFZmU1d3Xuw==
 
 is-binary-path@~2.1.0:
   version "2.1.0"
