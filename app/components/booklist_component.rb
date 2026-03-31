@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
-require 'ransack'
-require 'ransack/search'
+require "ransack"
+require "ransack/search"
+# Ransack loads helpers only on :action_controller; rake eager load runs first.
+require "ransack/helpers"
 
 class BooklistComponent < ApplicationComponent
   include BooklistsHelper

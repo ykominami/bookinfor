@@ -11,7 +11,7 @@ class BookfileImporter < BookImporter
     year_str = %(#{year})
     content = @path_hash[year_str]
     if content && content.strip.size.positive?
-      JsonUtils.parse(content)
+      normalize_loaded_json(JsonUtils.parse(content))
     else
       {}
     end

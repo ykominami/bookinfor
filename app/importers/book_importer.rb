@@ -23,20 +23,31 @@ class BookImporter < BaseImporter
   end
 
   def select_valid_data_y(x, data_array)
-    if x.instance_of?(Hash)
-      select_valid_data(x, "purchase_date", "asin", Booklist, data_array)
-    end
+    return unless x.instance_of?(Hash)
+
+    select_valid_data(x, "purchase_date", "asin", Booklist, data_array)
+    
   end
 
-  def fix_shape(x , key, value_for_key, sub_key)
+  def fix_shape(x, key, value_for_key, sub_key)
     objx =  @fix_data[key][value_for_key][sub_key]
 
     # name = "アマゾン(Kindle)"
     value = x[key]
     return if value != value_for_key
+
     value_for_sub_key = x[sub_key]
-    new_value_for_sub_key = objx.select{|k,v| value_for_sub_key == k }[value_for_sub_key]
-    x[key] = Shape.find_by(name: new_value_for_sub_key).id
+    p "value_for_sub_key=#{value_for_sub_key}"
+    p "objx=#{objx}"
+    new_value_for_sub_key = objx.select { |k, _v| value_for_sub_key == k }[value_for_sub_key]
+    p "new_value_for_sub_key=#{new_value_for_sub_key}"
+    shape = Shape.find_by(name: new_value_for_sub_key)
+    p "shape=#{shape}"
+    # 外部キー参照なので、見つからない場合は空レコードへフォールバックする
+    if shape.nil?
+      shape = Shape.find_by(name: "") || Shape.create!(name: "", idx: 100)
+    end
+    x[key] = shape.id
   end
 
   def xf_supplement(target, x, base_number = 0)
@@ -58,13 +69,15 @@ class BookImporter < BaseImporter
 
     fix_shape(x, "shape", 3, "bookstore")
     x["shape_id"] = x["shape"]
+    blank_shape = Shape.find_by(name: "") || Shape.create!(name: "", idx: 100)
     if x["shape_id"].nil?
-      x["shape_id"] = Shape.find_by(name: "").id
+      x["shape_id"] = blank_shape.id
     elsif x["shape_id"].instance_of?(String) && x["shape_id"].strip.empty?
-      x["shape_id"] = Shape.find_by(name: "").id
+      x["shape_id"] = blank_shape.id
     end
 
     x["category_id"] = x["category"]
+=begin
     if x["category_id"].nil?
       x["category_id"] = Category.find_by(name: "").id
     elsif x["category_id"].instance_of?(String) 
@@ -72,17 +85,17 @@ class BookImporter < BaseImporter
         x["category_id"] = Category.find_by(name: "").id
       else
         category = Category.find_by(name: x["category_id"])
-        if category
-          x["category_id"] = category.id          
-        else
-          x["category_id"] = Category.find_by(name: "").id
-        end
+        x["category_id"] = if category
+                             category.id          
+                           else
+                             Category.find_by(name: "").id
+                           end
       end
     else
       p "category_id=#{x["category_id"]}"
       raise
     end
-
+=end
     x.delete("readstatus")
     x.delete("read_status")
     x.delete("shape")
@@ -105,18 +118,16 @@ class BookImporter < BaseImporter
 
   def get_year_and_item(key: nil, year: nil)
     if year.nil?
-      if key.nil?
-        return nil 
-      else
-        item = @vx[:category][@name][year]
-        year = item.year  
-      end
-    else
-      if key
-        item = @vx[:key][key]
-        if item
-          year = item.year 
-        end
+      return nil if key.nil?
+         
+      
+      item = @vx[:category][@name][year]
+      year = item.year  
+      
+    elsif key
+      item = @vx[:key][key]
+      if item
+        year = item.year 
       end
     end
 
@@ -132,7 +143,7 @@ class BookImporter < BaseImporter
 
   def load_data(item:, year: nil)
     path = item.full_path
-    JsonUtils.parse(path)
+    normalize_loaded_json(JsonUtils.parse(path))
   end
 
   def xf_booklist(year: nil, key: nil, mode: :register)
@@ -158,6 +169,7 @@ class BookImporter < BaseImporter
     if json.nil?
       return
     end
+
     new_json = @detector.detect_replace_key_x(json, @keys["key_replace"])
     new_json_second = @detector.complement_key_x(new_json, @keys["key_complement"])
 

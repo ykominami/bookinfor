@@ -148,6 +148,8 @@ class DetectorImporter
   end
 
   def detect_replace_key_x(hash, replace_keys)
+    return detect_replace_key(hash, replace_keys) if hash.is_a?(Array)
+
     new_hash = {}
     keys = hash.keys
     keys.each do |k|
@@ -160,7 +162,7 @@ class DetectorImporter
     if hash.instance_of?(Hash)
       detect_replace_key_sub(hash, replace_keys)
     else
-      if json.instance_of?(String)
+      if hash.instance_of?(String)
         # p "detector_importer hash=#{hash} String"
       elsif hash.instance_of?(Array)
         hash.map do |x|

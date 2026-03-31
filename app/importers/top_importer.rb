@@ -64,20 +64,23 @@ class TopImporter
 
   def importer_xf(importer, item, year, kind = nil)
     msg = "TopImporter#import_xf importer.class=#{importer.class} item=#{item} year=#{year} kind=#{kind}"
+    p "importer_xf msg=#{msg}"
     LoggerUtils.log_debug_p(msg, @logger)
 
     key = item[1][0].key
 
     if kind.nil?
-      ret = importer.xf(key: key, year: year, mode: :register)
+      p "2 importer_xf importer.class=#{importer.class} key=#{key} year=#{year} mode=:register"
+      importer.xf(key: key, year: year, mode: :register)
     else
-      ret = importer.xf_booklist(key: key, year: year, mode: :register)
+      p "3importer_xf key=#{key} year=#{year} mode=:register"
+      importer.xf_booklist(key: key, year: year, mode: :register)
     end
-    ret
   end
 
   def execute_importer_xf(importer, item_list, year, kind)
     item_list.map do |item|
+      p "execute_importer_xf item=#{item}"
       importer_xf(importer, item, year, kind)
     end
   end
@@ -85,6 +88,7 @@ class TopImporter
   def execute_sub(category, data_keys_hash)
     category_x, ext = category.split("_")
     msg = "execute_sub category_x.class=#{category_x.class}"
+    p "1 msg=#{msg}"
     LoggerUtils.log_debug_p(msg, @logger)
 
     case category_x
@@ -101,20 +105,25 @@ class TopImporter
       LoggerUtils.log_debug_p(msg, @logger)
       raise
     end
+    p "2 msg=#{msg}"
 
     # binding.debugger
     importer = make_importer(ext, category_x)
+    p "importer=#{importer}"
     return unless importer
 
-    msg = "TopImporter#execute_sub importer.class=#{importer.class}"    
+    msg = "TopImporter#execute_sub importer.class=#{importer.class}"
+    p "3 msg=#{msg}"
     LoggerUtils.log_debug_p(msg, @logger)
     data_keys_hash.map do |year, item_list|
       msg = "TopImporter#execute_sub year=#{year} #{item_list.class}"
+      p "4 msg=#{msg}"
       LoggerUtils.log_debug_p(msg, @logger)
     end
 
     data_keys_hash.map do |year, item_list|
       msg = "TopImporter#execute_sub year=#{year} item_list.class=#{item_list.class}"
+      p "5 msg=#{msg}"
       LoggerUtils.log_debug_p(msg, @logger)
       execute_importer_xf(importer, item_list, year, kind)
     end
@@ -128,11 +137,14 @@ class TopImporter
 
   def execute
     hash = make_import_data_list(@search_file_pn, @vx)
-
+    # p hash
+    p "6 hash.keys=#{hash.keys}"
     hash.map do |category, data_keys_hash|
       msg = "TopImporter#execute category=#{category}"
+      p msg
       LoggerUtils.log_debug_p(msg, @logger)
       execute_sub(category, data_keys_hash)
+      p "execute END category=#{category}"
     end
   end
 
@@ -140,31 +152,29 @@ class TopImporter
     msg = "TopImporter#make kind=#{kind} name=#{name} import_date=#{import_date} path=#{path}|"
     LoggerUtils.log_debug_p(msg, @logger)
 
-    case kind
-    when "book"
-      import = BookImporter.new(@vx, @xkeys[name], @ks, import_date)
-    when "bookfile"
-      import = BookfileImporter.new(@vx, @xkeys[name], @ks, import_date, path)
-    when "bookloose"
-      import = BooklooseImporter.new(@vx, @xkeys[name], @ks, import_date)
-    when "booktight"
-      import = BooktightImporter.new(@vx, @xkeys[name], @ks, import_date)
-    when "reading"
-      #binding.debugger
-      import = ReadingImporter.new(@vx, @xkeys[name], @ks, import_date)
-    when "readingfile"
-      import = ReadingfileImporter.new(@vx, @xkeys[name], @ks, import_date, path)
-    when "kindle"
-      import = KindleImporter.new(@vx, @xkeys[name], @ks, import_date)
-    when "kindlefile"
-      import = KindlefileImporter.new(@vx, @xkeys[name], @ks, import_date, path)
-    when "calibre"
-      import =CalibreImporter.new(@vx, @xkeys[name], @ks, import_date)
-    when "calibrefile"
-      import = CalibrefileImporter.new(@vx, @xkeys[name], @ks, import_date, path)
-    else
-      import = nil
-    end
+    import = case kind
+             when "book"
+               BookImporter.new(@vx, @xkeys[name], @ks, import_date)
+             when "bookfile"
+               BookfileImporter.new(@vx, @xkeys[name], @ks, import_date, path)
+             when "bookloose"
+               BooklooseImporter.new(@vx, @xkeys[name], @ks, import_date)
+             when "booktight"
+               BooktightImporter.new(@vx, @xkeys[name], @ks, import_date)
+             when "reading"
+               # binding.debugger
+               ReadingImporter.new(@vx, @xkeys[name], @ks, import_date)
+             when "readingfile"
+               ReadingfileImporter.new(@vx, @xkeys[name], @ks, import_date, path)
+             when "kindle"
+               KindleImporter.new(@vx, @xkeys[name], @ks, import_date)
+             when "kindlefile"
+               KindlefileImporter.new(@vx, @xkeys[name], @ks, import_date, path)
+             when "calibre"
+               CalibreImporter.new(@vx, @xkeys[name], @ks, import_date)
+             when "calibrefile"
+               CalibrefileImporter.new(@vx, @xkeys[name], @ks, import_date, path)
+             end
     # binding.debugger unless import
     return import
   end
@@ -176,13 +186,13 @@ class TopImporter
     @ks
   end
 
-  def key_check_x(str, key, index)
+  def key_check_x?(str, key, index)
     str.split("|")[index] == key
   end
 
   def k_check_x(key, hs, index)
     hs[:key].keys.select do |k|
-      key_check_x(k, key, index)
+      key_check_x?(k, key, index)
     end
   end
 end

@@ -25,7 +25,7 @@ class DatalistUtils
       @logger = LoggerUtils.logger
     end
 
-    def to_json(it)
+    def to_json(*_args)
       JSON.dump({
         array: @array,
         year: @year,
@@ -55,9 +55,9 @@ class DatalistUtils
     end
 
     extend Forwardable
+
     def_delegators(:@keylabel, :year, :label, :category, :array)
 
-    attr_reader :key, :array
     def initialize(key, relative_file, src_url, full_path, keylabel = nil)
       @key = key
       @keylabel = keylabel || DatalistUtils::Keylable.new(key)
@@ -68,7 +68,7 @@ class DatalistUtils
       @full_path = full_path
     end
 
-    def to_json(it)
+    def to_json(*_args)
       JSON.dump({
         key: @key,
         keylabel: @keylabel,
@@ -103,7 +103,7 @@ class DatalistUtils
   end
 
   def parse_datalist_content(hash)
-    hash.each_with_object({ key: {}, category: {}, list: [], category_list: [] }) do |xv,memo|
+    hash.each_with_object({ key: {}, category: {}, list: [], category_list: [] }) do |xv, memo|
       key = xv[0]
 
       relative_file = xv[1][0]
@@ -196,7 +196,7 @@ class DatalistUtils
                               else
                                 1
                               end
-                            end.last
+      end.last
       # 配列からlastメソッドで取り出したので、targetは配列ではない
       # そのため、targetがnilでない場合は、配列に変換して返す
       ret_list = if target

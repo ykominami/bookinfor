@@ -288,6 +288,8 @@ Metrics/BlockLength:
 # Configuration parameters: CountComments, CountAsOne.
 Metrics/ClassLength:
   Max: 228
+  Exclude:
+    - 'app/importers/dl_importer.rb'
 
 # Offense count: 12
 # Configuration parameters: AllowedMethods, AllowedPatterns.
@@ -351,6 +353,11 @@ Style/BlockComments:
 Style/BlockDelimiters:
   Exclude:
     - 'app/helpers/kindlelists_helper.rb'
+
+# Offense count: 1
+Style/OneClassPerFile:
+  Exclude:
+    - 'app/importers/dl_importer.rb'
 
 # Offense count: 10
 # This cop supports unsafe autocorrection (--autocorrect-all).

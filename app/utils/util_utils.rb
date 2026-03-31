@@ -35,6 +35,6 @@ class UtilUtils
           LoggerUtils.log_debug_p(msg, @logger)
         end
       end
-    end  
+    end
   end
 end

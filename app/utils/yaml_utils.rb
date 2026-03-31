@@ -13,8 +13,8 @@ class YamlUtils
 
       begin
         obj = YAML.safe_load(content)
-      rescue => exc
-        LoggerUtils.log_fatel_p exc.class
+      rescue StandardError => e
+        LoggerUtils.log_fatel_p e.class
         LoggerUtils.log_fatel_p "Excception from YAML.safe_load(content) file=#{file}"
         LoggerUtils.log_fatel_p "Exception in YamlUtils.parse"
       end

@@ -1,0 +1,14 @@
+{
+  "reading": [
+    ":latest"
+  ],
+  "kindle": [
+    ":latest"
+  ],
+  "calibre": [
+    ":latest"
+  ],
+  "book": [
+    ":all"
+  ]
+}
