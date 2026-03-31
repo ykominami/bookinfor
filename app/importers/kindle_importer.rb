@@ -25,14 +25,10 @@ class KindleImporter < BaseImporter
   def select_valid_data_x(x, data_array)
     keys = x.keys
     keys.each do |k|
-      if x[k].instance_of?(Hash)
-        select_valid_data(x[k], "purchase_date", "asin", Kindlelist, data_array)
-      end
+      select_valid_data(x[k], "purchase_date", "asin", Kindlelist, data_array) if x[k].instance_of?(Hash)
     end
   end
 end
-
-private
 
 def xf_supplement(x, base_number = nil)
   x["read_status"] = "" unless x["read_status"]

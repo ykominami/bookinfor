@@ -8,6 +8,7 @@ require "pathname"
 class DlResultStack
   class DlResult
     attr_accessor :op, :result
+
     def initialize(op, result)
       @op = op
       @result = result
@@ -22,7 +23,7 @@ class DlResultStack
       @messages.push(msg)
     end
   end
-  
+
   def initialize
     @stack = []
   end
@@ -48,8 +49,8 @@ class DlResultStack
   end
 
   def dump
-    @stack.each do |it|
-      p it
+    @stack.each do |item|
+      p item
     end
   end
 end
@@ -58,36 +59,38 @@ class DlImporter
   class << self
     def fix_cmd(cmd)
       cmd_downcase = cmd.downcase
-      case cmd_downcase
-      when "all"
-        cmd = :ALL
-      when "data_json"
-        cmd = :DATA_JSON
-      when "data_json_show"
-        cmd = :DATA_JSON_SHOW
-      when "data_json_show_selected"
-        cmd = :DATA_JSON_SHOW_SELECTED
-      when "data_json_x"
-        cmd = :DATA_JSON_X
-      when "html"
-        cmd = :HTML
-      when "fromhtml"
-        cmd = :FROM_HTML
-      when "fromhtmltojson"
-        cmd = :FROM_HTML_TO_JSON
-      when "htmlx"
-        cmd = :HTMLX
-      when "clean_all_files"
-        cmd = :CLEAN_ALL_FILES
-      else
-        cmd = :NOTHING
-      end
+      # p "cmd_downcase=#{cmd_downcase}"
+      cmd = case cmd_downcase
+            when "all"
+              :ALL
+            when "data_json"
+              :DATA_JSON
+            when "data_json_show"
+              :DATA_JSON_SHOW
+            when "data_json_show_selected"
+              :DATA_JSON_SHOW_SELECTED
+            when "data_json_x"
+              :DATA_JSON_X
+            when "html"
+              :HTML
+            when "fromhtml"
+              :FROM_HTML
+            when "fromhtmltojson"
+              :FROM_HTML_TO_JSON
+            when "htmlx"
+              :HTMLX
+            when "clean_all_files"
+              :CLEAN_ALL_FILES
+            else
+              :NOTHING
+            end
 
       if cmd == :NOTHING
         LoggerUtils.log_fatal_p "Invalid command(#{cmd_downcase}) is specified!"
         exit(10)
       end
 
+      # p "cmd=#{cmd}"
       cmd
     end
   end
@@ -135,6 +138,8 @@ class DlImporter
       clean_html_files(dlresult)
     when :GET_HTML
       # 取得内容をHTMLファイルとして保存
+      p "do_op GET_HTML @src_url=#{@src_url}"
+      p "do_opGET_HTML @html_file_path=#{@html_file_path}"
       get_and_save_page(@src_url, @html_file_path, dlresult)
     when :PARSE_HTML
       # HTMLファイルを解析
@@ -146,9 +151,7 @@ class DlImporter
     when :HASH_TO_JSON_FILE
       # HTMLの解析結果であるハッシュをファイルに保存
       @out_hash = save_datalist_json_from_html(@hash_from_html, dlresult)
-      if @out_hash
-        @save_hash = @out_hash
-      end
+      @save_hash = @out_hash if @out_hash
       # @logger.debug @out_hash
     when :HASH_TO_JSON_FILE_AND_SHOW
       # HTMLの解析結果であるハッシュをファイルに保存
@@ -161,6 +164,7 @@ class DlImporter
       end
     when :GET_AND_SAVE
       specified_hash = @datalist.datax(@save_hash, @search_item)
+      # p "specified_hash=#{specified_hash}"
       get_data_and_save_with_hash(specified_hash, @save_hash, dlresult)
       @logger.debug "dlresult.result=#{dlresult.result}"
     when :PARSE_JSON_FILE
@@ -225,6 +229,7 @@ class DlImporter
               end
     result_stack = DlResultStack.new
     op_list.each do |op|
+      p "DlImporter op=#{op}"
       result_item = do_op(op)
       result_stack.add(result_item)
       break unless result_item.result
@@ -235,9 +240,7 @@ class DlImporter
   def clean_all_files(dlresult)
     output_pn = Pathname.new(ConfigUtils.output_dir)
     clean_files_under_dir(output_pn, /\.json/i, dlresult)
-    if dlresult
-      clean_files_under_dir(output_pn, /\.html/i, dlresult)
-    end
+    clean_files_under_dir(output_pn, /\.html/i, dlresult) if dlresult
   end
 
   def clean_json_files(dlresult)
@@ -251,11 +254,11 @@ class DlImporter
   end
 
   def clean_files_under_dir(dir_pn, re, dlresult)
-    dir_pn.children.each do |it|
-      if it.directory?
-        clean_files_under_dir(it, re, dlresult)
-      elsif re.match(it.extname)
-        FileUtils.rm_f(it)
+    dir_pn.children.each do |child_pn|
+      if child_pn.directory?
+        clean_files_under_dir(child_pn, re, dlresult)
+      elsif re.match(child_pn.extname)
+        FileUtils.rm_f(child_pn)
       end
       break unless dlresult.result
     end
@@ -273,6 +276,8 @@ class DlImporter
     rescue StandardError => exp
       @logger.fatal exp
       @logger.fatal exp.message
+      p exp
+      p exp.message
       dlresult.result = false
     end
 
@@ -326,7 +331,7 @@ class DlImporter
       @datalist.make_output_json(out_hash[:key])
     else
       dlresult.result = false
-    end 
+    end
     out_hash
   end
 
@@ -346,23 +351,40 @@ class DlImporter
 
   def get_data_and_save_with_hash(selected_hash, out_hash, dlresult)
     dlresult.result = true
+    p "get_data_and_save_with_hash selected_hash 1"
+    p "selected_hash=#{selected_hash}"
     if selected_hash
-      get_array(selected_hash).flatten.each do |key|
-        dlresult.result = get_data_and_save_with_hash_by_key(out_hash[:key], key, dlresult)
+      p "get_data_and_save_with_hash selected_hash 2 selected_hash.keys=#{selected_hash.keys}"
+      array = get_array(selected_hash)
+      flatten_array = array.flatten
+      p "get_data_and_save_with_hash flatten_array=#{flatten_array}"
+      flatten_array.each do |item|
+        p "get_data_and_save_with_hash selected_hash 3 item.key=#{item.key}"
+        dlresult.result = get_data_and_save_with_hash_by_key(out_hash[:key], item.key, dlresult)
         break unless dlresult.result
       end
     end
 
+    p "get_data_and_save_with_hash selected_hash dlresult.result=#{dlresult.result}"
     dlresult.result
   end
 
   def get_data_and_save_with_hash_by_key(out_hash, key, dlresult)
     dlresult.result = false
+    p "get_data_and_save_with_hash_by_key"
+    p ""
+    p "key=#{key}"
+    # p "key.key=#{key.key}"
+    p ""
+    # p "out_hash=#{out_hash}"
+    # p ""
     if out_hash
       item = out_hash[key]
       if item
         src_url = item.src_url
+        p "get_data_and_save_with_hash_by_key src_url=#{src_url}"
         full_path = item.full_path
+        p "get_data_and_save_with_hash_by_key full_path=#{full_path}"
         get_and_save_page(src_url, full_path, dlresult)
       end
     end

@@ -1,6 +1,7 @@
 class ConfigUtils
   class Configx
-    attr :obj, :book
+    attr_reader :obj, :book
+
     def initialize(json_path_pn, book_yaml_path_pn)
       if json_path_pn
         @json_path_pn = json_path_pn

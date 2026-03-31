@@ -1,5 +1,6 @@
 class BookDetectorImporter < DetectorImporter
   def initialize
+    super
     @logger = LoggerUtils.logger()
     @logger.tagged("#{self.class.name}")
   end
@@ -9,7 +10,7 @@ class BookDetectorImporter < DetectorImporter
     # show_duplicated_fields
     # @logger.debug "# show_detected (ImporterBook) S"
 
-    count = super()
+    count = super
     count += show_duplicated_field("title")
     # @logger.debug "# show_detected (ImporterBook) E"
     count
@@ -26,8 +27,7 @@ class BookDetectorImporter < DetectorImporter
     end
   end
 
-  def detect_ignore_items(target, reg_hash)
+  def detect_ignore_items?(target, reg_hash)
     !detect(target, reg_hash).nil?
   end
 end
-

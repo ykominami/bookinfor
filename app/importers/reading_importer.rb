@@ -22,11 +22,7 @@ class ReadingImporter < BaseImporter
   def select_valid_data_x(x, data_array)
     keys = x.keys
     keys.each do |k|
-      if x[k].instance_of?(Hash)
-        select_valid_data(x[k], "register_date", "isbn", Readinglist, data_array)
-      else
-        # p "#### reading_importer#select_valid_data_x x[#{k}].class=#{x[k].class}"
-      end
+      select_valid_data(x[k], "register_date", "isbn", Readinglist, data_array) if x[k].instance_of?(Hash)
     end
   end
 
@@ -40,20 +36,23 @@ class ReadingImporter < BaseImporter
   private
 
   def xf_supplement(x)
+    # shapeは外部キー参照なので、見つからない場合は外部キー違反にならない値にフォールバックする
     ret = Shape.find_by(name: x["shape"])
     if ret
       x["shape_id"] = ret.id
     else
       @logger.debug "1 Can't find #{x["shape"]}"
-      x["shape_id"] = -1
-
+      blank = Shape.find_by(name: "")
+      x["shape_id"] = blank ? blank.id : nil
     end
 
-    # set_assoc(x, Category, "read_status", "readstatus")
-    set_assoc(x, Readingstatus, "readingstatus")
+    # readingstatusは外部キー参照なので、名前→ID解決する
+    # 既に外部キーIDが入っている場合は上書きしない
+    unless x["readingstatus_id"].is_a?(Integer)
+      set_assoc_0(x, Readingstatus, "readingstatus")
+    end
 
     x.delete("shape")
-
     x.delete("readingstatus")
   end
 end

@@ -23,8 +23,17 @@ class BaseImporter
     else
       key = newname
     end
+    x[key] = x[oldname]
+  end
+
+  def set_assoc_0(x, klass, oldname, newname = nil)
+    if newname.nil?
+      key = oldname + "_id"
+    else
+      key = newname
+    end
     #
-    @logger.debug "BaseImporter#set_assoce klass=#{klass} olbname=#{oldname} newname=#{newname}"
+    @logger.debug "BaseImporter#set_assoce klass=#{klass} oldname=#{oldname} newname=#{newname}"
     @logger.debug "x=#{x}"
     #
     if x[oldname].instance_of?(Integer)
@@ -38,7 +47,8 @@ class BaseImporter
         if s
             x[key] = s.id
         else
-          p "klass.find_by(name: "") s=#{s} klass=#{klass} klass.all.size=#{klass.all.size}"
+          p "oldname=#{oldname} | #{x[oldname]} | key=#{key}"
+          p "klass.find_by(name: " + ") s=#{s} klass=#{klass} klass.all.size=#{klass.all.size}"
           raise
         end
       end      
@@ -47,7 +57,7 @@ class BaseImporter
       if s
         x[key] = s.id
       else
-        p "klass.find_by(name: "") s=#{s} klass=#{klass} klass.all.size=#{klass.all.size}"
+        p "klass.find_by(name: " + ") s=#{s} klass=#{klass} klass.all.size=#{klass.all.size}"
         raise
       end
     end
@@ -74,7 +84,8 @@ class BaseImporter
     after_delkeys.map { |delkey| x.delete(delkey) }
   end
 
-  def xf(key:, year:, mode: :register)
+  def xf(key:, year: nil, mode: :register) # rubocop:disable Lint/UnusedMethodArgument
+    p "BaseImporter#xf key=#{key} year=#{year} mode=#{mode}"
     @detector = DetectorImporter.new()
     data_array = []
 
@@ -84,6 +95,7 @@ class BaseImporter
        @vx[:category][@name].nil?
       return
     end
+    p "BaseImporter#xf 2 key=#{key} year=#{year} mode=#{mode}"
 
     @ignore_fields.map { |field| @detector.register_ignore_blank_field(field) }
 
@@ -93,6 +105,7 @@ class BaseImporter
       LoggerUtils.log_debug_p(msg, @logger)
       return
     end
+    p "BaseImporter#xf 3 key=#{key} year=#{year} mode=#{mode}"
 
     new_json = @detector.detect_replace_key_x(json, @keys["key_replace"])
     new_json_second = @detector.complement_key_x(new_json, @keys["key_complement"])
@@ -135,18 +148,23 @@ class BaseImporter
       end
     end
     count = @detector.show_detected()
-    unless mode == :register && count.zero? && data_array.size.positive?
-      return
-    end
+    return unless mode == :register && count.zero? && data_array.size.positive?
 
     begin
       @ar_klass.insert_all( data_array )
     rescue StandardError => exc
-      LoggerUtils.log_fatal_p exc.class
-      LoggerUtils.log_fatal_p "Excception from @ar_klass.insert_all(data_array)"
-      LoggerUtils.log_fatal_p exc.message
+      exc_msg = exc.class
+      LoggerUtils.log_fatal_p exc_msg
+      p exc_msg
+      exc_msg = "Excception from @ar_klass.insert_all(data_array)"
+      LoggerUtils.log_fatal_p exc_msg
+      p exc_msg
+      exc_msg = exc.message
+      LoggerUtils.log_fatal_p exc_msg
+      p exc_msg
+      p "BaseImporter#xf 4 key=#{key} year=#{year} mode=#{mode}"
 
-      exit
+      raise
     end
   end
 
@@ -160,10 +178,11 @@ class BaseImporter
     item = @vx[:key][@key]
     if item.nil?
       p "exit BaseImporter#load_data"
-      exit 
+      exit
     end
     path = item.full_path
-    JsonUtils.parse(path)
+    p "BaseImporter path=#{path}"
+    normalize_loaded_json(JsonUtils.parse(path))
   end
 
   def valid_date?(target_date)
@@ -195,11 +214,34 @@ class BaseImporter
 
   private
 
+  # API/ダウンロードJSONが [[ヘッダ行], [データ行]...] のとき、xf が期待する
+  # { "0" => { 列名 => 値, ... }, ... } 形式へ揃える。
+  def normalize_loaded_json(json)
+    return json if json.nil? || !json.is_a?(Array)
+    return {} if json.empty?
+
+    if json.first.is_a?(Array)
+      headers = json[0]
+      return {} unless headers.is_a?(Array)
+
+      json[1..].each_with_index.with_object({}) do |(row, i), acc|
+        next unless row.is_a?(Array)
+
+        row_hash = {}
+        headers.each_with_index { |hkey, j| row_hash[hkey] = row[j] }
+        acc[i.to_s] = row_hash
+      end
+    elsif json.first.is_a?(Hash)
+      json.each_with_index.with_object({}) { |(row, i), acc| acc[i.to_s] = row }
+    else
+      json
+    end
+  end
+
   def select_valid_data(x, date_field, unique_field, ac_klass, data_array)
     target = x[date_field]
-    if UtilUtils.nil_or_empty_string?(target)
-      return 
-    end
+    return if UtilUtils.nil_or_empty_string?(target)
+
     if target.instance_of?(String)
       begin
         target_date = Date.parse(target)
@@ -212,18 +254,15 @@ class BaseImporter
       target_date = target
     end
 
-    unless target_date.instance_of?(Date)
-      return
-    end
+    return unless target_date.instance_of?(Date)
 
-    unless valid_date?(target_date)
-      return
-    end
+    return unless valid_date?(target_date)
 
     value = x[unique_field]
     record = ac_klass.find_by(unique_field.to_sym => value)
-    unless record
+    return if record
+
         append_data(x, data_array) 
-    end
+    
   end
 end

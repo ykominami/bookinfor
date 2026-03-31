@@ -1,10 +1,11 @@
 class LoggerUtils
-  f = File.open("log/d.log", File::WRONLY | File::APPEND | File::CREAT)
+  f = File.open("log/d.log", File::WRONLY | File::APPEND | File::CREAT) # rubocop:disable Style/FileOpen
   @logger ||= ActiveSupport::TaggedLogging.new(Logger.new(f))
   # @logger ||= ActiveSupport::TaggedLogging.new(Logger.new($stdout))
 
-  @logger.level = Logger::WARN
-  # @logger.level = Logger::DEBUG
+  # @logger.level = Logger::WARN
+  @logger.level = Logger::DEBUG
+  @logger.level = Logger::INFO
 
   class << self
     def level=(level)

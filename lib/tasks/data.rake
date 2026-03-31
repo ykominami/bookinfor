@@ -121,8 +121,9 @@ namespace :data do
   task :download, ["cmd", "searchfile"] do |_task, args|
     cmd = args.cmd
     cmd = "all" if cmd.nil?
+    # p "cmd=#{cmd}"
     cmd = DlImporter.fix_cmd(cmd)
-
+    p "task cmd=#{cmd}"
     importer_config_dir_pn = ConfigUtils.importer_config_dir_pn
 
     search_file_pn = nil
@@ -136,6 +137,7 @@ namespace :data do
     end
     search_file_pn ||= importer_config_dir_pn + "search.json"
     dl = DlImporter.new(cmd: cmd, search_file_pn: search_file_pn)
+    p "task dl=#{dl}"
     dl.execute_data_op
   end
 
@@ -148,14 +150,15 @@ namespace :data do
     output_dir_pn = ConfigUtils.output_dir_pn
     datalist_json_filename = ConfigUtils.datalist_json_filename
 
-    datalist_file_pn = UtilUtils.check_file_exist(args.datalist_file, output_dir_pn, 11) unless UtilUtils.nil_or_empty?(args.search_file)
-    datalist_file_pn = output_dir_pn + datalist_json_filename unless datalist_file_pn
+    datalist_file_pn = UtilUtils.check_file_exist(args.datalist_file, output_dir_pn, 11) unless UtilUtils.nil_or_empty?(args.datalist_file)
+    datalist_file_pn ||= output_dir_pn + datalist_json_filename
 
     search_file_pn = UtilUtils.check_file_exist(args.search_file, importer_config_dir_pn, 12) unless UtilUtils.nil_or_empty?(args.search_file)
-    search_file_pn = ConfigUtils.search_json_pn unless search_file_pn
-    
-    local_file_pn  = UtilUtils.check_file_exist(args.local_file,  importer_config_dir_pn, 10) unless UtilUtils.nil_or_empty?(args.local_file)
+    search_file_pn ||= ConfigUtils.search_json_pn
 
+    local_file_pn  = UtilUtils.check_file_exist(args.local_file, importer_config_dir_pn, 10) unless UtilUtils.nil_or_empty?(args.local_file)
+
+    # p "#################"
     importertop = TopImporter.new(datalist_file_pn, search_file_pn, local_file_pn)
     importertop.execute()
   end
@@ -191,7 +194,7 @@ namespace :data do
     sh "rake data:import[search_rf.json,,local_rf.json]"
   end
 
-  desc "data:file test cakubre"
+  desc "data:file test calibre"
   task :file_test_cf do
     sh "rake data:import[search_cf.json,,local_cf.json]"
   end
