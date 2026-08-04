@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 # git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby "4.0.4"
+ruby "4.0.6"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 8.1.3"
@@ -87,7 +87,7 @@ end
 group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
-  gem "selenium-webdriver", "4.41.0"
+  gem "selenium-webdriver", "4.44.0"
   # gem "webdrivers"
   gem "rspec-rails"
 
