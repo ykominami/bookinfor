@@ -96,7 +96,7 @@ end
 gem "foreman"
 gem "roo"
 
-gem 'nkf', '0.2.0'
+gem 'nkf', '0.3.0'
 # gem 'arxutils_sqlite3', path: '/home/ykominami/repo_ykominami/arxutils_sqlite3'
 
 gem 'csv'
